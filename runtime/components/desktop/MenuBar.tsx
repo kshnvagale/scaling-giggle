@@ -12,7 +12,6 @@ interface MenuBarProps {
   } | null;
   attemptCount: number;
   activeWindowLabel: string;
-  onSubmitClick: () => void;
 }
 
 function formatTime(ms: number): string {
@@ -37,7 +36,6 @@ export function MenuBar({
   timer,
   attemptCount,
   activeWindowLabel,
-  onSubmitClick,
 }: MenuBarProps) {
   const [remaining, setRemaining] = useState<number | null>(null);
   const [now, setNow] = useState(() => new Date());
@@ -70,33 +68,39 @@ export function MenuBar({
 
   return (
     <div
-      className="flex h-8 select-none items-center gap-4 px-4 text-[12px]"
-      style={{ background: "var(--menu-bg)", color: "var(--menu-text)" }}
+      className="
+        relative flex h-8 select-none items-center gap-4 px-4 text-[13px] font-semibold text-white
+        bg-black/15 backdrop-blur-2xl
+        shadow-[inset_0_-1px_0_rgba(255,255,255,0.06)]
+      "
+      style={{ textShadow: "0 1px 2px rgba(0,0,0,0.45)" }}
     >
       <div className="flex items-center gap-2">
-        <span className="text-sm">🏢</span>
+        <span className="text-[15px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.45)]">🏢</span>
         <span className="text-[13px] font-semibold tracking-tight">{clientName}</span>
       </div>
 
-      <div className="hidden items-center gap-1 md:flex">
+      <div className="hidden items-center gap-0.5 md:flex">
         {["Simulation", "Resources", "Progress"].map((item) => (
           <span
             key={item}
-            className="menu-item rounded px-2.5 py-0.5 text-white/70 hover:text-white/90"
+            className="menu-item cursor-default rounded px-2.5 py-0.5 text-white/95 hover:bg-white/15"
           >
             {item}
           </span>
         ))}
       </div>
 
-      <div className="ml-2 hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1 text-[11px] text-white/72 sm:flex">
-        <span className="h-1.5 w-1.5 rounded-full bg-[#28c840]" />
+      <div className="ml-1 hidden items-center gap-2 rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/85 backdrop-blur-md sm:flex">
+        <span className="h-1.5 w-1.5 rounded-full bg-[#28c840] shadow-[0_0_6px_rgba(40,200,64,0.6)]" />
         {activeWindowLabel}
       </div>
 
       <div className="min-w-0 flex-1">
         {taskTitle && (
-          <span className="hidden truncate text-[12px] text-white/48 lg:block">{taskTitle}</span>
+          <span className="hidden truncate text-[12px] font-medium text-white/70 lg:block">
+            {taskTitle}
+          </span>
         )}
       </div>
 
@@ -104,28 +108,18 @@ export function MenuBar({
         <span
           className={`
             font-mono text-[12px] font-semibold tabular-nums
-            ${isExpired ? "text-red-400" : isLowTime ? "text-amber-300" : "text-white/78"}
+            ${isExpired ? "text-red-300" : isLowTime ? "text-amber-200" : "text-white/90"}
           `}
         >
           {isExpired ? "00:00" : formatTime(remaining)}
         </span>
       )}
 
-      <span className="hidden rounded-full bg-white/10 px-2 py-0.5 text-[11px] text-white/64 sm:inline-flex">
+      <span className="hidden rounded-full bg-white/12 px-2 py-0.5 text-[11px] font-medium text-white/80 sm:inline-flex">
         Attempt #{attemptCount}
       </span>
 
-      <span className="text-white/46">{formatClock(now)}</span>
-
-      <button
-        type="button"
-        onClick={onSubmitClick}
-        aria-label="Open submit window"
-        className="rounded-full px-3 py-1 text-[12px] font-semibold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition-transform duration-150 hover:-translate-y-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/90 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1d1b16]"
-        style={{ background: "var(--accent)" }}
-      >
-        Submit
-      </button>
+      <span className="text-[12px] font-medium text-white/80">{formatClock(now)}</span>
     </div>
   );
 }

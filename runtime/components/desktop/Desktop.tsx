@@ -380,6 +380,9 @@ function formatWallpaperLabel(name: string) {
     .replace(/\.[^/.]+$/, "")
     .replace(/[()]/g, " ")
     .replace(/[-_]+/g, " ")
+    .replace(/\b(?:thumbnail|thumb)\b/gi, "")
+    .replace(/\b\d+K\b/gi, "")
+    .replace(/^(?:\s*\d+\s+)+/, "")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -988,38 +991,39 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
     : null;
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[var(--kraft)] text-[var(--text-primary)]">
-      <div className="flex h-full flex-col overflow-hidden">
+    <div className="relative h-screen w-screen overflow-hidden bg-[var(--kraft)] text-[var(--text-primary)]">
+      {/* Wallpaper layer — covers the entire viewport, including behind the menu bar */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        {activeWallpaperUrl && (
+          <img
+            key={activeWallpaperUrl}
+            src={activeWallpaperUrl}
+            alt=""
+            draggable={false}
+            className="desktop-wallpaper-enter absolute inset-0 h-full w-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,12,5,0.22),rgba(17,12,5,0.08)_18%,rgba(17,12,5,0.22))]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,244,219,0.28),transparent_34%),radial-gradient(circle_at_78%_14%,rgba(255,255,255,0.12),transparent_28%),radial-gradient(circle_at_72%_82%,rgba(74,49,14,0.18),transparent_32%)]" />
+        <div className="absolute inset-0 opacity-[0.18] [background-image:radial-gradient(rgba(255,255,255,0.22)_0.8px,transparent_0.8px)] [background-size:18px_18px]" />
+        <div className="absolute left-[12%] top-[-14%] h-[28rem] w-[28rem] rounded-full bg-white/12 blur-3xl" />
+        <div className="absolute right-[8%] top-[12%] h-[24rem] w-[24rem] rounded-full bg-[#8f6a2d]/15 blur-3xl" />
+        <div className="absolute bottom-[-10%] left-[26%] h-[20rem] w-[24rem] rounded-full bg-black/12 blur-3xl" />
+      </div>
+
+      <div className="relative z-10 flex h-full flex-col overflow-hidden">
         <MenuBar
           clientName={coursePackage?.meta?.client ?? "CaseForge"}
           taskTitle={currentTask?.title ?? null}
           timer={timer}
           attemptCount={attemptCount}
           activeWindowLabel={focusedEntry?.label ?? "Desktop"}
-          onSubmitClick={() => openWindow("submit")}
         />
 
         <div
           className={`relative flex-1 overflow-hidden ${isRefreshingDesktop ? "desktop-shell-refresh" : ""}`}
           onContextMenu={handleDesktopContextMenu}
         >
-          <div className="pointer-events-none absolute inset-0">
-            {activeWallpaperUrl && (
-              <img
-                key={activeWallpaperUrl}
-                src={activeWallpaperUrl}
-                alt=""
-                draggable={false}
-                className="desktop-wallpaper-enter absolute inset-0 h-full w-full object-cover"
-              />
-            )}
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,12,5,0.22),rgba(17,12,5,0.08)_18%,rgba(17,12,5,0.22))]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(255,244,219,0.28),transparent_34%),radial-gradient(circle_at_78%_14%,rgba(255,255,255,0.12),transparent_28%),radial-gradient(circle_at_72%_82%,rgba(74,49,14,0.18),transparent_32%)]" />
-            <div className="absolute inset-0 opacity-[0.18] [background-image:radial-gradient(rgba(255,255,255,0.22)_0.8px,transparent_0.8px)] [background-size:18px_18px]" />
-            <div className="absolute left-[12%] top-[-14%] h-[28rem] w-[28rem] rounded-full bg-white/12 blur-3xl" />
-            <div className="absolute right-[8%] top-[12%] h-[24rem] w-[24rem] rounded-full bg-[#8f6a2d]/15 blur-3xl" />
-            <div className="absolute bottom-[-10%] left-[26%] h-[20rem] w-[24rem] rounded-full bg-black/12 blur-3xl" />
-          </div>
 
           <div className="pointer-events-none absolute inset-0 z-10">
             {appRegistry.map((entry) => {
@@ -1150,7 +1154,13 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
             className="absolute bottom-4 left-1/2 z-30 -translate-x-1/2"
             data-no-desktop-menu="true"
           >
-            <div className="flex items-center gap-1.5 rounded-[24px] border border-white/45 bg-white/55 px-2.5 py-2 shadow-[0_18px_48px_rgba(35,26,11,0.22)] backdrop-blur-xl sm:gap-2 sm:rounded-[28px] sm:px-3">
+            <div
+              className="
+                flex items-center gap-1.5 rounded-[26px] border border-white/35 bg-white/18 px-2.5 py-2 backdrop-blur-2xl
+                shadow-[inset_0_1px_0_rgba(255,255,255,0.55),inset_0_-1px_0_rgba(0,0,0,0.10),0_22px_56px_rgba(0,0,0,0.32)]
+                sm:gap-2 sm:rounded-[30px] sm:px-3
+              "
+            >
               {appRegistry.map((entry) => {
                 const windowState = windowStates[entry.id];
                 const isFocused =
@@ -1166,23 +1176,25 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                     onClick={() => openWindow(entry.id)}
                     data-no-desktop-menu="true"
                     className={`
-                      group relative flex h-12 w-12 items-center justify-center rounded-2xl border text-xl transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3559a7] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--kraft)] sm:h-14 sm:w-14 sm:text-2xl
+                      group relative flex h-12 w-12 items-center justify-center rounded-2xl border text-xl transition-all duration-200 backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-0 sm:h-14 sm:w-14 sm:text-2xl
                       ${isFocused
-                        ? "border-white/80 bg-white text-[#1d1b16] shadow-[0_12px_28px_rgba(35,26,11,0.18)]"
+                        ? "border-white/65 bg-white/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),inset_0_-1px_0_rgba(0,0,0,0.10),0_10px_22px_rgba(0,0,0,0.28)]"
                         : isRunning
-                          ? "border-white/40 bg-white/65 text-[#2a241d] hover:-translate-y-1 hover:bg-white/80"
-                          : "border-white/20 bg-white/28 text-[#3f382d] hover:-translate-y-1 hover:bg-white/48"
+                          ? "border-white/45 bg-white/22 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] hover:-translate-y-1 hover:bg-white/32"
+                          : "border-white/25 bg-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] hover:-translate-y-1 hover:bg-white/22"
                       }
                     `}
                   >
-                    <span className="transition-transform duration-200 group-hover:scale-110">{entry.icon}</span>
+                    <span className="transition-transform duration-200 group-hover:scale-110 drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
+                      {entry.icon}
+                    </span>
                     <span
                       className={`
-                        absolute bottom-[6px] h-1.5 rounded-full transition-all duration-200
+                        absolute -bottom-[7px] h-1.5 rounded-full transition-all duration-200
                         ${isFocused
-                          ? "w-5 bg-[#1d1b16]"
+                          ? "w-5 bg-white/95 shadow-[0_0_8px_rgba(255,255,255,0.55)]"
                           : isRunning
-                            ? "w-3 bg-[#1d1b16]/60"
+                            ? "w-2.5 bg-white/70"
                             : "w-0 bg-transparent"
                         }
                       `}
@@ -1302,30 +1314,30 @@ function DesktopIcon({
     <>
       <div
         className={`
-          relative flex h-12 w-12 items-center justify-center rounded-2xl text-2xl transition-all duration-200
+          relative flex h-[60px] w-[60px] items-center justify-center rounded-[16px] text-[32px] leading-none transition-all duration-200 backdrop-blur-2xl
           ${isFocused
-            ? "bg-[#f9f2e4] shadow-[inset_0_1px_0_rgba(255,255,255,0.65)]"
-            : "bg-[#f4e9d4]/70 group-hover:scale-105 group-hover:bg-[#f6ecdc]"
+            ? "bg-white/30 border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),inset_0_-1px_0_rgba(0,0,0,0.08),0_10px_28px_rgba(0,0,0,0.28)]"
+            : "bg-white/18 border border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(0,0,0,0.10),0_8px_22px_rgba(0,0,0,0.22)] group-hover:scale-[1.06] group-hover:bg-white/26"
           }
         `}
       >
-        {icon}
+        <span className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">{icon}</span>
         {isOpen && (
-          <span className="absolute -bottom-1 h-1.5 w-4 rounded-full bg-[#7c5b23] shadow-[0_0_8px_rgba(124,91,35,0.22)]" />
+          <span className="absolute -bottom-[7px] h-1.5 w-4 rounded-full bg-white/85 shadow-[0_0_8px_rgba(255,255,255,0.55)]" />
         )}
       </div>
 
       <span
         className={`
           text-center text-[13px] font-semibold leading-tight
-          ${isDarkBackground ? "text-white drop-shadow-md" : isFocused ? "text-[#1d1b16]" : "text-[#2c261d]"}
+          ${isDarkBackground ? "text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" : isFocused ? "text-[#1d1b16]" : "text-[#2c261d]"}
         `}
       >
         {label}
       </span>
 
       {showDetail && detail && (
-        <span className={`max-w-[80px] truncate text-center text-[11px] leading-tight ${isDarkBackground ? "text-white/90 drop-shadow-md" : "text-[#625642]"}`}>
+        <span className={`max-w-[80px] truncate text-center text-[11px] leading-tight ${isDarkBackground ? "text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]" : "text-[#625642]"}`}>
           {detail}
         </span>
       )}
@@ -1333,15 +1345,9 @@ function DesktopIcon({
   );
 
   const className = `
-    group flex w-[88px] select-none flex-col items-center gap-1 rounded-2xl px-2 py-2.5 text-left transition-all duration-200 backdrop-blur-[2px]
-    ${isFocused
-      ? "bg-[#ead7b4]/92 shadow-[0_12px_26px_rgba(35,26,11,0.12)] ring-1 ring-[#b89d6d]"
-      : isOpen
-        ? "bg-[#ecdfc6]/82 ring-1 ring-[#d7c39b] shadow-[0_10px_20px_rgba(35,26,11,0.08)]"
-        : "bg-transparent"
-    }
-    ${interactive ? "cursor-pointer hover:bg-[#efe4cf]/78" : "cursor-default"}
-    ${dimmed ? "opacity-80" : ""}
+    group flex w-[88px] select-none flex-col items-center gap-1.5 rounded-[18px] px-2 py-2 text-left transition-all duration-200
+    ${interactive ? "cursor-pointer" : "cursor-default"}
+    ${dimmed ? "opacity-85" : ""}
   `;
 
   if (!interactive) {
@@ -1394,6 +1400,8 @@ function DraggableDesktopIcon({
     startY: number;
     startPos: { x: number; y: number };
     isDragging: boolean;
+    pointerId: number;
+    target: HTMLDivElement;
   } | null>(null);
   const justDraggedRef = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -1405,8 +1413,12 @@ function DraggableDesktopIcon({
       startY: e.clientY,
       startPos: position,
       isDragging: false,
+      pointerId: e.pointerId,
+      target: e.currentTarget as HTMLDivElement,
     };
-    (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+    // Defer setPointerCapture until we know this is a drag (see handlePointerMove).
+    // Capturing on every pointerdown can swallow the synthesized click event on
+    // inner elements, so simple taps must never enter capture.
   }
 
   function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
@@ -1417,6 +1429,11 @@ function DraggableDesktopIcon({
     if (!ds.isDragging && Math.hypot(dx, dy) > ICON_DRAG_THRESHOLD_PX) {
       ds.isDragging = true;
       setIsDragging(true);
+      try {
+        ds.target.setPointerCapture(ds.pointerId);
+      } catch {
+        // ignore capture failure
+      }
     }
     if (ds.isDragging) {
       onPositionChange({ x: ds.startPos.x + dx, y: ds.startPos.y + dy });
@@ -1426,19 +1443,18 @@ function DraggableDesktopIcon({
   function handlePointerUp(e: React.PointerEvent<HTMLDivElement>) {
     const ds = dragRef.current;
     if (!ds) return;
-    try {
-      (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId);
-    } catch {
-      // ignore release failure
-    }
     if (ds.isDragging) {
+      try {
+        ds.target.releasePointerCapture(ds.pointerId);
+      } catch {
+        // ignore release failure
+      }
       const final = {
         x: ds.startPos.x + (e.clientX - ds.startX),
         y: ds.startPos.y + (e.clientY - ds.startY),
       };
       onCommit(final);
       justDraggedRef.current = true;
-      // Reset after the click event would have fired
       window.setTimeout(() => {
         justDraggedRef.current = false;
       }, 0);
