@@ -1,0 +1,23 @@
+{
+  "name": "courseforge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "CourseForge — author pipeline (Managed Agents) and runtime scaffolding.",
+  "scripts": {
+    "upload": "tsx scripts/upload-session.ts",
+    "download": "tsx scripts/download-package.ts",
+    "validate": "tsx schema/validate.ts",
+    "solver": "tsx scripts/create-solver-session.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.89.0",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "next": "^14.2.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}

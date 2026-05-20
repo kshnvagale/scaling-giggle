@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+dist/
+*.log
+.DS_Store
+
+# temp files
+.api-key-tmp.txt
+
+# agent run artifacts pulled down from sessions
+/packages/*.local.json
+.vercel

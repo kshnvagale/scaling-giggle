@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "client": "Meridian Insurance",
+    "industry": "Property & Casualty Insurance",
+    "role": "Forward Deployed Engineer",
+    "sourceDocHash": "mock-dev-hash",
+    "version": "0.1.0-mock",
+    "generatedAt": "2026-04-16T00:00:00Z",
+    "scope": "M1.T1"
+  },
+  "world": {
+    "client": {
+      "name": "Meridian Insurance",
+      "size": "Tier-1 P&C and Life Insurer",
+      "businessModel": "Multi-line insurance carrier with direct and agency distribution",
+      "keyNumbers": { "policyholders": "12M", "gwp": "$8B", "employees": 15000 },
+      "source": "doc"
+    },
+    "industry": { "primary": "Insurance", "subVertical": "Property & Casualty" },
+    "glossary": [
+      { "term": "GWP", "definition": "Gross Written Premium — total premium written before reinsurance", "whyItMatters": "Primary top-line revenue metric for insurers", "source": "doc" },
+      { "term": "FNOL", "definition": "First Notice of Loss — the initial report of a claim", "whyItMatters": "Starts the claims lifecycle; speed of FNOL directly impacts customer satisfaction", "source": "doc" },
+      { "term": "PAS", "definition": "Policy Administration System — core system managing policy lifecycle", "whyItMatters": "All policy transactions flow through PAS", "source": "doc" },
+      { "term": "LOB", "definition": "Line of Business — a specific insurance product category", "whyItMatters": "Each LOB has different workflows and regulatory requirements", "source": "doc" },
+      { "term": "Endorsement", "definition": "A mid-term change to an existing policy", "whyItMatters": "Common operation that touches multiple systems and requires re-rating", "source": "doc" },
+      { "term": "Binding", "definition": "The point at which an insurance policy becomes effective", "whyItMatters": "Legal and financial trigger point in policy lifecycle", "source": "doc" },
+      { "term": "Rating Engine", "definition": "System that calculates premium based on risk factors", "whyItMatters": "Core to quoting; must comply with state-filed rates", "source": "doc" },
+      { "term": "ClaimCenter", "definition": "Guidewire's claims management module", "whyItMatters": "Meridian's primary claims system", "source": "doc" }
+    ],
+    "systems": [
+      { "name": "Guidewire PolicyCenter", "vendor": "Guidewire", "roleInBusiness": "Policy administration for personal lines", "typicalIntegrations": ["Rating Engine", "Document Management", "Agent Portal", "Billing"], "knownQuirks": ["Batch-only endorsement processing after 9 PM ET"], "source": "doc" },
+      { "name": "Guidewire ClaimCenter", "vendor": "Guidewire", "roleInBusiness": "Claims management and adjudication", "typicalIntegrations": ["FNOL intake API", "Fraud detection", "Payment systems"], "knownQuirks": ["Custom workflow for catastrophe claims"], "source": "doc" },
+      { "name": "Legacy PAS (Mainframe)", "roleInBusiness": "Policy administration for commercial lines", "typicalIntegrations": ["COBOL batch jobs", "DB2 database"], "knownQuirks": ["COBOL rating tables from 2008 still in use"], "source": "doc" },
+      { "name": "Salesforce", "vendor": "Salesforce", "roleInBusiness": "Agency management and CRM", "typicalIntegrations": ["Agent Portal", "Commission Calc"], "knownQuirks": ["Custom objects for insurance-specific data"], "source": "doc" }
+    ],
+    "regulations": [
+      { "name": "State Rate Filing Requirements", "summary": "Each state requires insurers to file rates and forms before use", "source": "doc" },
+      { "name": "NAIC Data Calls", "summary": "Periodic data submissions on premiums, losses, and market conduct", "source": "doc" }
+    ],
+    "clientProfile": "Meridian Insurance is a Tier-1 Property & Casualty and Life insurer serving 12 million policyholders across 48 states. With $8 billion in gross written premium and 15,000 employees, Meridian operates a complex technology stack spanning 30-year-old mainframe systems (COBOL/DB2), Guidewire InsuranceSuite for personal lines, Salesforce for agency management, and a growing cloud-native microservices layer on AWS.\n\nThe board has mandated an aggressive digital transformation programme. Legacy policy administration runs on a mainframe-based PAS for commercial lines while personal lines have been partially migrated to Guidewire PolicyCenter. The FDE team's first priority is understanding these systems deeply before proposing any changes."
+  },
+  "personas": [
+    {
+      "id": "karen-underwriting",
+      "name": "Karen Whitfield",
+      "role": "VP of Personal Lines Underwriting",
+      "reportsTo": "Chief Underwriting Officer",
+      "linkedTasks": ["m1t1"],
+      "backstory": "Karen has been at Meridian for 18 years, starting as a junior underwriter for auto policies. She knows every edge case in the Auto and Homeowners rating algorithms.",
+      "systemPrompt": "You are Karen Whitfield, VP of Personal Lines Underwriting at Meridian Insurance. You have deep expertise in Auto and Homeowners policy lifecycles. You are helpful but detail-oriented — you correct inaccuracies and push the learner to be precise. You speak in a professional, slightly formal tone. You do not volunteer information unprompted; the learner must ask specific questions. If asked about something outside your expertise, redirect to the appropriate colleague.",
+      "privateKnowledge": [
+        { "key": "auto-endorsement-quirk", "value": "Auto endorsements submitted after 3 PM ET are batched and processed overnight by the mainframe, causing a 12-18 hour delay.", "disclosureHint": "Ask about endorsement processing timelines", "importance": "critical" },
+        { "key": "homeowners-bind-bottleneck", "value": "Homeowners binding requires manual inspection approval for properties over $750K. About 15% of HO quotes expire before binding because the inspection queue backs up.", "disclosureHint": "Ask about binding bottlenecks or delays", "importance": "critical" },
+        { "key": "rating-table-legacy", "value": "The Auto rating engine still uses COBOL tables from 2008 for legacy products. Changes require a mainframe developer.", "disclosureHint": "Ask about the rating engine or legacy systems", "importance": "useful" }
+      ],
+      "openingLine": "Good morning. I understand you're here to map our policy lifecycle. I have about 20 minutes — what would you like to know about our underwriting processes?"
+    },
+    {
+      "id": "raj-claims",
+      "name": "Raj Patel",
+      "role": "Claims Operations Manager",
+      "reportsTo": "VP of Claims",
+      "linkedTasks": ["m1t1"],
+      "backstory": "Raj joined Meridian 5 years ago from a health insurance carrier. He manages the claims team for Auto and Homeowners and is focused on reducing cycle time.",
+      "systemPrompt": "You are Raj Patel, Claims Operations Manager at Meridian Insurance. You are energetic, collaborative, and opinionated about process improvement. You love sharing workflow details and sometimes over-share. When discussing systems, you always mention integration pain points. If asked about something outside your expertise, redirect to the appropriate colleague.",
+      "privateKnowledge": [
+        { "key": "fnol-channels", "value": "FNOL comes through 4 channels: phone (60%), agent portal (25%), mobile app (10%), email (5%). The mobile app has a 40% abandonment rate.", "disclosureHint": "Ask about how claims are reported", "importance": "critical" },
+        { "key": "claims-policy-stale-cache", "value": "ClaimCenter caches policy data from PolicyCenter for 24 hours. If a policy was endorsed today, claims team sees stale coverage data until tomorrow.", "disclosureHint": "Ask about integration between claims and policy systems", "importance": "critical" },
+        { "key": "cat-claims-workflow", "value": "Catastrophe claims bypass the normal queue when 50+ claims from the same ZIP arrive within 24 hours.", "disclosureHint": "Ask about special claim types or catastrophe handling", "importance": "useful" }
+      ],
+      "openingLine": "Hey! Welcome to the team. Raj here — Claims Ops. I heard you're mapping out the lifecycle. I've got tons to share. Where do you want to start?"
+    },
+    {
+      "id": "susan-it",
+      "name": "Susan Chen",
+      "role": "Enterprise Architect",
+      "linkedTasks": ["m1t1"],
+      "backstory": "Susan is the technical authority on Meridian's systems landscape. She has been architecting insurance systems for 22 years across three carriers.",
+      "systemPrompt": "You are Susan Chen, Enterprise Architect at Meridian Insurance. You have encyclopedic knowledge of the systems landscape. You think architecturally — you describe processes in terms of systems, APIs, data flows, and integration patterns. You are precise and somewhat terse. You prefer structured answers (lists, sequences). You do not discuss business rules in detail — redirect those to business SMEs. If asked about something outside your expertise, say so directly.",
+      "privateKnowledge": [
+        { "key": "system-count", "value": "Meridian has 47 distinct systems. PolicyCenter and ClaimCenter are the two largest, plus 12 satellite systems for rating, document management, billing, reinsurance, regulatory reporting, fraud detection, agent licensing, commission calc, actuarial data warehouse, customer portal, mobile app backend, and mainframe PAS.", "disclosureHint": "Ask about the overall systems landscape", "importance": "critical" },
+        { "key": "api-gateway", "value": "All system-to-system communication goes through an AWS API Gateway introduced in 2024. About 30% of integrations are still on legacy MQ Series messaging.", "disclosureHint": "Ask about how systems communicate", "importance": "useful" },
+        { "key": "data-flow-policy", "value": "Policy lifecycle data flow: Agent Portal → API Gateway → PolicyCenter (quote/rate/bind) → Billing System (invoice) → Document Mgmt (policy docs) → Customer Portal (self-service). Endorsements add a re-rating step and may trigger a mainframe batch job.", "disclosureHint": "Ask about data flows for the policy lifecycle", "importance": "critical" }
+      ],
+      "openingLine": "Susan Chen, Enterprise Architecture. I can walk you through the systems side. What specifically do you need to understand?"
+    }
+  ],
+  "fixtures": {
+    "wikiPages": [
+      {
+        "slug": "policy-lifecycle-overview",
+        "title": "Policy Lifecycle Overview",
+        "body": "# Policy Lifecycle Overview\n\nThe insurance policy lifecycle consists of six core stages:\n\n1. **Quote** — Customer or agent requests a price for coverage\n2. **Bind** — Customer accepts the quote; coverage becomes effective\n3. **Issue** — Policy documents are generated and delivered\n4. **Endorse** — Mid-term changes to coverage, limits, or deductibles\n5. **Renew** — Policy is re-evaluated and renewed at term expiration\n6. **Cancel** — Policy is terminated before natural expiration\n\nEach stage involves different [systems](wiki://systems-landscape), stakeholders, and regulatory requirements. At Meridian, personal lines (Auto and Homeowners) are managed in [Guidewire PolicyCenter](wiki://guidewire-policycenter), while commercial lines remain on the legacy mainframe PAS.\n\n## Key Metrics\n\n| Metric | Auto | Homeowners |\n|--------|------|------------|\n| Avg Quote-to-Bind | 2.3 days | 4.1 days |\n| Endorsement Volume | ~8,000/month | ~3,200/month |\n| Renewal Rate | 87% | 91% |\n| Cancel Rate | 6% | 3% |",
+        "linkedTasks": ["m1t1"]
+      },
+      {
+        "slug": "systems-landscape",
+        "title": "Meridian Systems Landscape",
+        "body": "# Meridian Systems Landscape\n\nMeridian operates 47 distinct systems across insurance operations.\n\n## Core Systems\n\n- **Guidewire PolicyCenter** — Policy administration for personal lines\n- **Guidewire ClaimCenter** — Claims management and adjudication\n- **Legacy PAS (Mainframe)** — Policy administration for commercial lines (COBOL/DB2)\n- **Salesforce** — Agency management and CRM\n\n## Integration Layer\n\nAs of 2024, an AWS API Gateway handles system-to-system communication. Approximately 30% of integrations remain on legacy MQ Series messaging.\n\n## Satellite Systems\n\nRating Engine, Document Management (FileNet), Billing, Reinsurance, Regulatory Reporting, Fraud Detection (FRISS), Agent Licensing, Commission Calculation, Actuarial Data Warehouse, Customer Portal, Mobile App Backend.",
+        "linkedTasks": ["m1t1"]
+      },
+      {
+        "slug": "guidewire-policycenter",
+        "title": "Guidewire PolicyCenter at Meridian",
+        "body": "# Guidewire PolicyCenter at Meridian\n\nGuidewire PolicyCenter is Meridian's policy administration system for personal lines (Auto and Homeowners).\n\n## Key Capabilities\n\n- Quoting and rating for Auto and Homeowners\n- Policy issuance and document generation\n- Endorsement processing\n- Renewal management\n- Integration with billing and document management\n\n## Known Limitations\n\n- Auto rating tables for legacy products still use COBOL tables on the mainframe\n- Endorsements submitted after business hours are batched overnight\n- No real-time integration with the mobile app\n\n## Data Model\n\nPolicyCenter organizes data around: **Account** → **Policy Period** → **Lines** → **Coverages** → **Costs**.",
+        "linkedTasks": ["m1t1"]
+      },
+      {
+        "slug": "auto-insurance",
+        "title": "Auto Insurance at Meridian",
+        "body": "# Auto Insurance at Meridian\n\nMeridian's Auto line of business covers personal auto policies across 48 states.\n\n## Coverage Types\n\n- **Liability** — Bodily injury and property damage to others\n- **Collision** — Damage to the insured vehicle from collisions\n- **Comprehensive** — Non-collision damage (theft, weather, vandalism)\n- **PIP/MedPay** — Medical payments for the insured\n- **UM/UIM** — Uninsured/underinsured motorist coverage\n\n## Policy Lifecycle Specifics\n\n- **Quote**: Average 8 rating factors; real-time response from rating engine\n- **Bind**: Immediate for standard risk; referral to underwriter for non-standard\n- **Endorse**: Vehicle add/remove, driver add/remove, coverage changes — all trigger re-rating\n- **Renew**: 60-day advance processing; non-renew decisions require state-specific notice periods",
+        "linkedTasks": ["m1t1"]
+      },
+      {
+        "slug": "homeowners-insurance",
+        "title": "Homeowners Insurance at Meridian",
+        "body": "# Homeowners Insurance at Meridian\n\nMeridian writes HO-3 (Special Form) policies.\n\n## Coverage Structure\n\n- **Dwelling (Coverage A)** — Structure of the home\n- **Other Structures (Coverage B)** — Detached garages, fences\n- **Personal Property (Coverage C)** — Belongings inside the home\n- **Loss of Use (Coverage D)** — Living expenses if home is uninhabitable\n- **Liability (Coverage E)** — Personal liability\n- **Medical Payments (Coverage F)** — Guest medical expenses\n\n## Policy Lifecycle Specifics\n\n- **Quote**: Requires property details, replacement cost estimate, claims history (CLUE report)\n- **Bind**: Properties over $750K require manual inspection approval\n- **Endorse**: Common: scheduled personal property, increased dwelling limits\n- **Renew**: Annual term; re-inspection required every 5 years",
+        "linkedTasks": ["m1t1"]
+      }
+    ],
+    "datasets": [],
+    "documents": [],
+    "emails": []
+  },
+  "modules": [
+    {
+      "idx": 0,
+      "title": "Insurance Domain Immersion & System Discovery",
+      "objective": "Build deep contextual understanding of the client's insurance business, legacy systems, data flows, and regulatory environment.",
+      "tasks": [
+        {
+          "id": "m1t1",
+          "moduleIdx": 0,
+          "taskIdx": 0,
+          "title": "Map the End-to-End Policy Lifecycle",
+          "brief": "# Map the End-to-End Policy Lifecycle\n\nYou've just been deployed to Meridian Insurance. Your first assignment: **map the complete policy lifecycle** for both Auto and Homeowners lines of business.\n\n## What You Need to Deliver\n\nAn **annotated process map** showing the end-to-end flow: **Quote → Bind → Issue → Endorse → Renew → Cancel** for both Auto and Homeowners.\n\nFor each stage, your map must show:\n- The **systems** involved\n- **Integration points** between systems\n- **Key differences** between Auto and Homeowners\n- **Bottlenecks or pain points** you discover\n\n## How to Work\n\n1. Start with the **Wiki** — read the policy lifecycle overview and systems docs\n2. **Interview the SMEs** — Karen (Underwriting), Raj (Claims), and Susan (Architecture) each know different pieces\n3. Synthesize everything into your process map\n4. Upload your deliverable when ready\n\n## Tips\n\n- Don't just document the happy path — look for edge cases and workarounds\n- Each SME has specific knowledge they won't share unless you ask the right questions\n- Pay attention to where systems hand off to each other — that's where problems live",
+          "deliverable": {
+            "type": "diagram",
+            "format": "pdf",
+            "acceptanceSummary": "An annotated process map showing Quote → Bind → Issue → Endorse → Renew → Cancel for Auto and Homeowners, with system touchpoints, integration points, and identified bottlenecks."
+          },
+          "durationMinutes": 20,
+          "type": "individual",
+          "availablePrimitives": ["ChatWithPersona", "ReadDocument", "UploadDeliverable", "LLMJudge"],
+          "requiredWorldKnowledge": ["policy-lifecycle", "guidewire", "auto-insurance", "homeowners-insurance"],
+          "linkedPersonaIds": ["karen-underwriting", "raj-claims", "susan-it"],
+          "rubric": {
+            "hardCriteria": [
+              { "id": "hc1", "description": "All 6 lifecycle stages (Quote, Bind, Issue, Endorse, Renew, Cancel) are present for BOTH Auto and Homeowners", "verificationMethod": "Check that the diagram explicitly labels all 6 stages for each LOB" },
+              { "id": "hc2", "description": "At least 4 distinct systems are identified with their roles", "verificationMethod": "Count unique systems mentioned and verify each has a described role" },
+              { "id": "hc3", "description": "At least 6 integration points between systems are documented", "verificationMethod": "Count system-to-system connections with described data flows" },
+              { "id": "hc4", "description": "At least 3 differences between Auto and Homeowners lifecycles are called out", "verificationMethod": "Look for explicit comparison points between the two LOBs" }
+            ],
+            "qualitativeCriteria": [
+              {
+                "id": "qc1",
+                "description": "Accuracy and depth of domain understanding",
+                "scoringGuide": {
+                  "one": "Major inaccuracies in insurance terminology or process flow",
+                  "three": "Generally accurate with minor gaps in understanding system interactions",
+                  "five": "Deep understanding including edge cases, workarounds, and system quirks from SME interviews"
+                }
+              },
+              {
+                "id": "qc2",
+                "description": "Quality of bottleneck and pain point identification",
+                "scoringGuide": {
+                  "one": "No bottlenecks identified or only obvious ones",
+                  "three": "2-3 bottlenecks identified with basic description",
+                  "five": "4+ bottlenecks with root cause analysis and connection to system architecture"
+                }
+              }
+            ],
+            "passCondition": "All 4 hard criteria met AND average qualitative score >= 3",
+            "judgePromptTemplate": "You are an expert insurance industry assessor evaluating a Forward Deployed Engineer's understanding of the policy lifecycle at a P&C insurer.\n\nEvaluate the submitted deliverable against each criterion below. For hard criteria, determine pass/fail. For qualitative criteria, score 1-5 using the provided scoring guide. Quote specific evidence from the deliverable for each judgment.\n\n## Deliverable Description\n{{deliverableDescription}}\n\n## Hard Criteria\n{{hardCriteria}}\n\n## Qualitative Criteria\n{{qualitativeCriteria}}\n\n## Pass Condition\n{{passCondition}}\n\nRespond with valid JSON only:\n{\"passed\": boolean, \"criteriaResults\": [{\"criterionId\": string, \"passed\": boolean, \"score\": number | null, \"feedback\": string}], \"overallFeedback\": string}"
+          },
+          "notes": "First task — the learner is building foundational domain knowledge."
+        }
+      ]
+    }
+  ]
+}

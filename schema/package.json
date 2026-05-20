@@ -1,0 +1,17 @@
+{
+  "name": "courseforge-schema",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "CoursePackage Zod contract + validator CLI. Shared by the Managed Agents author pipeline and the runtime.",
+  "scripts": {
+    "validate": "tsx validate.ts"
+  },
+  "dependencies": {
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}
