@@ -28,12 +28,13 @@ export type {
 
 // ── UI-layer types ──────────────────────────────────────────────────
 
-export type AppId = "briefing" | "wiki" | "chat" | "sheets" | "bigquery" | "terminal" | "submit" | "notebook";
+export type AppId = "briefing" | "wiki" | "chat" | "sheets" | "bigquery" | "terminal" | "notebook";
 
 export interface AppRegistryEntry {
   id: AppId;
   label: string;
-  icon: string; // emoji for v1
+  icon: string; // emoji fallback (used if iconImage is missing or fails to load)
+  iconImage?: string; // path under /public, e.g. "/icons/briefing.svg"
   description: string;
 }
 

@@ -1,121 +1,122 @@
 {
   "meta": {
-    "client": "Meridian Insurance",
-    "industry": "Property & Casualty Insurance",
-    "role": "Forward Deployed Engineer",
+    "client": "Helix Cloud",
+    "industry": "B2B SaaS — Data Observability",
+    "role": "Data Analyst, RevOps Analytics",
     "sourceDocHash": "mock-dev-hash",
     "version": "0.1.0-mock",
-    "generatedAt": "2026-04-16T00:00:00Z",
+    "generatedAt": "2026-07-08T00:00:00Z",
     "scope": "M1.T1"
   },
   "world": {
     "client": {
-      "name": "Meridian Insurance",
-      "size": "Tier-1 P&C and Life Insurer",
-      "businessModel": "Multi-line insurance carrier with direct and agency distribution",
-      "keyNumbers": { "policyholders": "12M", "gwp": "$8B", "employees": 15000 },
+      "name": "Helix Cloud",
+      "size": "Series C B2B SaaS, ~340 employees",
+      "businessModel": "Subscription data observability platform sold annually to Mid-Market and Enterprise data teams",
+      "keyNumbers": { "accounts": "620", "endingArrQ1": "$58.2M", "endingArrQ2": "$65.8M", "q2NetNewTarget": "$9.5M", "q2NetNewActual": "$7.6M", "employees": 340 },
       "source": "doc"
     },
-    "industry": { "primary": "Insurance", "subVertical": "Property & Casualty" },
+    "industry": { "primary": "Software", "subVertical": "B2B SaaS — Data Observability" },
     "glossary": [
-      { "term": "GWP", "definition": "Gross Written Premium — total premium written before reinsurance", "whyItMatters": "Primary top-line revenue metric for insurers", "source": "doc" },
-      { "term": "FNOL", "definition": "First Notice of Loss — the initial report of a claim", "whyItMatters": "Starts the claims lifecycle; speed of FNOL directly impacts customer satisfaction", "source": "doc" },
-      { "term": "PAS", "definition": "Policy Administration System — core system managing policy lifecycle", "whyItMatters": "All policy transactions flow through PAS", "source": "doc" },
-      { "term": "LOB", "definition": "Line of Business — a specific insurance product category", "whyItMatters": "Each LOB has different workflows and regulatory requirements", "source": "doc" },
-      { "term": "Endorsement", "definition": "A mid-term change to an existing policy", "whyItMatters": "Common operation that touches multiple systems and requires re-rating", "source": "doc" },
-      { "term": "Binding", "definition": "The point at which an insurance policy becomes effective", "whyItMatters": "Legal and financial trigger point in policy lifecycle", "source": "doc" },
-      { "term": "Rating Engine", "definition": "System that calculates premium based on risk factors", "whyItMatters": "Core to quoting; must comply with state-filed rates", "source": "doc" },
-      { "term": "ClaimCenter", "definition": "Guidewire's claims management module", "whyItMatters": "Meridian's primary claims system", "source": "doc" }
+      { "term": "ARR", "definition": "Annual Recurring Revenue — annualized value of active subscriptions", "whyItMatters": "Primary top-line metric used to plan and measure the business", "source": "doc" },
+      { "term": "Net New ARR", "definition": "New ARR + expansion ARR minus churn and contraction in a period", "whyItMatters": "Headline quarterly KPI; the Q2 2026 miss is measured here", "source": "doc" },
+      { "term": "Gross Churn", "definition": "ARR lost from canceled subscriptions, before any expansion", "whyItMatters": "Mid-Market gross churn jumped from 6.8% to 11.2% in Q2", "source": "doc" },
+      { "term": "Attach Rate", "definition": "Share of customers buying a specific add-on alongside the core product", "whyItMatters": "Helix Lineage hit 18% attach in Q2 against a 35% plan", "source": "doc" },
+      { "term": "Mid-Market", "definition": "Accounts at 50 to 1,000 employees with ACV between $30,000 and $80,000", "whyItMatters": "Where the Q1 price hike is hitting renewals", "source": "doc" },
+      { "term": "Enterprise", "definition": "Accounts at 1,000+ employees with ACV between $80,000 and $500,000", "whyItMatters": "Where Lineage expansion was supposed to drive growth", "source": "doc" },
+      { "term": "Pipeline Coverage", "definition": "Ratio of open pipeline to remaining quota for the period", "whyItMatters": "Held at 3.4x in Q2, above the 3x target, so pipeline is not the issue", "source": "doc" },
+      { "term": "Grandfathering", "definition": "Honoring an existing price for the remainder of a customer contract before applying a new list price", "whyItMatters": "Helix Cloud grandfathered Mid-Market customers but the uplift hit at Q2 renewals", "source": "doc" }
     ],
     "systems": [
-      { "name": "Guidewire PolicyCenter", "vendor": "Guidewire", "roleInBusiness": "Policy administration for personal lines", "typicalIntegrations": ["Rating Engine", "Document Management", "Agent Portal", "Billing"], "knownQuirks": ["Batch-only endorsement processing after 9 PM ET"], "source": "doc" },
-      { "name": "Guidewire ClaimCenter", "vendor": "Guidewire", "roleInBusiness": "Claims management and adjudication", "typicalIntegrations": ["FNOL intake API", "Fraud detection", "Payment systems"], "knownQuirks": ["Custom workflow for catastrophe claims"], "source": "doc" },
-      { "name": "Legacy PAS (Mainframe)", "roleInBusiness": "Policy administration for commercial lines", "typicalIntegrations": ["COBOL batch jobs", "DB2 database"], "knownQuirks": ["COBOL rating tables from 2008 still in use"], "source": "doc" },
-      { "name": "Salesforce", "vendor": "Salesforce", "roleInBusiness": "Agency management and CRM", "typicalIntegrations": ["Agent Portal", "Commission Calc"], "knownQuirks": ["Custom objects for insurance-specific data"], "source": "doc" }
+      { "name": "BigQuery (helix-cloud-prod)", "vendor": "Google Cloud", "roleInBusiness": "Central analytics warehouse with revenue, customer success, and product usage datasets", "typicalIntegrations": ["Salesforce CDC", "Stripe billing", "Segment events", "dbt"], "knownQuirks": ["Subscription rows can update late on day-of-renewal due to upstream Salesforce sync lag"], "source": "doc" },
+      { "name": "Salesforce", "vendor": "Salesforce", "roleInBusiness": "System of record for accounts, opportunities, and renewals", "typicalIntegrations": ["BigQuery via Fivetran CDC", "Outreach", "Gong"], "knownQuirks": ["Stage progression was audited clean in July 2026, despite a hypothesis that it was broken"], "source": "doc" },
+      { "name": "Stripe", "vendor": "Stripe", "roleInBusiness": "Billing and invoicing for Mid-Market subscriptions", "typicalIntegrations": ["Salesforce", "BigQuery"], "knownQuirks": ["Annual upfront invoicing means downgrades show up at renewal, not within-quarter"], "source": "doc" },
+      { "name": "Gainsight", "vendor": "Gainsight", "roleInBusiness": "Customer success and health score management", "typicalIntegrations": ["Salesforce", "BigQuery health_scores"], "knownQuirks": ["Health score weighting last retuned in March 2026, so trendlines reset around that date"], "source": "doc" }
     ],
     "regulations": [
-      { "name": "State Rate Filing Requirements", "summary": "Each state requires insurers to file rates and forms before use", "source": "doc" },
-      { "name": "NAIC Data Calls", "summary": "Periodic data submissions on premiums, losses, and market conduct", "source": "doc" }
+      { "name": "SOC 2 Type II", "summary": "Annual third-party audit of security, availability, and confidentiality controls; Helix Cloud holds Type II", "source": "doc" },
+      { "name": "GDPR", "summary": "EU data protection rules apply to EU customer telemetry processed by Helix Cloud", "source": "doc" }
     ],
-    "clientProfile": "Meridian Insurance is a Tier-1 Property & Casualty and Life insurer serving 12 million policyholders across 48 states. With $8 billion in gross written premium and 15,000 employees, Meridian operates a complex technology stack spanning 30-year-old mainframe systems (COBOL/DB2), Guidewire InsuranceSuite for personal lines, Salesforce for agency management, and a growing cloud-native microservices layer on AWS.\n\nThe board has mandated an aggressive digital transformation programme. Legacy policy administration runs on a mainframe-based PAS for commercial lines while personal lines have been partially migrated to Guidewire PolicyCenter. The FDE team's first priority is understanding these systems deeply before proposing any changes."
+    "clientProfile": "Helix Cloud is a Series C B2B SaaS company that provides observability for the modern data stack: logs, traces, metrics, and lineage for data pipelines and data warehouses. Headquartered in San Francisco with an engineering hub in Bangalore, it serves about 620 paying accounts, ended Q1 2026 at $58.2M ARR, and reached $65.8M ARR by end of Q2 2026 on $7.6M of net new ARR against a $9.5M target.\n\nThe company sells three products: Helix Core (the foundation), Helix Alerts (anomaly detection add-on), and Helix Lineage (column-level lineage, GA in Q4 2025). On January 15, 2026 Helix Cloud raised Mid-Market list prices by 18% on renewal. CEO Lindsey Park has asked the RevOps Analytics team for a definitive diagnosis of the Q2 miss ahead of the board readout on July 15, 2026."
   },
   "personas": [
     {
-      "id": "karen-underwriting",
-      "name": "Karen Whitfield",
-      "role": "VP of Personal Lines Underwriting",
-      "reportsTo": "Chief Underwriting Officer",
-      "linkedTasks": ["m1t1"],
-      "backstory": "Karen has been at Meridian for 18 years, starting as a junior underwriter for auto policies. She knows every edge case in the Auto and Homeowners rating algorithms.",
-      "systemPrompt": "You are Karen Whitfield, VP of Personal Lines Underwriting at Meridian Insurance. You have deep expertise in Auto and Homeowners policy lifecycles. You are helpful but detail-oriented — you correct inaccuracies and push the learner to be precise. You speak in a professional, slightly formal tone. You do not volunteer information unprompted; the learner must ask specific questions. If asked about something outside your expertise, redirect to the appropriate colleague.",
+      "id": "persona-revops-director",
+      "name": "Sam Iyer",
+      "role": "Director, RevOps",
+      "reportsTo": "VP Revenue",
+      "linkedTasks": ["M1.T1"],
+      "backstory": "Sam runs RevOps Analytics and owns the BigQuery warehouse. He hired the learner two weeks ago and is acting as their on-the-ground manager for this diagnosis. He has the cleanest map of the data layer at Helix Cloud.",
+      "systemPrompt": "You are Sam Iyer, Director of RevOps at Helix Cloud and the learner's manager. You are calm, helpful, and patient. You own the data warehouse and can translate what columns mean. You write like a Slack user: short messages, one thought per line, lowercase often, no em dashes, no paragraphs. You do not volunteer the full diagnosis; you point at where to look and verify hypotheses when asked. If asked about something outside your remit (marketing strategy, product roadmap), redirect to the right colleague.",
       "privateKnowledge": [
-        { "key": "auto-endorsement-quirk", "value": "Auto endorsements submitted after 3 PM ET are batched and processed overnight by the mainframe, causing a 12-18 hour delay.", "disclosureHint": "Ask about endorsement processing timelines", "importance": "critical" },
-        { "key": "homeowners-bind-bottleneck", "value": "Homeowners binding requires manual inspection approval for properties over $750K. About 15% of HO quotes expire before binding because the inspection queue backs up.", "disclosureHint": "Ask about binding bottlenecks or delays", "importance": "critical" },
-        { "key": "rating-table-legacy", "value": "The Auto rating engine still uses COBOL tables from 2008 for legacy products. Changes require a mainframe developer.", "disclosureHint": "Ask about the rating engine or legacy systems", "importance": "useful" }
+        { "key": "warehouse-layout", "value": "Two key tables for this case: revenue.accounts (one row per account) and revenue.subscriptions (one row per active subscription line for Core, Alerts, or Lineage). revenue.events has billing events but you usually start with the first two.", "disclosureHint": "Ask where the data lives or which tables to query first", "importance": "critical" },
+        { "key": "price-hike-context", "value": "On 2026-01-15 we raised Mid-Market list prices 18% on renewal. Existing customers were grandfathered on their current contract; the uplift hits at next renewal. Q2 was the first quarter where the renewal cohort caught the new price.", "disclosureHint": "Ask about the Q1 price change or grandfathering", "importance": "critical" },
+        { "key": "stage-progression-audit", "value": "We already audited Salesforce stage progression in early July. The data is clean. Don't waste time chasing that.", "disclosureHint": "Ask whether Salesforce stage data is reliable", "importance": "useful" }
       ],
-      "openingLine": "Good morning. I understand you're here to map our policy lifecycle. I have about 20 minutes — what would you like to know about our underwriting processes?"
+      "openingLine": "hey welcome\nso, q2 net new came in at $7.6m vs $9.5m plan\nlindsey wants a clean diagnosis for the board on july 15\nstart with revenue.accounts and revenue.subscriptions in bigquery\nping me if you get stuck"
     },
     {
-      "id": "raj-claims",
-      "name": "Raj Patel",
-      "role": "Claims Operations Manager",
-      "reportsTo": "VP of Claims",
-      "linkedTasks": ["m1t1"],
-      "backstory": "Raj joined Meridian 5 years ago from a health insurance carrier. He manages the claims team for Auto and Homeowners and is focused on reducing cycle time.",
-      "systemPrompt": "You are Raj Patel, Claims Operations Manager at Meridian Insurance. You are energetic, collaborative, and opinionated about process improvement. You love sharing workflow details and sometimes over-share. When discussing systems, you always mention integration pain points. If asked about something outside your expertise, redirect to the appropriate colleague.",
+      "id": "persona-cro",
+      "name": "Maya Chen",
+      "role": "VP Revenue (CRO)",
+      "reportsTo": "CEO",
+      "linkedTasks": ["M1.T1"],
+      "backstory": "Maya runs the revenue org. She is pragmatic and deeply numeric and slightly defensive about sales execution after a tough quarter. She quotes ratios fluently and pushes back if she thinks a hypothesis is sloppy.",
+      "systemPrompt": "You are Maya Chen, VP Revenue at Helix Cloud. You are pragmatic, deeply numeric, and a bit defensive about sales execution. You speak in Slack style: short, casual, one thought per line, no em dashes, no paragraphs, occasional lowercase for emphasis. You quote ratios fluently. You do not hand over the answer; you give pointed facts when asked the right question. If asked about pricing rationale, you know we raised Mid-Market list 18% on Jan 15, 2026. If asked about pipeline coverage, you will defend it (3.4x, above 3x target). If asked about enterprise downgrades, you will name the three accounts.",
       "privateKnowledge": [
-        { "key": "fnol-channels", "value": "FNOL comes through 4 channels: phone (60%), agent portal (25%), mobile app (10%), email (5%). The mobile app has a 40% abandonment rate.", "disclosureHint": "Ask about how claims are reported", "importance": "critical" },
-        { "key": "claims-policy-stale-cache", "value": "ClaimCenter caches policy data from PolicyCenter for 24 hours. If a policy was endorsed today, claims team sees stale coverage data until tomorrow.", "disclosureHint": "Ask about integration between claims and policy systems", "importance": "critical" },
-        { "key": "cat-claims-workflow", "value": "Catastrophe claims bypass the normal queue when 50+ claims from the same ZIP arrive within 24 hours.", "disclosureHint": "Ask about special claim types or catastrophe handling", "importance": "useful" }
+        { "key": "pipeline-coverage-hold", "value": "Q2 pipeline coverage held at 3.4x, above the 3x target. Marketing pipeline did not collapse. Don't blame demand gen, the data won't support it.", "disclosureHint": "Ask about pipeline coverage or whether marketing dried up", "importance": "critical" },
+        { "key": "enterprise-downgrades", "value": "Three strategic Enterprise accounts restructured to lower tiers in Q2: Northwind Logistics, Verity Insurance, and Atlas Manufacturing. Combined impact was roughly $190K of the miss.", "disclosureHint": "Ask about specific enterprise account downgrades", "importance": "critical" },
+        { "key": "sales-cycle-lengthening", "value": "Mid-Market new logo sales cycle stretched from 8 weeks to 11 weeks in Q2. New logos were down 22% year over year. Not a collapse, but it slowed.", "disclosureHint": "Ask how Mid-Market new business is trending", "importance": "useful" }
       ],
-      "openingLine": "Hey! Welcome to the team. Raj here — Claims Ops. I heard you're mapping out the lifecycle. I've got tons to share. Where do you want to start?"
+      "openingLine": "ok i have 15 min\nshoot\nbut please don't tell me marketing pipeline dried up\ncoverage was 3.4x. it's not that"
     },
     {
-      "id": "susan-it",
-      "name": "Susan Chen",
-      "role": "Enterprise Architect",
-      "linkedTasks": ["m1t1"],
-      "backstory": "Susan is the technical authority on Meridian's systems landscape. She has been architecting insurance systems for 22 years across three carriers.",
-      "systemPrompt": "You are Susan Chen, Enterprise Architect at Meridian Insurance. You have encyclopedic knowledge of the systems landscape. You think architecturally — you describe processes in terms of systems, APIs, data flows, and integration patterns. You are precise and somewhat terse. You prefer structured answers (lists, sequences). You do not discuss business rules in detail — redirect those to business SMEs. If asked about something outside your expertise, say so directly.",
+      "id": "persona-cs-lead",
+      "name": "Jordan Park",
+      "role": "VP Customer Success",
+      "reportsTo": "CEO",
+      "linkedTasks": ["M1.T1"],
+      "backstory": "Jordan runs CS and owns retention, expansion, and the QBR motion. Warm but direct. Watches health scores closely and is candid about what is happening in the Mid-Market install base after the price change.",
+      "systemPrompt": "You are Jordan Park, VP Customer Success at Helix Cloud. You are warm but direct. You own retention, expansion, and the QBR motion. You write like a Slack user: short messages, one thought per line, no em dashes, no paragraphs, occasional 'tbh' and 'yeah'. You will share the churn pattern you are seeing if asked. You know that Mid-Market gross churn jumped from 6.8% to 11.2% in Q2 and most of it traces back to the January price hike landing at renewal. You are also tracking Lineage attach disappointing in the install base.",
       "privateKnowledge": [
-        { "key": "system-count", "value": "Meridian has 47 distinct systems. PolicyCenter and ClaimCenter are the two largest, plus 12 satellite systems for rating, document management, billing, reinsurance, regulatory reporting, fraud detection, agent licensing, commission calc, actuarial data warehouse, customer portal, mobile app backend, and mainframe PAS.", "disclosureHint": "Ask about the overall systems landscape", "importance": "critical" },
-        { "key": "api-gateway", "value": "All system-to-system communication goes through an AWS API Gateway introduced in 2024. About 30% of integrations are still on legacy MQ Series messaging.", "disclosureHint": "Ask about how systems communicate", "importance": "useful" },
-        { "key": "data-flow-policy", "value": "Policy lifecycle data flow: Agent Portal → API Gateway → PolicyCenter (quote/rate/bind) → Billing System (invoice) → Document Mgmt (policy docs) → Customer Portal (self-service). Endorsements add a re-rating step and may trigger a mainframe batch job.", "disclosureHint": "Ask about data flows for the policy lifecycle", "importance": "critical" }
+        { "key": "midmarket-churn-jump", "value": "Mid-Market gross churn was 6.8% in Q1 and 11.2% in Q2. The spike maps almost exactly to accounts whose renewal date fell after the January 15, 2026 price uplift took effect.", "disclosureHint": "Ask about Mid-Market churn or retention trends in Q2", "importance": "critical" },
+        { "key": "lineage-attach-shortfall", "value": "Helix Lineage attach in the install base came in at 18% in Q2 against a 35% plan. The motion is sales-led today; CS hasn't been driving it. That is fixable but it costs us this quarter.", "disclosureHint": "Ask about Helix Lineage attach or expansion motion", "importance": "critical" },
+        { "key": "outage-non-issue", "value": "Yes there was one P1 in Q2. 41 minutes. No revenue impact, no churn tied to it. Don't make it a thing.", "disclosureHint": "Ask whether the Q2 outage caused churn", "importance": "useful" }
       ],
-      "openingLine": "Susan Chen, Enterprise Architecture. I can walk you through the systems side. What specifically do you need to understand?"
+      "openingLine": "hi! glad you're digging in\ntbh the q2 churn pattern is pretty clear from where i sit\nask me about renewals and i'll show you\nalso, lineage attach is a story too"
     }
   ],
   "fixtures": {
     "wikiPages": [
       {
-        "slug": "policy-lifecycle-overview",
-        "title": "Policy Lifecycle Overview",
-        "body": "# Policy Lifecycle Overview\n\nThe insurance policy lifecycle consists of six core stages:\n\n1. **Quote** — Customer or agent requests a price for coverage\n2. **Bind** — Customer accepts the quote; coverage becomes effective\n3. **Issue** — Policy documents are generated and delivered\n4. **Endorse** — Mid-term changes to coverage, limits, or deductibles\n5. **Renew** — Policy is re-evaluated and renewed at term expiration\n6. **Cancel** — Policy is terminated before natural expiration\n\nEach stage involves different [systems](wiki://systems-landscape), stakeholders, and regulatory requirements. At Meridian, personal lines (Auto and Homeowners) are managed in [Guidewire PolicyCenter](wiki://guidewire-policycenter), while commercial lines remain on the legacy mainframe PAS.\n\n## Key Metrics\n\n| Metric | Auto | Homeowners |\n|--------|------|------------|\n| Avg Quote-to-Bind | 2.3 days | 4.1 days |\n| Endorsement Volume | ~8,000/month | ~3,200/month |\n| Renewal Rate | 87% | 91% |\n| Cancel Rate | 6% | 3% |",
-        "linkedTasks": ["m1t1"]
+        "slug": "revenue-model-overview",
+        "title": "Helix Cloud Revenue Model Overview",
+        "body": "# Helix Cloud Revenue Model Overview\n\nHelix Cloud sells annual subscriptions to data and platform teams. Revenue is measured primarily in **Annual Recurring Revenue (ARR)** and the quarterly headline number is **Net New ARR**.\n\n## Headline numbers\n\n| Metric | Q1 2026 | Q2 2026 |\n|---|---|---|\n| Ending ARR | $58.2M | $65.8M |\n| Net New ARR | n/a | $7.6M (target $9.5M) |\n| Paying accounts | ~600 | ~620 |\n\nNet new ARR = new ARR + expansion ARR minus churn and contraction.\n\n## Products\n\n- [Helix Core](wiki://products-and-pricing) — flagship, every paying account has it\n- Helix Alerts — anomaly detection add-on, ~62% attach\n- Helix Lineage — column-level lineage, GA Q4 2025, 18% attach in Q2 against a 35% plan\n\n## The Q2 question\n\nWhy did net new ARR miss by $1.9M? See the [data layer reference](wiki://data-layer-reference) for where to look.",
+        "linkedTasks": ["M1.T1"]
       },
       {
-        "slug": "systems-landscape",
-        "title": "Meridian Systems Landscape",
-        "body": "# Meridian Systems Landscape\n\nMeridian operates 47 distinct systems across insurance operations.\n\n## Core Systems\n\n- **Guidewire PolicyCenter** — Policy administration for personal lines\n- **Guidewire ClaimCenter** — Claims management and adjudication\n- **Legacy PAS (Mainframe)** — Policy administration for commercial lines (COBOL/DB2)\n- **Salesforce** — Agency management and CRM\n\n## Integration Layer\n\nAs of 2024, an AWS API Gateway handles system-to-system communication. Approximately 30% of integrations remain on legacy MQ Series messaging.\n\n## Satellite Systems\n\nRating Engine, Document Management (FileNet), Billing, Reinsurance, Regulatory Reporting, Fraud Detection (FRISS), Agent Licensing, Commission Calculation, Actuarial Data Warehouse, Customer Portal, Mobile App Backend.",
-        "linkedTasks": ["m1t1"]
+        "slug": "products-and-pricing",
+        "title": "Products and Pricing",
+        "body": "# Products and Pricing\n\nHelix Cloud sells three products. Every paying account starts with Helix Core; Alerts and Lineage are add-ons.\n\n## Segments\n\n- **Mid-Market** — 50 to 1,000 employees. ACV $30,000 to $80,000. Annual contracts.\n- **Enterprise** — 1,000+ employees. ACV $80,000 to $500,000. Annual or multi-year, AE-led.\n\n## The Q1 2026 price change\n\nOn **January 15, 2026** Helix Cloud raised Mid-Market list prices by **18%** on renewal. Existing customers were grandfathered for the remainder of their current contract; the uplift applies at next renewal.\n\nThis matters: Q2 2026 is the first quarter where a meaningful renewal cohort encountered the new price. Mid-Market gross churn was 6.8% in Q1 and 11.2% in Q2.\n\n## Add-on attach rates (Q2 2026)\n\n| Product | Attach | Target |\n|---|---|---|\n| Helix Alerts | 62% | 60% |\n| Helix Lineage | 18% | 35% |",
+        "linkedTasks": ["M1.T1"]
       },
       {
-        "slug": "guidewire-policycenter",
-        "title": "Guidewire PolicyCenter at Meridian",
-        "body": "# Guidewire PolicyCenter at Meridian\n\nGuidewire PolicyCenter is Meridian's policy administration system for personal lines (Auto and Homeowners).\n\n## Key Capabilities\n\n- Quoting and rating for Auto and Homeowners\n- Policy issuance and document generation\n- Endorsement processing\n- Renewal management\n- Integration with billing and document management\n\n## Known Limitations\n\n- Auto rating tables for legacy products still use COBOL tables on the mainframe\n- Endorsements submitted after business hours are batched overnight\n- No real-time integration with the mobile app\n\n## Data Model\n\nPolicyCenter organizes data around: **Account** → **Policy Period** → **Lines** → **Coverages** → **Costs**.",
-        "linkedTasks": ["m1t1"]
+        "slug": "data-layer-reference",
+        "title": "Data Layer Reference (BigQuery)",
+        "body": "# Data Layer Reference\n\nAll analytics live in BigQuery project **`helix-cloud-prod`**.\n\n## Datasets and tables\n\n- `revenue.accounts` — one row per customer account (segment, region, owner, status)\n- `revenue.subscriptions` — one row per active subscription line (account, product, ACV, start, renewal date)\n- `revenue.events` — billing events: new, expansion, downgrade, churn, contraction\n- `revenue.pipeline` — Salesforce opportunities snapshot\n- `customer_success.health_scores` — daily account health rollup\n- `customer_success.tickets` — support tickets\n- `product_usage.usage_daily` — per-account daily usage\n\n## Starting points for the Q2 diagnosis\n\n1. Pull Q2 churn by segment from `revenue.subscriptions` joined to `revenue.accounts`.\n2. Cross-reference renewal dates against the **January 15, 2026** price-change effective date.\n3. Look at Lineage attach in `revenue.subscriptions` filtered to `product = 'Helix Lineage'`.\n\n## Known data quirks\n\n- Subscription rows can update late on day-of-renewal due to Salesforce sync lag.\n- Gainsight health score weighting was retuned in March 2026, so trendlines reset around that date.",
+        "linkedTasks": ["M1.T1"]
       },
       {
-        "slug": "auto-insurance",
-        "title": "Auto Insurance at Meridian",
-        "body": "# Auto Insurance at Meridian\n\nMeridian's Auto line of business covers personal auto policies across 48 states.\n\n## Coverage Types\n\n- **Liability** — Bodily injury and property damage to others\n- **Collision** — Damage to the insured vehicle from collisions\n- **Comprehensive** — Non-collision damage (theft, weather, vandalism)\n- **PIP/MedPay** — Medical payments for the insured\n- **UM/UIM** — Uninsured/underinsured motorist coverage\n\n## Policy Lifecycle Specifics\n\n- **Quote**: Average 8 rating factors; real-time response from rating engine\n- **Bind**: Immediate for standard risk; referral to underwriter for non-standard\n- **Endorse**: Vehicle add/remove, driver add/remove, coverage changes — all trigger re-rating\n- **Renew**: 60-day advance processing; non-renew decisions require state-specific notice periods",
-        "linkedTasks": ["m1t1"]
+        "slug": "q2-board-context",
+        "title": "Q2 2026 Board Readout Context",
+        "body": "# Q2 2026 Board Readout Context\n\n**In-world date:** 2026-07-08\n\n**Board readout:** 2026-07-15\n\nCEO Lindsey Park has asked RevOps Analytics for a definitive diagnosis of the Q2 net new ARR miss.\n\n## The fact pattern\n\n- Net new ARR target: **$9.5M**\n- Net new ARR actual: **$7.6M**\n- Variance: **-$1.9M (-20.0%)**\n\n## Hypotheses already off the table\n\n- **\"Marketing pipeline dried up.\"** Pipeline coverage held at 3.4x against a 3x target.\n- **\"There was a major outage.\"** One P1 in Q2, 41 minutes, no revenue impact.\n- **\"Salesforce stage progression broke.\"** RevOps audited stage data in early July; it is clean.\n\n## What the deliverable looks like\n\nA brief written diagnosis the CEO can take into the board readout, with a quantified driver decomposition that adds up to $1.9M and recommended actions tied to each driver.",
+        "linkedTasks": ["M1.T1"]
       },
       {
-        "slug": "homeowners-insurance",
-        "title": "Homeowners Insurance at Meridian",
-        "body": "# Homeowners Insurance at Meridian\n\nMeridian writes HO-3 (Special Form) policies.\n\n## Coverage Structure\n\n- **Dwelling (Coverage A)** — Structure of the home\n- **Other Structures (Coverage B)** — Detached garages, fences\n- **Personal Property (Coverage C)** — Belongings inside the home\n- **Loss of Use (Coverage D)** — Living expenses if home is uninhabitable\n- **Liability (Coverage E)** — Personal liability\n- **Medical Payments (Coverage F)** — Guest medical expenses\n\n## Policy Lifecycle Specifics\n\n- **Quote**: Requires property details, replacement cost estimate, claims history (CLUE report)\n- **Bind**: Properties over $750K require manual inspection approval\n- **Endorse**: Common: scheduled personal property, increased dwelling limits\n- **Renew**: Annual term; re-inspection required every 5 years",
-        "linkedTasks": ["m1t1"]
+        "slug": "stakeholders-and-personas",
+        "title": "Who to Talk To",
+        "body": "# Who to Talk To\n\nThree people on Slack can help you triangulate the Q2 miss. Each has different visibility.\n\n## Sam Iyer — Director, RevOps (your manager)\n\nOwns the data warehouse. Translate column meanings, sanity-check queries, confirm what is and isn't already audited.\n\n## Maya Chen — VP Revenue (CRO)\n\nOwns the sales motion. Knows pipeline coverage, sales cycle length, and which enterprise accounts restructured this quarter. Defensive about sales execution; be precise with questions.\n\n## Jordan Park — VP Customer Success\n\nOwns retention and expansion. Knows the Mid-Market churn jump, the Lineage attach shortfall, and the install-base picture.\n\n## How to ask\n\nKeep messages short and direct. Each person knows specific things they will share when asked the right question. They will not volunteer the full diagnosis.",
+        "linkedTasks": ["M1.T1"]
       }
     ],
     "datasets": [],
@@ -125,56 +126,56 @@
   "modules": [
     {
       "idx": 0,
-      "title": "Insurance Domain Immersion & System Discovery",
-      "objective": "Build deep contextual understanding of the client's insurance business, legacy systems, data flows, and regulatory environment.",
+      "title": "Diagnose the Q2 2026 Net New ARR Miss",
+      "objective": "Develop a quantified, evidence-backed diagnosis of why Helix Cloud missed its Q2 2026 net new ARR target by $1.9M, ready for the July 15 board readout.",
       "tasks": [
         {
-          "id": "m1t1",
+          "id": "M1.T1",
           "moduleIdx": 0,
           "taskIdx": 0,
-          "title": "Map the End-to-End Policy Lifecycle",
-          "brief": "# Map the End-to-End Policy Lifecycle\n\nYou've just been deployed to Meridian Insurance. Your first assignment: **map the complete policy lifecycle** for both Auto and Homeowners lines of business.\n\n## What You Need to Deliver\n\nAn **annotated process map** showing the end-to-end flow: **Quote → Bind → Issue → Endorse → Renew → Cancel** for both Auto and Homeowners.\n\nFor each stage, your map must show:\n- The **systems** involved\n- **Integration points** between systems\n- **Key differences** between Auto and Homeowners\n- **Bottlenecks or pain points** you discover\n\n## How to Work\n\n1. Start with the **Wiki** — read the policy lifecycle overview and systems docs\n2. **Interview the SMEs** — Karen (Underwriting), Raj (Claims), and Susan (Architecture) each know different pieces\n3. Synthesize everything into your process map\n4. Upload your deliverable when ready\n\n## Tips\n\n- Don't just document the happy path — look for edge cases and workarounds\n- Each SME has specific knowledge they won't share unless you ask the right questions\n- Pay attention to where systems hand off to each other — that's where problems live",
+          "title": "Diagnose the Q2 2026 Revenue Miss",
+          "brief": "# Diagnose the Q2 2026 Revenue Miss\n\nWelcome to Helix Cloud. You just joined RevOps Analytics as a Data Analyst. Today is July 8, 2026 and the board readout is on July 15.\n\nQ2 2026 net new ARR came in at **$7.6M** against a plan of **$9.5M**. CEO Lindsey Park wants a definitive diagnosis from this team.\n\n## What you need to deliver\n\nA short written diagnosis with:\n- A **driver decomposition** that quantifies how much of the $1.9M miss is explained by each driver and **adds up to $1.9M**\n- **Evidence** for each driver, traceable to the BigQuery warehouse (`revenue.accounts`, `revenue.subscriptions`, etc.) or to a specific stakeholder conversation\n- A list of **hypotheses you ruled out** and why\n- **Recommended actions** tied to each driver\n\n## How to work\n\n1. Start with the [revenue model overview](wiki://revenue-model-overview) and the [data layer reference](wiki://data-layer-reference).\n2. Chat with Sam, Maya, and Jordan. Each holds different pieces; you have to ask the right questions.\n3. Pull the numbers yourself from BigQuery. Don't trust a number you haven't reconciled.\n4. Upload your diagnosis when ready.\n\n## Tips\n\n- The miss is roughly $1.9M. Your decomposition should sum to that, not feel close to it.\n- Don't chase the obvious red herrings (pipeline collapse, the outage, Salesforce stage data). They are already off the table.\n- Pay attention to the January 15, 2026 price change and which renewal cohort caught it first.",
           "deliverable": {
-            "type": "diagram",
-            "format": "pdf",
-            "acceptanceSummary": "An annotated process map showing Quote → Bind → Issue → Endorse → Renew → Cancel for Auto and Homeowners, with system touchpoints, integration points, and identified bottlenecks."
+            "type": "document",
+            "format": "md",
+            "acceptanceSummary": "A written Q2 2026 revenue miss diagnosis with a quantified driver decomposition summing to $1.9M, evidence for each driver, ruled-out hypotheses, and recommended actions."
           },
-          "durationMinutes": 20,
+          "durationMinutes": 25,
           "type": "individual",
-          "availablePrimitives": ["ChatWithPersona", "ReadDocument", "UploadDeliverable", "LLMJudge"],
-          "requiredWorldKnowledge": ["policy-lifecycle", "guidewire", "auto-insurance", "homeowners-insurance"],
-          "linkedPersonaIds": ["karen-underwriting", "raj-claims", "susan-it"],
+          "availablePrimitives": ["ChatWithPersona", "ReadDocument", "QueryDataset", "UploadDeliverable", "LLMJudge"],
+          "requiredWorldKnowledge": ["revenue-model", "data-layer", "products-and-pricing", "q2-board-context"],
+          "linkedPersonaIds": ["persona-revops-director", "persona-cro", "persona-cs-lead"],
           "rubric": {
             "hardCriteria": [
-              { "id": "hc1", "description": "All 6 lifecycle stages (Quote, Bind, Issue, Endorse, Renew, Cancel) are present for BOTH Auto and Homeowners", "verificationMethod": "Check that the diagram explicitly labels all 6 stages for each LOB" },
-              { "id": "hc2", "description": "At least 4 distinct systems are identified with their roles", "verificationMethod": "Count unique systems mentioned and verify each has a described role" },
-              { "id": "hc3", "description": "At least 6 integration points between systems are documented", "verificationMethod": "Count system-to-system connections with described data flows" },
-              { "id": "hc4", "description": "At least 3 differences between Auto and Homeowners lifecycles are called out", "verificationMethod": "Look for explicit comparison points between the two LOBs" }
+              { "id": "hc1", "description": "Driver decomposition is present and the components sum to approximately $1.9M (within ±10%)", "verificationMethod": "Check that named drivers each have a dollar value and that the values sum to $1.7M to $2.1M" },
+              { "id": "hc2", "description": "Mid-Market churn from the Q1 price hike is identified as the largest driver", "verificationMethod": "Check that Mid-Market churn linked to the Jan 15, 2026 price uplift is the largest line in the decomposition" },
+              { "id": "hc3", "description": "At least 3 distinct drivers are named (Mid-Market churn, Enterprise expansion / Lineage shortfall, slower new-logo Mid-Market, or Enterprise downgrades)", "verificationMethod": "Count uniquely named drivers in the decomposition" },
+              { "id": "hc4", "description": "At least one red herring is explicitly ruled out with reasoning (pipeline collapse, the Q2 outage, or Salesforce stage data)", "verificationMethod": "Look for a section or sentence ruling out a non-cause with evidence" }
             ],
             "qualitativeCriteria": [
               {
                 "id": "qc1",
-                "description": "Accuracy and depth of domain understanding",
+                "description": "Quality of evidence and reconciliation",
                 "scoringGuide": {
-                  "one": "Major inaccuracies in insurance terminology or process flow",
-                  "three": "Generally accurate with minor gaps in understanding system interactions",
-                  "five": "Deep understanding including edge cases, workarounds, and system quirks from SME interviews"
+                  "one": "Numbers asserted without source; no reconciliation to warehouse or interviews",
+                  "three": "Most drivers are sourced to warehouse tables or specific persona conversations",
+                  "five": "Every driver is traced to a warehouse table or interview quote, and the decomposition reconciles cleanly to the $1.9M miss"
                 }
               },
               {
                 "id": "qc2",
-                "description": "Quality of bottleneck and pain point identification",
+                "description": "Recommended actions are specific and tied to drivers",
                 "scoringGuide": {
-                  "one": "No bottlenecks identified or only obvious ones",
-                  "three": "2-3 bottlenecks identified with basic description",
-                  "five": "4+ bottlenecks with root cause analysis and connection to system architecture"
+                  "one": "No actions or generic platitudes",
+                  "three": "Actions exist and are mapped to drivers but are broad",
+                  "five": "Actions are specific, time-bound where appropriate, and each one is directly tied to a quantified driver"
                 }
               }
             ],
             "passCondition": "All 4 hard criteria met AND average qualitative score >= 3",
-            "judgePromptTemplate": "You are an expert insurance industry assessor evaluating a Forward Deployed Engineer's understanding of the policy lifecycle at a P&C insurer.\n\nEvaluate the submitted deliverable against each criterion below. For hard criteria, determine pass/fail. For qualitative criteria, score 1-5 using the provided scoring guide. Quote specific evidence from the deliverable for each judgment.\n\n## Deliverable Description\n{{deliverableDescription}}\n\n## Hard Criteria\n{{hardCriteria}}\n\n## Qualitative Criteria\n{{qualitativeCriteria}}\n\n## Pass Condition\n{{passCondition}}\n\nRespond with valid JSON only:\n{\"passed\": boolean, \"criteriaResults\": [{\"criterionId\": string, \"passed\": boolean, \"score\": number | null, \"feedback\": string}], \"overallFeedback\": string}"
+            "judgePromptTemplate": "You are a senior RevOps leader evaluating a Data Analyst's written diagnosis of a quarterly revenue miss at a B2B SaaS company.\n\nEvaluate the submitted deliverable against each criterion below. For hard criteria, determine pass/fail. For qualitative criteria, score 1 to 5 using the provided scoring guide. Quote specific evidence from the deliverable for each judgment.\n\n## Deliverable Description\n{{deliverableDescription}}\n\n## Hard Criteria\n{{hardCriteria}}\n\n## Qualitative Criteria\n{{qualitativeCriteria}}\n\n## Pass Condition\n{{passCondition}}\n\nRespond with valid JSON only:\n{\"passed\": boolean, \"criteriaResults\": [{\"criterionId\": string, \"passed\": boolean, \"score\": number | null, \"feedback\": string}], \"overallFeedback\": string}"
           },
-          "notes": "First task — the learner is building foundational domain knowledge."
+          "notes": "First task. The learner builds the diagnosis from warehouse data plus three Slack-style stakeholder conversations."
         }
       ]
     }

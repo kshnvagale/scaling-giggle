@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "CaseForge — Training Simulation",
+  title: "DA Business Case Study Judge",
   description: "Desktop-OS style learning simulation for Forward Deployed Engineers",
 };
 

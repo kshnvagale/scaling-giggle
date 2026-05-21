@@ -16,13 +16,13 @@ import WikiApp from "@/components/apps/wiki/WikiApp";
 // Agent C
 import ChatApp from "@/components/apps/chat/ChatApp";
 
-// Agent D
-import SubmitApp from "@/components/apps/submit/SubmitApp";
-
 import SheetsApp from "@/components/apps/sheets/SheetsApp";
 import BigQueryApp from "@/components/apps/bigquery/BigQueryApp";
 import TerminalApp from "@/components/apps/terminal/TerminalApp";
 import NotebookApp from "@/components/apps/notebook/NotebookApp";
+
+import { IntroGate } from "@/components/intro/IntroGate";
+import { IntroOnboarding } from "@/components/intro/IntroOnboarding";
 
 const APP_COMPONENTS: Record<AppId, React.ComponentType> = {
   briefing: BriefingApp,
@@ -32,7 +32,6 @@ const APP_COMPONENTS: Record<AppId, React.ComponentType> = {
   bigquery: BigQueryApp,
   terminal: TerminalApp,
   notebook: NotebookApp,
-  submit: SubmitApp,
 };
 
 export default function HomePage() {
@@ -64,18 +63,15 @@ export default function HomePage() {
     );
   }
 
-  if (!pkg) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-stone-500 text-lg">Loading simulation...</p>
-      </div>
-    );
-  }
-
   return (
-    <Desktop
-      appRegistry={APP_REGISTRY}
-      appComponents={APP_COMPONENTS}
-    />
+    <>
+      <IntroGate />
+      {pkg ? (
+        <Desktop appRegistry={APP_REGISTRY} appComponents={APP_COMPONENTS} />
+      ) : (
+        <div className="min-h-screen bg-black" aria-hidden="true" />
+      )}
+      <IntroOnboarding />
+    </>
   );
 }

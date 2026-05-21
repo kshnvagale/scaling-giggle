@@ -1,0 +1,72 @@
+# Helix Cloud Q2 kickoff — full dialogue (32 turns)
+# For ElevenLabs Studio multi-speaker / Dialogue mode.
+# Voice assignment:
+#   Adam    = Male   (host, RevOps lead — calm, warm, mid-pitch, slight Indian-American cadence)
+#   Victoria   = Female (CRO — crisp, numeric, slightly defensive, faster cadence)
+#   Mark = Male   (VP Customer Success — warm, direct, a little worried; sentences trail)
+#   Hope   = Female (Head of Product — curious, analytical, up-pitched questions)
+
+
+Adam: [conversational tone] Okay, we good? Yeah, perfect. Thanks everyone for jumping on. I know calendars were rough this week. So real quick, this is our new analyst, they joined yesterday on the RevOps side, sitting on my team.
+
+Adam: [matter-of-fact] Reason I pulled all of us together is the Q2 readout to the board is next Tuesday. Lindsey wants a clean diagnosis of why we missed the quarter. [pause] I asked our new analyst to own the analysis, and I figured the fastest way to get them up to speed is to hear it from all of you directly.
+
+Victoria: [matter-of-fact] Yeah, and before we dive in let me just frame the headline. Plan was nine and a half million net new ARR. We landed at seven point six. So that's about a one point nine million dollar miss. [emphasized] Twenty percent below plan. That's the number Lindsey is going to ask about first.
+
+Adam: [serious tone] Right. And to be clear, the goal here is not to fix it in a week. The goal is to tell the board, with data, what happened. So they can make decisions in Q3.
+
+Victoria: [serious tone] Honestly my gut says it's sales execution. We had a couple of AEs ramping slower than I'd like. And the sales cycle stretched out, like, noticeably. [pause] But I want to see the data before I commit to that story.
+
+Adam: [matter-of-fact] Pipeline coverage was fine though, right? We were at three point four x?
+
+Victoria: [matter-of-fact] Yeah, pipeline coverage held. Three point four is healthy. So it's not a top-of-funnel problem, in my view. Marketing did their job. It's somewhere in the middle or the back of the funnel.
+
+Mark: [hesitates] Can I jump in? Because I have a concern I don't want to bury. [serious tone] Mid-market renewals in Q2 were ugly. Like, materially worse than Q1. I haven't done a clean cohort cut yet, but anecdotally, a bunch of accounts that came up for renewal in April, May, June, a chunk of them just didn't renew.
+
+Victoria: Do you have a sense of how big a chunk?
+
+Mark: [matter-of-fact] Off the top of my head, it feels like our gross churn on the mid-market book roughly doubled. Like, six percent-ish in Q1, low double digits in Q2. [continues softly] But again, I want the analyst to actually validate that. I'm working from QBR notes and gut.
+
+Adam: That tracks with what I saw in the warehouse this morning. [continues softly] The numbers are there if you query the events table by segment and quarter.
+
+Mark: [reflective] And the thing I keep coming back to is the price increase in January. We raised mid-market list prices eighteen percent on renewal. We grandfathered existing customers, but the uplift kicks in at their next renewal. [pause] So Q2 was the first quarter where a real cohort of mid-market customers actually saw the new price.
+
+Victoria: [hesitates] You think the price increase is the cause?
+
+Mark: [serious tone] I think it's a candidate. I'm not saying it's the whole thing. [emphasized] But the timing lines up too cleanly to ignore. That's something I really want the analyst to dig into.
+
+Hope: [conversational tone] Okay, can I add a thread? Because there's also a product side to this. [emphasized] Lineage attach rate in Q2 was eighteen percent. The plan was thirty-five.
+
+Victoria: [emphasized] Eighteen? On new deals?
+
+Hope: [matter-of-fact] On new deals, yeah. So that alone is a meaningful chunk of expansion ARR that just didn't show up. And I don't think it's a product problem. Lineage demos great. Customers want it. [emphasized] We're just not pitching it well in-deal, and CS isn't reinforcing it in the first ninety days.
+
+Mark: [emphasized] I keep saying we should move Lineage attach to be CS-led after the deal closes. Not sales-led during the deal.
+
+Hope: [emphasized] A hundred percent. And if we don't fix attach, [serious tone] this is going to be a Q3 problem too.
+
+Adam: [pause] Okay, so just to keep us moving, sounds like there's at least three threads to chase. Mid-market churn after the price hike. Enterprise expansion, particularly Lineage attach. And then whatever's going on with new logo velocity. [emphasized] Victoria, you said sales cycle stretched?
+
+Victoria: [matter-of-fact] Yeah, we went from like eight weeks to eleven on the mid-market motion. Which compounds the new-logo problem because we're getting fewer at-bats per quarter. [continues softly] But it's not a collapse.
+
+Adam: Got it. And there's also a couple of one-off enterprise downgrades from Q2 we should pull apart. Three accounts, all restructured to lower tiers. Victoria, you have the list?
+
+Victoria: Yeah, I'll drop it in the analyst's DMs. It's Northwind Logistics, Verity, and Atlas. Three different stories, but all hit Q2.
+
+Adam: [serious tone] Okay. So here's the ask. Friday end of day, I want a one-page memo. Top three drivers of the miss, ranked by dollar impact, one recommended action per driver. [emphasized] That's it. One page. Goes to Victoria, Mark, Hope, and Lindsey. I'll back you up if anyone wants to debate methodology.
+
+Victoria: [emphasized] Agreed. Tell us the truth, not a vibe.
+
+Mark: [serious tone] And please don't sugarcoat the mid-market churn story. If it's the biggest driver, we need to know.
+
+Hope: [conversational tone] Same. And if you find anything weird in the Lineage usage data, ping me. I'll help you read it.
+
+Adam: [conversational tone] Perfect. You've got the wiki, the workbook, the warehouse, the notebook, and all of us on chat. Anything you need that isn't in those places, just ask. Okay? Welcome to Helix.
+
+Victoria: [conversational tone] Welcome.
+
+Mark: [conversational tone] Yeah, welcome.
+
+Hope: [lighthearted] Excited to work with you.
+
+Adam: [lighthearted] Cool. Let's get to it. Talk Friday.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   MeetingRecording as MeetingRecordingType,
   MeetingParticipant,
@@ -82,16 +82,36 @@ interface TileProps {
   participant: MeetingParticipant;
   isActive: boolean;
   isSelf: boolean;
+  amplitude: number; // 0-1, driven by real audio waveform
+  tileColor?: string;
 }
 
-function ParticipantTile({ participant, isActive, isSelf }: TileProps) {
-  const bg = colorFor(participant.name);
+function ParticipantTile({ participant, isActive, isSelf, amplitude, tileColor }: TileProps) {
+  const bg = tileColor || colorFor(participant.name);
+
+  // Derive visual intensities from the live amplitude (only when active)
+  const a = isActive ? amplitude : 0;
+  const borderWidth = 2 + a * 3;          // 2px → 5px
+  const glowSpread = 4 + a * 18;          // 4px → 22px
+  const glowOpacity = 0.15 + a * 0.65;    // subtle → vivid
+  const micScale = 1 + a * 0.35;          // 1x → 1.35x
+  const medallionBg = isActive ? `rgba(255,255,255,${0.15 + a * 0.15})` : "rgba(255,255,255,0.15)";
+
+  // Equalizer bar heights driven by amplitude with slight offsets for visual variety
+  const bar1 = Math.max(15, Math.min(100, a * 130 + 10));
+  const bar2 = Math.max(15, Math.min(100, a * 110 + 20));
+  const bar3 = Math.max(15, Math.min(100, a * 150));
+
   return (
     <div
-      className={`relative aspect-video overflow-hidden rounded-lg transition-all duration-200 ${
-        isActive ? "ring-2 ring-blue-400 ring-offset-2 ring-offset-stone-900" : ""
-      }`}
-      style={{ backgroundColor: bg }}
+      className="relative aspect-video overflow-hidden rounded-lg"
+      style={{
+        backgroundColor: bg,
+        boxShadow: isActive
+          ? `0 0 0 ${borderWidth}px rgba(59,130,246,${0.5 + a * 0.5}), 0 0 ${glowSpread}px ${glowSpread / 2}px rgba(96,165,250,${glowOpacity})`
+          : "none",
+        transition: isActive ? "box-shadow 0.05s linear" : "box-shadow 0.3s ease-out",
+      }}
     >
       {/* Subtle inner gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-black/30" />
@@ -99,37 +119,45 @@ function ParticipantTile({ participant, isActive, isSelf }: TileProps) {
       {/* Centered initials medallion */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-white/15 text-lg font-semibold tracking-wide text-white backdrop-blur-sm sm:h-16 sm:w-16 sm:text-xl"
-          style={{ textShadow: "0 1px 2px rgba(0,0,0,0.25)" }}
+          className="flex h-14 w-14 items-center justify-center rounded-full text-lg font-semibold tracking-wide text-white backdrop-blur-sm sm:h-16 sm:w-16 sm:text-xl"
+          style={{
+            textShadow: "0 1px 2px rgba(0,0,0,0.25)",
+            backgroundColor: medallionBg,
+            transition: isActive ? "background-color 0.05s linear" : "background-color 0.3s ease-out",
+          }}
         >
           {initials(participant.name)}
         </div>
       </div>
 
-      {/* Active speaker pulse */}
-      {isActive && (
-        <div className="pointer-events-none absolute inset-0 animate-pulse rounded-lg bg-blue-400/5" />
-      )}
-
       {/* Name pill — bottom-left */}
       <div className="absolute bottom-2 left-2 flex max-w-[80%] items-center gap-1.5 rounded-md bg-black/55 px-2 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
-        {/* Mic icon — green when active, white when silent */}
+        {/* Mic icon — scales with amplitude */}
         <svg
           width="10"
           height="10"
           viewBox="0 0 16 16"
           fill="currentColor"
           className={isActive ? "text-emerald-400" : "text-white/70"}
+          style={{
+            transform: `scale(${micScale})`,
+            transition: isActive ? "transform 0.05s linear" : "transform 0.3s ease-out",
+          }}
         >
           <path d="M8 1.5a2.5 2.5 0 0 0-2.5 2.5v4a2.5 2.5 0 0 0 5 0V4A2.5 2.5 0 0 0 8 1.5zm-4 6.5a.5.5 0 0 0-1 0 5 5 0 0 0 4.5 4.975V14H6a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1H8.5v-1.025A5 5 0 0 0 13 8a.5.5 0 0 0-1 0 4 4 0 0 1-8 0z" />
         </svg>
         <span className="truncate">{isSelf ? "You" : participant.name}</span>
       </div>
 
-      {/* Active-speaker badge — top-right */}
+      {/* Active-speaker badge with amplitude-driven equalizer — top-right */}
       {isActive && (
-        <div className="absolute right-2 top-2 flex items-center gap-1 rounded-md bg-blue-500/90 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white">
-          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+        <div className="absolute right-2 top-2 flex items-center gap-1.5 rounded-md bg-blue-500/90 px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-white">
+          {/* Equalizer bars driven by real amplitude */}
+          <span className="inline-flex items-end gap-[2px] h-[10px]">
+            <span className="w-[2px] rounded-full bg-white" style={{ height: `${bar1}%`, transition: "height 0.06s linear" }} />
+            <span className="w-[2px] rounded-full bg-white" style={{ height: `${bar2}%`, transition: "height 0.06s linear" }} />
+            <span className="w-[2px] rounded-full bg-white" style={{ height: `${bar3}%`, transition: "height 0.06s linear" }} />
+          </span>
           Speaking
         </div>
       )}
@@ -153,10 +181,18 @@ export function MeetingRecording({ recording }: Props) {
   const tickRef = useRef<number | null>(null);
   const transcriptListRef = useRef<HTMLDivElement | null>(null);
 
+  // Web Audio API refs for real-time amplitude analysis
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const dataArrayRef = useRef<Uint8Array | null>(null);
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [audioDuration, setAudioDuration] = useState(durationSeconds);
   const [transcriptOpen, setTranscriptOpen] = useState(false);
+  const [amplitude, setAmplitude] = useState(0); // 0-1 from real audio waveform
 
   // Real-audio events
   useEffect(() => {
@@ -178,6 +214,63 @@ export function MeetingRecording({ recording }: Props) {
       el.removeEventListener("ended", onEnded);
     };
   }, [audioUrl]);
+
+  // Set up Web Audio API analyser for real-time amplitude
+  const initAnalyser = useCallback(() => {
+    const el = audioRef.current;
+    if (!el || sourceRef.current) return; // already connected
+    try {
+      const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.3;
+      const source = ctx.createMediaElementSource(el);
+      source.connect(analyser);
+      analyser.connect(ctx.destination);
+      audioCtxRef.current = ctx;
+      analyserRef.current = analyser;
+      sourceRef.current = source;
+      dataArrayRef.current = new Uint8Array(analyser.frequencyBinCount);
+    } catch {
+      // Web Audio not supported or already connected — silently degrade
+    }
+  }, []);
+
+  // rAF loop: read amplitude from the analyser ~60fps, setState at ~30fps
+  useEffect(() => {
+    if (!isPlaying || !analyserRef.current || !dataArrayRef.current) {
+      // Decay amplitude to 0 when paused
+      if (!isPlaying && amplitude > 0) setAmplitude(0);
+      return;
+    }
+    let frame = 0;
+    const tick = () => {
+      const analyser = analyserRef.current;
+      const data = dataArrayRef.current;
+      if (!analyser || !data) return;
+      analyser.getByteTimeDomainData(data as any);
+      // Compute RMS amplitude (0-1)
+      let sum = 0;
+      for (let i = 0; i < data.length; i++) {
+        const v = (data[i] - 128) / 128; // normalize to -1..1
+        sum += v * v;
+      }
+      const rms = Math.sqrt(sum / data.length);
+      // Only update state every other frame (~30fps) to avoid excess re-renders
+      frame++;
+      if (frame % 2 === 0) {
+        // Boost the RMS to make it more visually dramatic (speech is low amplitude)
+        const boosted = Math.min(1, rms * 4);
+        setAmplitude(boosted);
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPlaying]);
 
   // Fallback timer when there's no audio file but the user wants to "play" the recording
   // (so the active-speaker highlighting still works as a simulation).
@@ -213,6 +306,25 @@ export function MeetingRecording({ recording }: Props) {
     [segments, currentTime],
   );
 
+  // Progressive subtitle text based on current playback progress in the active segment
+  const activeSegmentText = useMemo(() => {
+    if (!activeSegment) return "";
+    const { text, startSeconds, endSeconds } = activeSegment;
+    const duration = endSeconds - startSeconds;
+    if (duration <= 0) return text;
+    
+    const progress = (currentTime - startSeconds) / duration;
+    const clampedProgress = Math.max(0, Math.min(1, progress));
+    
+    // Split the text into words
+    const words = text.split(" ");
+    if (words.length <= 1) return text;
+    
+    // Calculate how many words to show (at least 1 word)
+    const wordsToShow = Math.ceil(clampedProgress * words.length);
+    return words.slice(0, Math.max(1, wordsToShow)).join(" ");
+  }, [activeSegment, currentTime]);
+
   // Auto-scroll transcript to active segment
   useEffect(() => {
     if (!transcriptOpen || !activeSegment) return;
@@ -230,6 +342,10 @@ export function MeetingRecording({ recording }: Props) {
         el.pause();
         setIsPlaying(false);
       } else {
+        initAnalyser(); // lazy-init on first play (requires user gesture)
+        if (audioCtxRef.current?.state === "suspended") {
+          void audioCtxRef.current.resume();
+        }
         void el.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
       }
     } else {
@@ -282,12 +398,14 @@ export function MeetingRecording({ recording }: Props) {
       <div className="bg-stone-900 px-4 pb-3 pt-4 sm:px-5 sm:pt-5">
         {/* Participant grid */}
         <div className={`grid gap-2 ${gridClass(participants.length)}`}>
-          {participants.map((p) => (
+          {participants.map((p, idx) => (
             <ParticipantTile
               key={`${p.name}-${p.role}`}
               participant={p}
               isActive={p.name === activeSpeakerName}
               isSelf={p.name.toLowerCase() === "you"}
+              amplitude={p.name === activeSpeakerName ? amplitude : 0}
+              tileColor={TILE_COLORS[idx % TILE_COLORS.length]}
             />
           ))}
         </div>
@@ -301,7 +419,7 @@ export function MeetingRecording({ recording }: Props) {
                   ? "You"
                   : activeSegment.speakerName}
               </span>
-              <span>{activeSegment.text}</span>
+              <span>{activeSegmentText}</span>
             </>
           ) : (
             <span className="text-white/40">

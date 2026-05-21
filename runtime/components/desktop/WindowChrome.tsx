@@ -2,9 +2,6 @@
 
 interface WindowChromeProps {
   title: string;
-  subtitle: string;
-  appIcon: string;
-  appLabel: string;
   children: React.ReactNode;
   isFocused: boolean;
   isMaximized: boolean;
@@ -17,9 +14,6 @@ interface WindowChromeProps {
 
 export function WindowChrome({
   title,
-  subtitle,
-  appIcon,
-  appLabel,
   children,
   isFocused,
   isMaximized,
@@ -32,28 +26,33 @@ export function WindowChrome({
   return (
     <div
       className={`
-        flex h-full flex-col overflow-hidden border
-        ${isMaximized ? "rounded-[22px]" : "rounded-[24px]"}
+        relative flex h-full flex-col overflow-hidden rounded-[12px] transition-all duration-300
         ${isFocused
-          ? "border-[#ccbfa6] bg-[#fbfaf7] shadow-[0_34px_90px_rgba(35,26,11,0.24)]"
-          : "border-[#d8cfbf] bg-[#f8f6f1] shadow-[0_22px_56px_rgba(35,26,11,0.14)]"
+          ? "border-black/[0.12] dark:border-white/[0.15] shadow-[0_30px_80px_rgba(0,0,0,0.28),0_10px_24px_rgba(0,0,0,0.18)]"
+          : "border-black/[0.08] dark:border-white/[0.08] shadow-[0_18px_44px_rgba(0,0,0,0.18),0_6px_14px_rgba(0,0,0,0.12)]"
         }
+        glassmorphic-window
       `}
     >
       <div
         onPointerDown={onHeaderPointerDown}
         onDoubleClick={onHeaderDoubleClick}
         className={`
-          flex h-12 select-none items-center gap-3 border-b px-4
-          ${isFocused
-            ? "border-[#cdbfa8] bg-[linear-gradient(180deg,#f7f2e8_0%,#ebe1cf_100%)]"
-            : "border-[#d9cfbf] bg-[linear-gradient(180deg,#f1ede5_0%,#e5ddd0_100%)]"
+          relative flex h-8 select-none items-center border-b border-black/[0.06] dark:border-white/[0.06]
+          transition-colors duration-200
+          ${isFocused 
+            ? "bg-[var(--window-toolbar)] text-[var(--text-primary)]" 
+            : "bg-[var(--window-toolbar)]/80 text-[var(--text-primary)]/50"
           }
         `}
+        style={{ cursor: "grab" }}
       >
-        <div className="flex items-center gap-[7px]">
+        {/* Traffic lights (left) - group hover collective state */}
+        <div className="group/traffic-lights flex items-center gap-[7.5px] pl-3 pr-2 z-30">
           <TrafficLight
-            colorClassName="border-[#df4744]/40 bg-[#ff5f57]"
+            isFocused={isFocused}
+            focusedBg="bg-[#ff5f56]"
+            focusedBorder="border-[#e0443e]"
             icon={
               <path
                 d="M4.1 4.1L8.9 8.9M8.9 4.1L4.1 8.9"
@@ -66,7 +65,9 @@ export function WindowChrome({
             onClick={onClose}
           />
           <TrafficLight
-            colorClassName="border-[#dea123]/40 bg-[#febc2e]"
+            isFocused={isFocused}
+            focusedBg="bg-[#ffbd2e]"
+            focusedBorder="border-[#df9e14]"
             icon={
               <path
                 d="M4 6.5H9"
@@ -79,7 +80,9 @@ export function WindowChrome({
             onClick={onMinimize}
           />
           <TrafficLight
-            colorClassName="border-[#1aab29]/40 bg-[#28c840]"
+            isFocused={isFocused}
+            focusedBg="bg-[#27c93f]"
+            focusedBorder="border-[#1a9c2b]"
             icon={
               isMaximized ? (
                 <>
@@ -113,61 +116,26 @@ export function WindowChrome({
           />
         </div>
 
-        <div className="flex min-w-0 flex-1 justify-center">
+        {/* Centered title — absolute so traffic-light width doesn't shift it */}
+        <div className="pointer-events-none absolute inset-x-0 flex justify-center px-24">
           <span
             className={`
-              max-w-[34rem] truncate rounded-full px-3 py-1 text-[12px] font-semibold tracking-[0.01em]
-              ${isFocused ? "bg-white/58 text-[#2b261d]" : "bg-white/38 text-[#6a6458]"}
+              truncate text-[12.5px] font-semibold tracking-tight transition-all duration-200
+              ${isFocused 
+                ? "text-[var(--text-primary)] opacity-90" 
+                : "text-[var(--text-primary)] opacity-40"
+              }
             `}
+            style={{
+              textShadow: isFocused ? "0 1px 0 rgba(255,255,255,0.4)" : "none",
+            }}
           >
             {title}
           </span>
         </div>
-
-        <div className="flex w-28 justify-end">
-          <span
-            className={`
-              inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em]
-              ${isFocused
-                ? "bg-white/58 text-[#6e5c22]"
-                : "bg-white/34 text-[#8b8272]"
-              }
-            `}
-          >
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${isFocused ? "bg-[#28c840]" : "bg-[#b8ab92]"}`}
-            />
-            {isFocused ? "Live" : "Idle"}
-          </span>
-        </div>
       </div>
 
-      <div
-        className={`
-          flex h-10 items-center gap-3 border-b px-4 text-[11px]
-          ${isFocused ? "border-[#d9ceba] bg-[#f7f2e9]" : "border-[#e1d8ca] bg-[#f3efe7]"}
-        `}
-      >
-        <div className="inline-flex items-center gap-2 rounded-full border border-black/6 bg-white/70 px-2.5 py-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.7)]">
-          <span className="text-sm">{appIcon}</span>
-          <span className="font-semibold text-[#2b261d]">{appLabel}</span>
-        </div>
-
-        <span className="min-w-0 truncate text-[#6c6458]">{subtitle}</span>
-
-        <div className="ml-auto flex items-center gap-2">
-          <span className="rounded-full bg-black/5 px-2.5 py-1 font-medium text-[#6c6458]">
-            {isMaximized ? "Maximized" : "Resizable"}
-          </span>
-        </div>
-      </div>
-
-      <div
-        className={`
-          window-content relative flex-1 overflow-hidden
-          ${isFocused ? "bg-[var(--window-bg)]" : "bg-[color-mix(in_srgb,var(--window-bg)_94%,#e5dccd)]"}
-        `}
-      >
+      <div className="window-content relative flex-1 overflow-hidden bg-[var(--window-bg)]">
         {children}
       </div>
     </div>
@@ -175,12 +143,16 @@ export function WindowChrome({
 }
 
 function TrafficLight({
-  colorClassName,
+  isFocused,
+  focusedBg,
+  focusedBorder,
   icon,
   label,
   onClick,
 }: {
-  colorClassName: string;
+  isFocused: boolean;
+  focusedBg: string;
+  focusedBorder: string;
   icon: React.ReactNode;
   label: string;
   onClick: () => void;
@@ -193,16 +165,21 @@ function TrafficLight({
         event.stopPropagation();
         onClick();
       }}
-      className="group/traffic relative flex h-7 w-7 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3559a7] focus-visible:ring-offset-2 focus-visible:ring-offset-[#efe7d7]"
+      onPointerDown={(event) => event.stopPropagation()}
+      className="group/traffic relative flex h-[12.5px] w-[12.5px] items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3559a7]/60 focus-visible:ring-offset-1"
     >
       <span
-        className={`relative flex h-[13px] w-[13px] items-center justify-center rounded-full border ${colorClassName}`}
+        className={`relative flex h-[12.5px] w-[12.5px] items-center justify-center rounded-full border transition-all duration-200 ${
+          isFocused
+            ? `${focusedBg} ${focusedBorder}`
+            : "border-black/10 bg-black/10 dark:border-white/10 dark:bg-white/10"
+        }`}
       >
         <svg
-          width="13"
-          height="13"
+          width="12.5"
+          height="12.5"
           viewBox="0 0 13 13"
-          className="text-black/60 opacity-0 transition-opacity duration-150 group-hover/traffic:opacity-100 group-focus-visible/traffic:opacity-100"
+          className="text-black/60 dark:text-white/70 opacity-0 transition-opacity duration-150 group-hover/traffic-lights:opacity-100 group-focus-visible/traffic:opacity-100"
           fill="none"
         >
           {icon}

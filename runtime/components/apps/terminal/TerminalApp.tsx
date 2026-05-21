@@ -10,24 +10,24 @@ interface TerminalLine {
 }
 
 const USER = "kishan";
-const HOST = "caseforge";
+const HOST = "helix";
 const HOME = "~";
 
 // dummy filesystem
 const FILES: Record<string, string[] | string> = {
   "~": ["briefing.md", "datasets/", "scripts/", "README.md"],
-  "~/datasets": ["customers.csv", "transactions.csv", "inventory.csv", "kpis.csv"],
-  "~/scripts": ["query.sql", "load.sh", "verify.py"],
+  "~/datasets": ["accounts.csv", "subscriptions.csv", "events.csv", "pipeline.csv"],
+  "~/scripts": ["revenue_walk.sql", "attach_rate.sql", "verify_data.py"],
   "~/briefing.md":
-    "# Phase 6 — Operations Review\n\nReview the workbook, identify accounts at risk of churn, and\ndraft a remediation plan for the leadership team by EOD.\n",
+    "Helix Cloud Q2 2026 Revenue Miss — Analyst Briefing\n\nHelix Cloud closed Q2 2026 at $7.6M net new ARR against a $9.5M plan, a 20 percent miss.\nCEO Lindsey Park has asked the RevOps Analytics team for a definitive diagnosis ahead of the\n2026-07-15 board readout. Today is 2026-07-08.\n\nYou are the new analyst on the team. Pull the relevant tables from helix-cloud-prod, talk to\nthe SMEs (CRO, VP CS, RevOps, Marketing, Product), and produce a one-page diagnosis that the\nboard can act on. Focus on Mid-Market churn after the Q1 price hike, Enterprise expansion, and\nthe Helix Lineage attach rate.\n",
   "~/README.md":
-    "CaseForge sandbox — desktop shell.\nType `help` to see available commands.\n",
-  "~/scripts/query.sql":
-    "SELECT account, mrr_usd FROM operations.customers\nWHERE status = 'Active'\nORDER BY mrr_usd DESC\nLIMIT 10;",
-  "~/scripts/load.sh":
-    "#!/usr/bin/env bash\nbq load --source_format=CSV operations.customers datasets/customers.csv\n",
-  "~/scripts/verify.py":
-    "import csv\nwith open('datasets/customers.csv') as f:\n    rows = list(csv.DictReader(f))\nprint(f'Loaded {len(rows)} customers')\n",
+    "Helix Cloud RevOps sandbox — desktop shell.\nType `help` to see available commands.\n",
+  "~/scripts/revenue_walk.sql":
+    "-- Q2 2026 net new ARR walk by segment\nSELECT\n  a.segment,\n  SUM(IF(e.event_type = 'new_logo', e.arr_delta, 0))    AS new_logo_arr,\n  SUM(IF(e.event_type = 'expansion', e.arr_delta, 0))   AS expansion_arr,\n  SUM(IF(e.event_type = 'contraction', e.arr_delta, 0)) AS contraction_arr,\n  SUM(IF(e.event_type = 'churn', e.arr_delta, 0))       AS churn_arr,\n  SUM(e.arr_delta)                                      AS net_new_arr\nFROM `helix-cloud-prod.revenue.events` e\nJOIN `helix-cloud-prod.revenue.accounts` a USING (account_id)\nWHERE e.event_date BETWEEN '2026-04-01' AND '2026-06-30'\nGROUP BY a.segment;\n",
+  "~/scripts/attach_rate.sql":
+    "-- Helix Lineage attach rate on Closed Won deals, Q1 vs Q2 2026\nSELECT\n  EXTRACT(QUARTER FROM p.close_date) AS quarter,\n  COUNT(*) AS new_deals,\n  COUNTIF(s.product = 'Helix Lineage') AS deals_with_lineage,\n  SAFE_DIVIDE(COUNTIF(s.product = 'Helix Lineage'), COUNT(*)) AS attach_rate\nFROM `helix-cloud-prod.revenue.pipeline` p\nLEFT JOIN `helix-cloud-prod.revenue.subscriptions` s USING (account_id)\nWHERE p.stage = 'Closed Won'\n  AND p.close_date BETWEEN '2026-01-01' AND '2026-06-30'\nGROUP BY quarter\nORDER BY quarter;\n",
+  "~/scripts/verify_data.py":
+    "import csv\nfrom collections import Counter\n\nwith open('datasets/accounts.csv') as f:\n    rows = list(csv.DictReader(f))\n\nby_segment = Counter(r['segment'] for r in rows)\nprint(f'Loaded {len(rows)} Helix Cloud accounts')\nfor seg, n in by_segment.most_common():\n    print(f'  {seg}: {n}')\n",
 };
 
 const HELP_TEXT = [
@@ -70,7 +70,7 @@ export default function TerminalApp() {
     {
       id: 0,
       kind: "system",
-      text: `CaseForge Shell 1.0.4 — last login: ${new Date().toLocaleString()}\nType \`help\` to get started.`,
+      text: `DA Business Case Study Judge Shell 1.0.4 — last login: ${new Date().toLocaleString()}\nType \`help\` to get started.`,
     },
   ]);
   const [input, setInput] = useState("");
@@ -166,7 +166,7 @@ export default function TerminalApp() {
           return addLines([
             {
               kind: "output",
-              text: `Submitting query to caseforge-ops-prod…\nTip: open the BigQuery app to view full results.\n\nbquxjob_${Math.random().toString(36).slice(2, 8)} | 0.6 s | 4.1 KB processed`,
+              text: `Submitting query to helix-cloud-prod…\nTip: open the BigQuery app to view full results.\n\nbquxjob_${Math.random().toString(36).slice(2, 8)} | 0.6 s | 512 KB processed`,
             },
           ]);
         }

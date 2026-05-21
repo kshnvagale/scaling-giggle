@@ -76,12 +76,30 @@ export interface CaseForgeState {
   runCell: (slug: string, cellId: string) => void;
   runAll: (slug: string, codeCellIds: string[]) => void;
 
+  // Intro onboarding
+  introOpen: boolean;
+  openIntro: () => void;
+  closeIntro: () => void;
+
   // Initialization
   loadCoursePackage: (pkg: CoursePackageData, taskId?: string) => void;
 
   // Reset submit state for retry
   resetSubmission: () => void;
+
+  // macOS desktop preferences
+  desktopTheme: "kraft" | "macos-light" | "macos-dark";
+  setDesktopTheme: (theme: "kraft" | "macos-light" | "macos-dark") => void;
+  isOnline: boolean;
+  setIsOnline: (online: boolean) => void;
+  volume: number;
+  setVolume: (volume: number) => void;
+  controlCenterOpen: boolean;
+  setControlCenterOpen: (open: boolean) => void;
+  toggleControlCenter: () => void;
 }
+
+const INTRO_SEEN_KEY = "caseforge:intro-seen";
 
 export const useCaseForgeStore = create<CaseForgeState>()((set) => ({
   // Initial values
@@ -98,9 +116,32 @@ export const useCaseForgeStore = create<CaseForgeState>()((set) => ({
   timer: null,
   activeNotebookSlug: null,
   notebookState: {},
+  introOpen: false,
+  desktopTheme: "kraft",
+  isOnline: true,
+  volume: 80,
+  controlCenterOpen: false,
 
   // Desktop
   setActiveApp: (app) => set({ activeApp: app }),
+  setDesktopTheme: (theme) => set({ desktopTheme: theme }),
+  setIsOnline: (online) => set({ isOnline: online }),
+  setVolume: (volume) => set({ volume }),
+  setControlCenterOpen: (open) => set({ controlCenterOpen: open }),
+  toggleControlCenter: () => set((state) => ({ controlCenterOpen: !state.controlCenterOpen })),
+
+  // Intro onboarding
+  openIntro: () => set({ introOpen: true }),
+  closeIntro: () => {
+    if (typeof window !== "undefined") {
+      try {
+        window.sessionStorage.setItem(INTRO_SEEN_KEY, "true");
+      } catch {
+        // sessionStorage may be unavailable (e.g. private browsing edge cases)
+      }
+    }
+    set({ introOpen: false });
+  },
 
   // Wiki
   setActiveWikiSlug: (slug) => set({ activeWikiSlug: slug }),

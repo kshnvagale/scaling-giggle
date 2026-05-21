@@ -1,0 +1,17 @@
+[conversational tone] Okay, can I add a thread? Because there's also a product side to this. [emphasized] Lineage attach rate in Q2 was eighteen percent. The plan was thirty-five.
+
+<break time="2s" />
+
+[matter-of-fact] On new deals, yeah. So that alone is a meaningful chunk of expansion ARR that just didn't show up. And I don't think it's a product problem. Lineage demos great. Customers want it. [emphasized] We're just not pitching it well in-deal, and CS isn't reinforcing it in the first ninety days.
+
+<break time="2s" />
+
+[emphasized] A hundred percent. And if we don't fix attach, [serious tone] this is going to be a Q3 problem too.
+
+<break time="2s" />
+
+[conversational tone] Same. And if you find anything weird in the Lineage usage data, ping me. I'll help you read it.
+
+<break time="2s" />
+
+[lighthearted] Excited to work with you.

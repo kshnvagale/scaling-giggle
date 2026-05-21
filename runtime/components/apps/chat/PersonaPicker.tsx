@@ -89,7 +89,7 @@ export function PersonaPicker({ personas, onSelect }: PersonaPickerProps) {
           </h2>
           <p className="mt-2 text-[14px] text-[#6b6557] leading-relaxed">
             Select a contact from the sidebar to begin interviewing.
-            Each stakeholder has unique knowledge about Meridian&apos;s systems and processes.
+            Each stakeholder has unique knowledge about Helix Cloud&apos;s data, customers, and Q2 performance.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-2 justify-center">

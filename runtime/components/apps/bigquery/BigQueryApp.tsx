@@ -23,31 +23,29 @@ interface QueryTab {
   elapsed: string;
 }
 
-const PROJECT = "caseforge-ops-prod";
+const PROJECT = "helix-cloud-prod";
 
 const DATASETS: DatasetDef[] = [
   {
-    name: "operations",
+    name: "revenue",
     tables: [
-      { name: "customers", rows: 12, size: "4.1 KB" },
-      { name: "transactions", rows: 12, size: "3.8 KB" },
-      { name: "inventory", rows: 12, size: "4.6 KB" },
+      { name: "accounts", rows: 620, size: "4.1 KB" },
+      { name: "subscriptions", rows: 1240, size: "24 KB" },
+      { name: "events", rows: 6800, size: "512 KB" },
+      { name: "pipeline", rows: 310, size: "38 KB" },
     ],
   },
   {
-    name: "finance",
+    name: "customer_success",
     tables: [
-      { name: "kpis_quarterly", rows: 10, size: "2.2 KB" },
-      { name: "revenue_daily", rows: 365, size: "112 KB" },
-      { name: "invoices", rows: 4821, size: "1.7 MB" },
+      { name: "health_scores", rows: 58000, size: "1.9 MB" },
+      { name: "tickets", rows: 1840, size: "620 KB" },
     ],
   },
   {
-    name: "support",
+    name: "product_usage",
     tables: [
-      { name: "tickets", rows: 1240, size: "412 KB" },
-      { name: "csat_responses", rows: 880, size: "188 KB" },
-      { name: "agents", rows: 28, size: "3.2 KB" },
+      { name: "usage_daily", rows: 412000, size: "38 MB" },
     ],
   },
 ];
@@ -55,82 +53,90 @@ const DATASETS: DatasetDef[] = [
 const TABS: QueryTab[] = [
   {
     id: "q1",
-    title: "Top accounts by MRR",
-    sql: `-- Top accounts by monthly recurring revenue
+    title: "Q2 revenue walk by component",
+    sql: `-- Q2 2026 net new ARR walk: new logo + expansion - contraction - churn, by segment
 SELECT
-  account,
-  region,
-  plan,
-  mrr_usd,
-  status
-FROM \`caseforge-ops-prod.operations.customers\`
-WHERE status = 'Active'
-ORDER BY mrr_usd DESC
-LIMIT 10;`,
-    resultColumns: ["account", "region", "plan", "mrr_usd", "status"],
+  a.segment,
+  ROUND(SUM(IF(e.event_type = 'new_logo', e.arr_delta, 0)), 0) AS new_logo_arr,
+  ROUND(SUM(IF(e.event_type = 'expansion', e.arr_delta, 0)), 0) AS expansion_arr,
+  ROUND(SUM(IF(e.event_type = 'contraction', e.arr_delta, 0)), 0) AS contraction_arr,
+  ROUND(SUM(IF(e.event_type = 'churn', e.arr_delta, 0)), 0) AS churn_arr,
+  ROUND(SUM(e.arr_delta), 0) AS net_new_arr
+FROM \`helix-cloud-prod.revenue.events\` e
+JOIN \`helix-cloud-prod.revenue.accounts\` a
+  ON e.account_id = a.account_id
+WHERE e.event_date BETWEEN '2026-04-01' AND '2026-06-30'
+GROUP BY a.segment
+ORDER BY net_new_arr DESC;`,
+    resultColumns: ["segment", "new_logo_arr", "expansion_arr", "contraction_arr", "churn_arr", "net_new_arr"],
     resultRows: [
-      ["Ironclad Defense", "NA-East", "Enterprise", 31200, "Active"],
-      ["Quanta Robotics", "APAC", "Enterprise", 26100, "Active"],
-      ["Kestrel Bank", "NA-West", "Enterprise", 24800, "Active"],
-      ["Verity Insurance", "NA-West", "Enterprise", 22600, "Active"],
-      ["Bluefin Energy", "APAC", "Enterprise", 19200, "Active"],
-      ["Northwind Logistics", "NA-East", "Enterprise", 18400, "Active"],
-      ["Atlas Manufacturing", "EU-Central", "Growth", 7100, "Active"],
-      ["Helios Retail Group", "EU-West", "Growth", 6200, "Active"],
-      ["Marigold Foods", "EU-West", "Growth", 4900, "Active"],
+      ["Enterprise", 4200000, 1950000, -190000, -205000, 5755000],
+      ["Mid-Market", 2100000, 720000, -120000, -855000, 1845000],
     ],
-    bytesProcessed: "4.1 KB",
-    elapsed: "0.4 s",
+    bytesProcessed: "512 KB",
+    elapsed: "0.8 s",
   },
   {
     id: "q2",
-    title: "Inventory below reorder",
-    sql: `-- Items below reorder threshold (after reservations)
+    title: "Mid-Market churn by renewal cohort",
+    sql: `-- Mid-Market accounts up for renewal in Q2 2026 vs how many churned, with $ impact
 SELECT
-  sku,
-  product,
-  warehouse,
-  on_hand,
-  reserved,
-  reorder_at,
-  on_hand - reserved AS available
-FROM \`caseforge-ops-prod.operations.inventory\`
-WHERE on_hand - reserved < reorder_at
-ORDER BY (reorder_at - (on_hand - reserved)) DESC;`,
-    resultColumns: ["sku", "product", "warehouse", "on_hand", "reserved", "reorder_at", "available"],
+  FORMAT_DATE('%Y-%m', s.renewal_date) AS renewal_month,
+  COUNT(DISTINCT s.account_id) AS accounts_up_for_renewal,
+  COUNTIF(s.status = 'canceled') AS churned_accounts,
+  ROUND(SAFE_DIVIDE(COUNTIF(s.status = 'canceled'), COUNT(DISTINCT s.account_id)), 3) AS churn_rate,
+  ROUND(SUM(IF(s.status = 'canceled', s.arr_usd, 0)), 0) AS lost_arr_usd
+FROM \`helix-cloud-prod.revenue.subscriptions\` s
+JOIN \`helix-cloud-prod.revenue.accounts\` a
+  ON s.account_id = a.account_id
+WHERE a.segment = 'Mid-Market'
+  AND s.renewal_date BETWEEN '2026-04-01' AND '2026-06-30'
+GROUP BY renewal_month
+ORDER BY renewal_month;`,
+    resultColumns: ["renewal_month", "accounts_up_for_renewal", "churned_accounts", "churn_rate", "lost_arr_usd"],
     resultRows: [
-      ["SKU-B201", "Edge Gateway Pro", "WH-Reno", 36, 18, 60, 18],
-      ["SKU-B200", "Edge Gateway", "WH-Reno", 92, 40, 100, 52],
-      ["SKU-F601", "Enclosure IP67", "WH-Reno", 145, 60, 200, 85],
-      ["SKU-E501", "Display Panel 10\"", "WH-Austin", 220, 80, 200, 140],
+      ["2026-04", 65, 6, 0.092, 248000],
+      ["2026-05", 78, 9, 0.115, 312000],
+      ["2026-06", 62, 8, 0.129, 295000],
     ],
-    bytesProcessed: "4.6 KB",
-    elapsed: "0.6 s",
+    bytesProcessed: "24 KB",
+    elapsed: "0.5 s",
   },
   {
     id: "q3",
-    title: "Revenue by region (MTD)",
-    sql: `-- Month-to-date revenue by region
+    title: "Lineage attach rate Q1 vs Q2",
+    sql: `-- Helix Lineage attach rate on new deals: Q1 2026 vs Q2 2026
 SELECT
-  c.region,
-  COUNT(DISTINCT c.id) AS active_accounts,
-  ROUND(SUM(t.amount_usd), 0) AS revenue_usd
-FROM \`caseforge-ops-prod.operations.transactions\` t
-JOIN \`caseforge-ops-prod.operations.customers\` c
-  ON t.account = c.account
-WHERE t.date BETWEEN '2026-05-01' AND CURRENT_DATE()
-GROUP BY c.region
-ORDER BY revenue_usd DESC;`,
-    resultColumns: ["region", "active_accounts", "revenue_usd"],
+  CONCAT('Q', CAST(EXTRACT(QUARTER FROM p.close_date) AS STRING), ' ',
+         CAST(EXTRACT(YEAR FROM p.close_date) AS STRING)) AS quarter,
+  COUNT(DISTINCT p.opportunity_id) AS new_deals_total,
+  COUNTIF(EXISTS(
+    SELECT 1 FROM \`helix-cloud-prod.revenue.subscriptions\` s
+    WHERE s.account_id = p.account_id
+      AND s.product = 'Helix Lineage'
+      AND s.start_date <= p.close_date
+  )) AS deals_with_lineage,
+  ROUND(SAFE_DIVIDE(
+    COUNTIF(EXISTS(
+      SELECT 1 FROM \`helix-cloud-prod.revenue.subscriptions\` s
+      WHERE s.account_id = p.account_id
+        AND s.product = 'Helix Lineage'
+        AND s.start_date <= p.close_date
+    )),
+    COUNT(DISTINCT p.opportunity_id)
+  ), 3) AS attach_rate
+FROM \`helix-cloud-prod.revenue.pipeline\` p
+WHERE p.stage = 'Closed Won'
+  AND p.close_date BETWEEN '2026-01-01' AND '2026-06-30'
+GROUP BY quarter
+ORDER BY quarter;`,
+    resultColumns: ["quarter", "new_deals_total", "deals_with_lineage", "attach_rate"],
     resultRows: [
-      ["NA-East", 3, 51400],
-      ["NA-West", 2, 51600],
-      ["APAC", 2, 45300],
-      ["EU-West", 2, 11100],
-      ["EU-Central", 1, 7100],
+      ["Q1 2026", 48, 10, 0.208],
+      ["Q2 2026", 39, 7, 0.179],
     ],
-    bytesProcessed: "7.9 KB",
-    elapsed: "0.8 s",
+    bytesProcessed: "62 KB",
+    elapsed: "0.7 s",
   },
 ];
 
@@ -138,12 +144,14 @@ const SQL_KEYWORDS = new Set([
   "SELECT", "FROM", "WHERE", "AND", "OR", "ORDER", "BY", "GROUP", "LIMIT",
   "JOIN", "ON", "AS", "COUNT", "SUM", "ROUND", "DISTINCT", "BETWEEN",
   "CURRENT_DATE", "ASC", "DESC", "NULL", "IS", "NOT", "IN", "LEFT", "RIGHT", "INNER",
+  "IF", "EXISTS", "CAST", "EXTRACT", "QUARTER", "YEAR", "CONCAT",
+  "FORMAT_DATE", "SAFE_DIVIDE", "COUNTIF",
 ]);
 
 export default function BigQueryApp() {
   const [activeTabId, setActiveTabId] = useState<string>(TABS[0].id);
   const [expandedDatasets, setExpandedDatasets] = useState<Set<string>>(
-    new Set(["operations"]),
+    new Set(["revenue"]),
   );
   const [projectExpanded, setProjectExpanded] = useState(true);
   const [isRunning, setIsRunning] = useState(false);

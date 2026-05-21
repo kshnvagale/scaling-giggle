@@ -1,0 +1,37 @@
+[conversational tone] Okay, we good? Yeah, perfect. Thanks everyone for jumping on. I know calendars were rough this week. So real quick, this is our new analyst, they joined yesterday on the RevOps side, sitting on my team.
+
+<break time="2s" />
+
+[matter-of-fact] Reason I pulled all of us together is the Q2 readout to the board is next Tuesday. Lindsey wants a clean diagnosis of why we missed the quarter. [pause] I asked our new analyst to own the analysis, and I figured the fastest way to get them up to speed is to hear it from all of you directly.
+
+<break time="2s" />
+
+[serious tone] Right. And to be clear, the goal here is not to fix it in a week. The goal is to tell the board, with data, what happened. So they can make decisions in Q3.
+
+<break time="2s" />
+
+[matter-of-fact] Pipeline coverage was fine though, right? We were at three point four x?
+
+<break time="2s" />
+
+That tracks with what I saw in the warehouse this morning. [continues softly] The numbers are there if you query the events table by segment and quarter.
+
+<break time="2s" />
+
+[pause] Okay, so just to keep us moving, sounds like there's at least three threads to chase. Mid-market churn after the price hike. Enterprise expansion, particularly Lineage attach. And then whatever's going on with new logo velocity. [emphasized] Maya, you said sales cycle stretched?
+
+<break time="2s" />
+
+Got it. And there's also a couple of one-off enterprise downgrades from Q2 we should pull apart. Three accounts, all restructured to lower tiers. Maya, you have the list?
+
+<break time="2s" />
+
+[serious tone] Okay. So here's the ask. Friday end of day, I want a one-page memo. Top three drivers of the miss, ranked by dollar impact, one recommended action per driver. [emphasized] That's it. One page. Goes to Maya, Jordan, Alex, and Lindsey. I'll back you up if anyone wants to debate methodology.
+
+<break time="2s" />
+
+[conversational tone] Perfect. You've got the wiki, the workbook, the warehouse, the notebook, and all of us on chat. Anything you need that isn't in those places, just ask. Okay? Welcome to Helix.
+
+<break time="2s" />
+
+[lighthearted] Cool. Let's get to it. Talk Friday.

@@ -6,6 +6,13 @@ import { isImageDark } from "@/lib/imageUtils";
 import type { AppId, AppRegistryEntry } from "@/lib/types";
 import { MenuBar } from "./MenuBar";
 import { WindowChrome } from "./WindowChrome";
+import { DesktopWindow, type MinimizeAnchor } from "./DesktopWindow";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+import ControlCenter from "./ControlCenter";
+
+const CLOSE_ANIMATION_MS = 220;
+const MAXIMIZE_ANIMATION_MS = 360;
 
 interface DesktopProps {
   appRegistry: AppRegistryEntry[];
@@ -164,21 +171,12 @@ const WINDOW_PRESETS: Record<AppId, WindowPreset> = {
     yBias: 0.22,
     open: false,
   },
-  submit: {
-    width: 820,
-    height: 600,
-    minWidth: 660,
-    minHeight: 440,
-    xBias: 0.2,
-    yBias: 0.1,
-    open: false,
-  },
 };
 
 const WALLPAPER_STORAGE_KEY = "caseforge.desktop.wallpaper";
-const ICON_POSITIONS_STORAGE_KEY = "caseforge.desktop.iconPositions";
-const ICON_CELL_WIDTH = 88;
-const ICON_CELL_HEIGHT = 92;
+const ICON_POSITIONS_STORAGE_KEY = "caseforge.desktop.iconPositions.v2";
+const ICON_CELL_WIDTH = 80;
+const ICON_CELL_HEIGHT = 108;
 const ICON_DRAG_THRESHOLD_PX = 4;
 const ICON_EDGE_PADDING = 16;
 const DESKTOP_CONTEXT_MENU = {
@@ -213,13 +211,11 @@ function getWorkspace(viewport: ViewportSize, layout: LayoutMetrics): Bounds {
 }
 
 function getWindowSpawnArea(viewport: ViewportSize, layout: LayoutMetrics): Bounds {
-  const x = DESKTOP_MARGIN + layout.leftRailWidth + 18;
-  const y = 18;
-  const width = Math.max(
-    320,
-    viewport.width - (DESKTOP_MARGIN * 2 + layout.leftRailWidth + layout.rightRailWidth + 36),
-  );
-  const height = Math.max(360, viewport.height - (layout.dockHeight + 28));
+  // Center spawn area in viewport like macOS
+  const width = Math.min(viewport.width - 80, 1080);
+  const height = Math.min(viewport.height - MENU_BAR_HEIGHT - layout.dockHeight - 80, 720);
+  const x = Math.max(20, (viewport.width - width) / 2);
+  const y = Math.max(20, (viewport.height - height) / 2);
 
   return { x, y, width, height };
 }
@@ -227,8 +223,8 @@ function getWindowSpawnArea(viewport: ViewportSize, layout: LayoutMetrics): Boun
 function clampBounds(bounds: Bounds, preset: WindowPreset, workspace: Bounds): Bounds {
   const width = clamp(bounds.width, preset.minWidth, workspace.width);
   const height = clamp(bounds.height, preset.minHeight, workspace.height);
-  const maxX = workspace.x + workspace.width - width;
-  const maxY = workspace.y + workspace.height - height;
+  const maxX = Math.max(workspace.x, workspace.x + workspace.width - width);
+  const maxY = Math.max(workspace.y, workspace.y + workspace.height - height);
 
   return {
     x: clamp(bounds.x, workspace.x, maxX),
@@ -241,17 +237,20 @@ function clampBounds(bounds: Bounds, preset: WindowPreset, workspace: Bounds): B
 function createInitialWindowStates(workspace: Bounds): Record<AppId, DesktopWindowState> {
   const entries = (Object.keys(WINDOW_PRESETS) as AppId[]).map((appId, index) => {
     const preset = WINDOW_PRESETS[appId];
-    const width = Math.min(preset.width, workspace.width - 24);
-    const height = Math.min(preset.height, workspace.height - 24);
+    const width = Math.min(preset.width, workspace.width);
+    const height = Math.min(preset.height, workspace.height);
+    
+    // macOS-style premium cascading layout starting from spawn area origin
+    const cascadeOffset = index * 28;
     const x = clamp(
-      workspace.x + (workspace.width - width) * preset.xBias,
-      workspace.x + 18,
-      workspace.x + workspace.width - width - 18,
+      workspace.x + cascadeOffset,
+      workspace.x,
+      Math.max(workspace.x, workspace.x + workspace.width - width)
     );
     const y = clamp(
-      workspace.y + (workspace.height - height) * preset.yBias,
-      workspace.y + 12,
-      workspace.y + workspace.height - height - 12,
+      workspace.y + cascadeOffset,
+      workspace.y,
+      Math.max(workspace.y, workspace.y + workspace.height - height)
     );
 
     return [
@@ -407,6 +406,11 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
   const attemptCount = useCaseForgeStore((s) => s.attemptCount);
   const coursePackage = useCaseForgeStore((s) => s.coursePackage);
 
+  const desktopTheme = useCaseForgeStore((s) => s.desktopTheme);
+  const controlCenterOpen = useCaseForgeStore((s) => s.controlCenterOpen);
+  const setControlCenterOpen = useCaseForgeStore((s) => s.setControlCenterOpen);
+  const [brightness, setBrightness] = useState(100);
+
   const [viewport, setViewport] = useState<ViewportSize>(DEFAULT_VIEWPORT);
   const [windowStates, setWindowStates] = useState<Record<AppId, DesktopWindowState>>(() =>
     createInitialWindowStates(
@@ -415,18 +419,33 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
   );
   const [interactionAppId, setInteractionAppId] = useState<AppId | null>(null);
   const [interactionKind, setInteractionKind] = useState<PointerInteraction["kind"] | null>(null);
+  // Apps that are mid close-animation. Window stays mounted until the timer
+  // fires, then the state machine sets isOpen=false.
+  const [closingApps, setClosingApps] = useState<Set<AppId>>(new Set());
+  // Apps mid maximize / restore-from-maximize, so the wrapper uses a longer
+  // and more dramatic transition for the big size change.
+  const [maximizingApps, setMaximizingApps] = useState<Set<AppId>>(new Set());
+  // Per-app translate delta from window center to dock-icon center,
+  // computed at minimize time so the window appears to fly into the dock.
+  const [minimizeAnchors, setMinimizeAnchors] = useState<Partial<Record<AppId, MinimizeAnchor>>>({});
+  // Dock-button refs keyed by app id — needed to read each icon's
+  // viewport position when computing minimize anchors.
+  const dockIconRefs = useRef<Map<AppId, HTMLButtonElement>>(new Map());
   const [wallpapers, setWallpapers] = useState<WallpaperEntry[]>([]);
   const [wallpaperIndex, setWallpaperIndex] = useState(0);
   const [isDarkWallpaper, setIsDarkWallpaper] = useState(false);
   const [contextMenu, setContextMenu] = useState<DesktopContextMenuState | null>(null);
   const [desktopStatus, setDesktopStatus] = useState<string | null>(null);
+  const [showVisualStatus, setShowVisualStatus] = useState(true);
   const [isRefreshingDesktop, setIsRefreshingDesktop] = useState(false);
   const [iconPositions, setIconPositions] = useState<Record<string, { x: number; y: number }>>(() => {
     const positions: Record<string, { x: number; y: number }> = {};
     appRegistry.forEach((entry, index) => {
+      const col = Math.floor(index / 5);
+      const row = index % 5;
       positions[entry.id] = {
-        x: ICON_EDGE_PADDING,
-        y: ICON_EDGE_PADDING + index * ICON_CELL_HEIGHT,
+        x: 1440 - 104 - col * (ICON_CELL_WIDTH + 16),
+        y: ICON_EDGE_PADDING + row * ICON_CELL_HEIGHT,
       };
     });
     return positions;
@@ -537,23 +556,39 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
     if (typeof window === "undefined") return;
     try {
       const raw = window.localStorage.getItem(ICON_POSITIONS_STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as Record<string, { x: number; y: number }>;
-      if (!parsed || typeof parsed !== "object") return;
-      setIconPositions((prev) => {
-        const next = { ...prev };
-        for (const id of Object.keys(parsed)) {
-          const p = parsed[id];
-          if (p && typeof p.x === "number" && typeof p.y === "number") {
-            next[id] = { x: p.x, y: p.y };
-          }
+      if (raw) {
+        const parsed = JSON.parse(raw) as Record<string, { x: number; y: number }>;
+        if (parsed && typeof parsed === "object") {
+          setIconPositions((prev) => {
+            const next = { ...prev };
+            for (const id of Object.keys(parsed)) {
+              const p = parsed[id];
+              if (p && typeof p.x === "number" && typeof p.y === "number") {
+                next[id] = { x: p.x, y: p.y };
+              }
+            }
+            return next;
+          });
+          return;
         }
-        return next;
-      });
+      }
     } catch {
       // ignore malformed storage
     }
-  }, []);
+
+    // If no stored positions, initialize them dynamically based on the current window width (macOS style)
+    const rightRail = window.innerWidth < 900 ? 80 : 104;
+    const positions: Record<string, { x: number; y: number }> = {};
+    appRegistry.forEach((entry, index) => {
+      const col = Math.floor(index / 5);
+      const row = index % 5;
+      positions[entry.id] = {
+        x: window.innerWidth - rightRail - col * (ICON_CELL_WIDTH + 16),
+        y: ICON_EDGE_PADDING + row * ICON_CELL_HEIGHT,
+      };
+    });
+    setIconPositions(positions);
+  }, [appRegistry]);
 
   const commitIconPosition = (appId: AppId, pos: { x: number; y: number }) => {
     setIconPositions((prev) => {
@@ -693,6 +728,8 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
       return;
     }
 
+    const wasMinimized = windowState.isMinimized;
+
     setWindowStates((prev) => {
       const nextWindow = prev[appId];
       if (!nextWindow) {
@@ -713,9 +750,63 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
     });
 
     setActiveApp(appId);
+
+    if (wasMinimized) {
+      setTimeout(() => {
+        const windowEl = document.querySelector<HTMLElement>(`[data-window-id="${appId}"]`);
+        const dockEl = dockIconRefs.current.get(appId);
+        if (windowEl && dockEl) {
+          const wRect = windowEl.getBoundingClientRect();
+          const dRect = dockEl.getBoundingClientRect();
+          const dx = dRect.left + dRect.width / 2 - (wRect.left + wRect.width / 2);
+          const dy = dRect.top + dRect.height / 2 - (wRect.top + wRect.height / 2);
+
+          gsap.killTweensOf(windowEl);
+          windowEl.style.transition = "none";
+          gsap.fromTo(
+            windowEl,
+            {
+              transform: `translate3d(${dx}px, ${dy}px, 0) scale(0.06)`,
+              opacity: 0,
+              filter: "blur(4px)",
+            },
+            {
+              transform: "translate3d(0, 0, 0) scale(1)",
+              opacity: 1,
+              filter: "blur(0px)",
+              duration: 0.5,
+              ease: "power2.out",
+              onComplete: () => {
+                gsap.set(windowEl, { clearProps: "transform,opacity,filter" });
+                windowEl.style.transition = "";
+              },
+            }
+          );
+        }
+      }, 0);
+    }
   }
 
   function openWindow(appId: AppId) {
+    const dockIconEl = dockIconRefs.current.get(appId);
+    if (dockIconEl) {
+      gsap.killTweensOf(dockIconEl);
+      gsap.fromTo(
+        dockIconEl,
+        { y: 0 },
+        {
+          y: -14,
+          duration: 0.35,
+          ease: "power2.out",
+          yoyo: true,
+          repeat: 3,
+        }
+      );
+    }
+
+    const isAlreadyOpen = windowStates[appId]?.isOpen;
+    const wasMinimized = windowStates[appId]?.isMinimized;
+
     setWindowStates((prev) => {
       const currentWindow = prev[appId];
       if (!currentWindow) {
@@ -753,27 +844,86 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
     });
 
     setActiveApp(appId);
-  }
 
-  function closeWindow(appId: AppId) {
-    const nextActiveApp = getTopVisibleWindow(windowStates, appId);
+    if (wasMinimized) {
+      setTimeout(() => {
+        const windowEl = document.querySelector<HTMLElement>(`[data-window-id="${appId}"]`);
+        const dockEl = dockIconRefs.current.get(appId);
+        if (windowEl && dockEl) {
+          const wRect = windowEl.getBoundingClientRect();
+          const dRect = dockEl.getBoundingClientRect();
+          const dx = dRect.left + dRect.width / 2 - (wRect.left + wRect.width / 2);
+          const dy = dRect.top + dRect.height / 2 - (wRect.top + wRect.height / 2);
 
-    setWindowStates((prev) => ({
-      ...prev,
-      [appId]: {
-        ...prev[appId],
-        isOpen: false,
-        isMinimized: false,
-      },
-    }));
-
-    if (nextActiveApp) {
-      setActiveApp(nextActiveApp);
+          gsap.killTweensOf(windowEl);
+          windowEl.style.transition = "none";
+          gsap.fromTo(
+            windowEl,
+            {
+              transform: `translate3d(${dx}px, ${dy}px, 0) scale(0.06)`,
+              opacity: 0,
+              filter: "blur(4px)",
+            },
+            {
+              transform: "translate3d(0, 0, 0) scale(1)",
+              opacity: 1,
+              filter: "blur(0px)",
+              duration: 0.5,
+              ease: "power2.out",
+              onComplete: () => {
+                gsap.set(windowEl, { clearProps: "transform,opacity,filter" });
+                windowEl.style.transition = "";
+              },
+            }
+          );
+        }
+      }, 0);
+    } else if (!isAlreadyOpen) {
+      setTimeout(() => {
+        const windowEl = document.querySelector<HTMLElement>(`[data-window-id="${appId}"]`);
+        if (windowEl) {
+          gsap.killTweensOf(windowEl);
+          windowEl.style.transition = "none";
+          gsap.fromTo(
+            windowEl,
+            {
+              transform: "scale(0.94) translateY(12px)",
+              opacity: 0,
+            },
+            {
+              transform: "scale(1) translateY(0)",
+              opacity: 1,
+              duration: 0.4,
+              ease: "back.out(1.2)",
+              onComplete: () => {
+                gsap.set(windowEl, { clearProps: "transform,opacity" });
+                windowEl.style.transition = "";
+              },
+            }
+          );
+        }
+      }, 0);
     }
   }
 
   function minimizeWindow(appId: AppId) {
     const nextActiveApp = getTopVisibleWindow(windowStates, appId);
+
+    // Compute the dock-anchored minimize target. We query both the window
+    // and the dock icon's current viewport rects, then translate the
+    // window so its center lands on the icon's center. DesktopWindow's
+    // CSS-based MINIMIZE_TRANSITION handles the animation (translate +
+    // scale + fade + blur) — one transition, no double-firing.
+    const windowEl = document.querySelector<HTMLElement>(`[data-window-id="${appId}"]`);
+    const dockEl = dockIconRefs.current.get(appId);
+
+    if (windowEl && dockEl) {
+      const wRect = windowEl.getBoundingClientRect();
+      const dRect = dockEl.getBoundingClientRect();
+      const dx = dRect.left + dRect.width / 2 - (wRect.left + wRect.width / 2);
+      const dy = dRect.top + dRect.height / 2 - (wRect.top + wRect.height / 2);
+      setMinimizeAnchors((prev) => ({ ...prev, [appId]: { dx, dy } }));
+    }
 
     setWindowStates((prev) => ({
       ...prev,
@@ -788,7 +938,103 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
     }
   }
 
+  function closeWindow(appId: AppId) {
+    if (closingApps.has(appId)) return;
+
+    const nextActiveApp = getTopVisibleWindow(windowStates, appId);
+
+    setClosingApps((prev) => {
+      const next = new Set(prev);
+      next.add(appId);
+      return next;
+    });
+
+    if (nextActiveApp) {
+      setActiveApp(nextActiveApp);
+    }
+
+    const windowEl = document.querySelector<HTMLElement>(`[data-window-id="${appId}"]`);
+    if (windowEl) {
+      gsap.killTweensOf(windowEl);
+      windowEl.style.transition = "none";
+      gsap.fromTo(
+        windowEl,
+        {
+          transform: "scale(1)",
+          opacity: 1,
+        },
+        {
+          transform: "scale(0.94)",
+          opacity: 0,
+          duration: 0.22,
+          ease: "power2.in",
+          onComplete: () => {
+            setWindowStates((prev) => ({
+              ...prev,
+              [appId]: {
+                ...prev[appId],
+                isOpen: false,
+                isMinimized: false,
+              },
+            }));
+            setClosingApps((prev) => {
+              if (!prev.has(appId)) return prev;
+              const next = new Set(prev);
+              next.delete(appId);
+              return next;
+            });
+            setMinimizeAnchors((prev) => {
+              if (!(appId in prev)) return prev;
+              const { [appId]: _omit, ...rest } = prev;
+              return rest;
+            });
+            gsap.set(windowEl, { clearProps: "transform,opacity" });
+            windowEl.style.transition = "";
+          },
+        }
+      );
+    } else {
+      window.setTimeout(() => {
+        setWindowStates((prev) => ({
+          ...prev,
+          [appId]: {
+            ...prev[appId],
+            isOpen: false,
+            isMinimized: false,
+          },
+        }));
+        setClosingApps((prev) => {
+          if (!prev.has(appId)) return prev;
+          const next = new Set(prev);
+          next.delete(appId);
+          return next;
+        });
+        setMinimizeAnchors((prev) => {
+          if (!(appId in prev)) return prev;
+          const { [appId]: _omit, ...rest } = prev;
+          return rest;
+        });
+      }, CLOSE_ANIMATION_MS);
+    }
+  }
+
   function toggleWindowSize(appId: AppId) {
+    // Flag this app as maximizing so the wrapper uses the longer, more
+    // dramatic transition. Clear it once the animation has completed.
+    setMaximizingApps((prev) => {
+      const next = new Set(prev);
+      next.add(appId);
+      return next;
+    });
+    window.setTimeout(() => {
+      setMaximizingApps((prev) => {
+        if (!prev.has(appId)) return prev;
+        const next = new Set(prev);
+        next.delete(appId);
+        return next;
+      });
+    }, MAXIMIZE_ANIMATION_MS);
+
     setWindowStates((prev) => {
       const currentWindow = prev[appId];
       if (!currentWindow || !currentWindow.isOpen) {
@@ -903,12 +1149,13 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
     document.body.style.cursor = RESIZE_CURSOR[direction];
   }
 
-  function announceDesktopStatus(message: string) {
+  function announceDesktopStatus(message: string, visual = true) {
     if (statusTimeoutRef.current) {
       window.clearTimeout(statusTimeoutRef.current);
     }
 
     setDesktopStatus(message);
+    setShowVisualStatus(visual);
     statusTimeoutRef.current = window.setTimeout(() => {
       setDesktopStatus(null);
       statusTimeoutRef.current = null;
@@ -947,13 +1194,14 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
     setContextMenu(null);
     announceDesktopStatus(
       `Wallpaper changed to ${formatWallpaperLabel(nextWallpaper.name)}.`,
+      false
     );
   }
 
   function refreshDesktop() {
     setContextMenu(null);
     setIsRefreshingDesktop(true);
-    announceDesktopStatus("Desktop refreshed.");
+    announceDesktopStatus("Desktop refreshed.", true);
 
     if (refreshTimeoutRef.current) {
       window.clearTimeout(refreshTimeoutRef.current);
@@ -990,8 +1238,22 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
     ? `${activeWallpaper.url}${activeWallpaper.url.includes("?") ? "&" : "?"}v=${wallpaperIndex}`
     : null;
 
+  const isKraft = desktopTheme === "kraft";
+
+  const contextMenuBgClass = isKraft
+    ? "w-[248px] border-[#b7af9e] bg-[#e7dfcf] shadow-[0_10px_24px_rgba(25,18,8,0.16)] p-0 rounded-[12px]"
+    : "w-[180px] border-black/10 dark:border-white/10 bg-white/70 dark:bg-[#1e1e1e]/75 backdrop-blur-2xl shadow-[0_10px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] p-1 rounded-lg text-neutral-900 dark:text-neutral-100";
+
+  const contextMenuItemClass = isKraft
+    ? "w-full px-4 py-3 text-left text-[15px] font-medium text-[#2e271e] transition-colors hover:bg-[#f2ece0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3559a7] focus-visible:ring-inset disabled:cursor-not-allowed disabled:text-[#8b8173]"
+    : "w-full text-left px-2.5 py-1.5 rounded-[5px] hover:bg-[#007aff] hover:text-white text-[13px] font-medium transition-colors duration-75 focus-visible:outline-none focus-visible:bg-[#007aff] focus-visible:text-white disabled:opacity-50 disabled:hover:bg-transparent";
+
+  const contextMenuDividerClass = isKraft
+    ? "mx-3 h-px bg-[#c7c0b1] block"
+    : "h-px bg-black/5 dark:bg-white/10 my-1 mx-1 block";
+
   return (
-    <div className="relative h-screen w-screen overflow-hidden bg-[var(--kraft)] text-[var(--text-primary)]">
+    <div className={`relative h-screen w-screen overflow-hidden bg-[var(--kraft)] text-[var(--text-primary)] theme-${desktopTheme}`}>
       {/* Wallpaper layer — covers the entire viewport, including behind the menu bar */}
       <div className="pointer-events-none absolute inset-0 z-0">
         {activeWallpaperUrl && (
@@ -1013,11 +1275,20 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
 
       <div className="relative z-10 flex h-full flex-col overflow-hidden">
         <MenuBar
-          clientName={coursePackage?.meta?.client ?? "CaseForge"}
+          clientName={coursePackage?.meta?.client ?? "DA Business Case Study Judge"}
           taskTitle={currentTask?.title ?? null}
           timer={timer}
           attemptCount={attemptCount}
           activeWindowLabel={focusedEntry?.label ?? "Desktop"}
+          onCycleWallpaper={cycleWallpaper}
+          onRefreshDesktop={refreshDesktop}
+          isDarkWallpaper={isDarkWallpaper}
+        />
+        <ControlCenter
+          isOpen={controlCenterOpen}
+          onClose={() => setControlCenterOpen(false)}
+          brightness={brightness}
+          setBrightness={setBrightness}
         />
 
         <div
@@ -1049,6 +1320,7 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                 <DraggableDesktopIcon
                   key={entry.id}
                   icon={entry.icon}
+                  iconImage={entry.iconImage}
                   label={entry.label}
                   ariaLabel={`${entry.label}. ${entry.description}`}
                   isFocused={
@@ -1092,36 +1364,29 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
             const isMoving = isInteracting && interactionKind === "move";
 
             return (
-              <div
+              <DesktopWindow
                 key={entry.id}
-                onPointerDownCapture={() => bringWindowToFront(entry.id)}
-                className="absolute"
-                data-no-desktop-menu="true"
-                style={{
-                  left: windowState.x,
-                  top: windowState.y,
+                appId={entry.id}
+                bounds={{
+                  x: windowState.x,
+                  y: windowState.y,
                   width: windowState.width,
                   height: windowState.height,
-                  zIndex: windowState.zIndex,
-                  opacity: windowState.isMinimized ? 0 : 1,
-                  transform: windowState.isMinimized
-                    ? "translate3d(0, 48px, 0) scale(0.92)"
-                    : isMoving
-                      ? `translate3d(0, ${WINDOW_LIFT_OFFSET}px, 0) scale(${WINDOW_LIFT_SCALE})`
-                      : "translate3d(0, 0, 0) scale(1)",
-                  pointerEvents: windowState.isMinimized ? "none" : "auto",
-                  filter: isFocused ? "none" : "saturate(0.9) brightness(0.98)",
-                  transition: isInteracting ? WINDOW_INTERACTION_TRANSITION : WINDOW_TRANSITION,
-                  transformOrigin: "center top",
-                  willChange: isInteracting ? "transform" : undefined,
                 }}
+                zIndex={windowState.zIndex}
+                isOpen={windowState.isOpen}
+                isMinimized={windowState.isMinimized}
+                isClosing={closingApps.has(entry.id)}
+                isMaximizing={maximizingApps.has(entry.id)}
+                isInteracting={isInteracting}
+                isMoving={isMoving}
+                isFocused={isFocused}
+                minimizeAnchor={minimizeAnchors[entry.id]}
+                onPointerDownCapture={() => bringWindowToFront(entry.id)}
               >
                 <div className="relative h-full">
                   <WindowChrome
-                    title={`${currentTask?.title ?? "CaseForge"} — ${entry.label}`}
-                    subtitle={entry.description}
-                    appIcon={entry.icon}
-                    appLabel={entry.label}
+                    title={`${entry.label}${currentTask?.title ? ` — ${currentTask.title}` : ""}`}
                     isFocused={isFocused}
                     isMaximized={windowState.isMaximized}
                     onHeaderPointerDown={(event) => beginMove(entry.id, event)}
@@ -1146,7 +1411,7 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                     </>
                   )}
                 </div>
-              </div>
+              </DesktopWindow>
             );
           })}
 
@@ -1170,24 +1435,41 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                 return (
                   <button
                     key={entry.id}
+                    ref={(el) => {
+                      if (el) {
+                        dockIconRefs.current.set(entry.id, el);
+                      } else {
+                        dockIconRefs.current.delete(entry.id);
+                      }
+                    }}
                     type="button"
                     aria-label={`${entry.label}${isRunning ? ", open" : ""}`}
                     aria-pressed={isFocused}
                     onClick={() => openWindow(entry.id)}
                     data-no-desktop-menu="true"
                     className={`
-                      group relative flex h-12 w-12 items-center justify-center rounded-2xl border text-xl transition-all duration-200 backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-0 sm:h-14 sm:w-14 sm:text-2xl
+                      group relative flex h-12 w-12 items-center justify-center rounded-2xl border text-xl transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-0 sm:h-14 sm:w-14 sm:text-2xl
                       ${isFocused
-                        ? "border-white/65 bg-white/35 shadow-[inset_0_1px_0_rgba(255,255,255,0.65),inset_0_-1px_0_rgba(0,0,0,0.10),0_10px_22px_rgba(0,0,0,0.28)]"
-                        : isRunning
-                          ? "border-white/45 bg-white/22 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] hover:-translate-y-1 hover:bg-white/32"
-                          : "border-white/25 bg-white/12 shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] hover:-translate-y-1 hover:bg-white/22"
+                        ? "border-white/55 bg-white/25 backdrop-blur-md shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_8px_18px_rgba(0,0,0,0.22)]"
+                        : "border-transparent bg-transparent hover:-translate-y-1 hover:border-white/35 hover:bg-white/18 hover:backdrop-blur-md hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_6px_14px_rgba(0,0,0,0.20)]"
                       }
                     `}
                   >
-                    <span className="transition-transform duration-200 group-hover:scale-110 drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
-                      {entry.icon}
-                    </span>
+                    {entry.iconImage ? (
+                      <img
+                        src={entry.iconImage}
+                        alt=""
+                        draggable={false}
+                        width={40}
+                        height={40}
+                        className="h-9 w-9 object-contain transition-transform duration-200 group-hover:scale-110 sm:h-10 sm:w-10"
+                        style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.25))" }}
+                      />
+                    ) : (
+                      <span className="transition-transform duration-200 group-hover:scale-110 drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">
+                        {entry.icon}
+                      </span>
+                    )}
                     <span
                       className={`
                         absolute -bottom-[7px] h-1.5 rounded-full transition-all duration-200
@@ -1211,7 +1493,7 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
               role="menu"
               aria-label="Desktop actions"
               aria-orientation="vertical"
-              className="desktop-context-menu absolute z-40 w-[248px] overflow-hidden rounded-[12px] border border-[#b7af9e] bg-[#e7dfcf] shadow-[0_10px_24px_rgba(25,18,8,0.16)]"
+              className={`desktop-context-menu absolute z-40 overflow-hidden border ${contextMenuBgClass}`}
               style={{
                 left: contextMenu.x,
                 top: contextMenu.y,
@@ -1224,18 +1506,18 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                 role="menuitem"
                 onClick={cycleWallpaper}
                 disabled={!wallpapers.length}
-                className="w-full px-4 py-3 text-left text-[15px] font-medium text-[#2e271e] transition-colors hover:bg-[#f2ece0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3559a7] focus-visible:ring-inset disabled:cursor-not-allowed disabled:text-[#8b8173]"
+                className={contextMenuItemClass}
               >
                 Change Wallpaper
               </button>
 
-              <span className="mx-3 h-px bg-[#c7c0b1]" aria-hidden="true" />
+              <span className={contextMenuDividerClass} aria-hidden="true" />
 
               <button
                 type="button"
                 role="menuitem"
                 onClick={refreshDesktop}
-                className="w-full px-4 py-3 text-left text-[15px] font-medium text-[#2e271e] transition-colors hover:bg-[#f2ece0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3559a7] focus-visible:ring-inset"
+                className={contextMenuItemClass}
               >
                 Refresh Desktop
               </button>
@@ -1243,7 +1525,7 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
           )}
 
           {desktopStatus && (
-            <div className="pointer-events-none absolute bottom-6 right-5 z-40">
+            <div className={`pointer-events-none absolute bottom-6 right-5 z-40 ${showVisualStatus ? "" : "sr-only"}`}>
               <div
                 className="desktop-status-chip rounded-[18px] border border-white/60 bg-[#1d1b16]/78 px-4 py-2 text-sm font-medium text-[#f3ead8] shadow-[0_18px_42px_rgba(25,18,8,0.32)] backdrop-blur-xl"
                 aria-live="polite"
@@ -1252,6 +1534,13 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                 {desktopStatus}
               </div>
             </div>
+          )}
+
+          {brightness < 100 && (
+            <div
+              className="macos-brightness-dimmer"
+              style={{ opacity: (100 - brightness) / 100 }}
+            />
           )}
         </div>
       </div>
@@ -1287,6 +1576,7 @@ function ResizeHandle({
 
 function DesktopIcon({
   icon,
+  iconImage,
   label,
   ariaLabel,
   detail,
@@ -1299,6 +1589,7 @@ function DesktopIcon({
   isDarkBackground = false,
 }: {
   icon: string;
+  iconImage?: string;
   label: string;
   ariaLabel?: string;
   detail?: string;
@@ -1314,30 +1605,47 @@ function DesktopIcon({
     <>
       <div
         className={`
-          relative flex h-[60px] w-[60px] items-center justify-center rounded-[16px] text-[32px] leading-none transition-all duration-200 backdrop-blur-2xl
+          relative flex h-[68px] w-[68px] items-center justify-center rounded-[18px] transition-all duration-150
           ${isFocused
-            ? "bg-white/30 border border-white/55 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),inset_0_-1px_0_rgba(0,0,0,0.08),0_10px_28px_rgba(0,0,0,0.28)]"
-            : "bg-white/18 border border-white/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(0,0,0,0.10),0_8px_22px_rgba(0,0,0,0.22)] group-hover:scale-[1.06] group-hover:bg-white/26"
+            ? "bg-white/22 border border-white/40 backdrop-blur-2xl shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_8px_22px_rgba(0,0,0,0.22)]"
+            : "bg-transparent border border-transparent group-hover:bg-white/18 group-hover:border-white/30 group-hover:backdrop-blur-xl group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_6px_18px_rgba(0,0,0,0.18)]"
           }
         `}
       >
-        <span className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.25)]">{icon}</span>
+        {iconImage ? (
+          <img
+            src={iconImage}
+            alt=""
+            draggable={false}
+            width={56}
+            height={56}
+            className="h-[56px] w-[56px] object-contain transition-transform duration-150 group-hover:scale-[1.04]"
+            style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.35))" }}
+          />
+        ) : (
+          <span
+            className="text-[52px] leading-none transition-transform duration-150 group-hover:scale-[1.04]"
+            style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.35))" }}
+          >
+            {icon}
+          </span>
+        )}
         {isOpen && (
-          <span className="absolute -bottom-[7px] h-1.5 w-4 rounded-full bg-white/85 shadow-[0_0_8px_rgba(255,255,255,0.55)]" />
+          <span className="absolute -bottom-[6px] h-1.5 w-4 rounded-full bg-white/90 shadow-[0_0_8px_rgba(255,255,255,0.55)]" />
         )}
       </div>
 
       <span
         className={`
-          text-center text-[13px] font-semibold leading-tight
-          ${isDarkBackground ? "text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" : isFocused ? "text-[#1d1b16]" : "text-[#2c261d]"}
+          text-center text-[12px] font-semibold leading-tight
+          ${isDarkBackground ? "text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]" : isFocused ? "text-[#1d1b16]" : "text-[#2c261d]"}
         `}
       >
         {label}
       </span>
 
       {showDetail && detail && (
-        <span className={`max-w-[80px] truncate text-center text-[11px] leading-tight ${isDarkBackground ? "text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]" : "text-[#625642]"}`}>
+        <span className={`max-w-[76px] truncate text-center text-[10px] leading-tight ${isDarkBackground ? "text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]" : "text-[#625642]"}`}>
           {detail}
         </span>
       )}
@@ -1345,7 +1653,7 @@ function DesktopIcon({
   );
 
   const className = `
-    group flex w-[88px] select-none flex-col items-center gap-1.5 rounded-[18px] px-2 py-2 text-left transition-all duration-200
+    group flex w-[80px] select-none flex-col items-center gap-1 rounded-[14px] px-1 py-1 text-left transition-all duration-150
     ${interactive ? "cursor-pointer" : "cursor-default"}
     ${dimmed ? "opacity-85" : ""}
   `;
@@ -1374,6 +1682,7 @@ function DesktopIcon({
 
 function DraggableDesktopIcon({
   icon,
+  iconImage,
   label,
   ariaLabel,
   isFocused,
@@ -1385,6 +1694,7 @@ function DraggableDesktopIcon({
   onClick,
 }: {
   icon: string;
+  iconImage?: string;
   label: string;
   ariaLabel?: string;
   isFocused: boolean;
@@ -1486,6 +1796,7 @@ function DraggableDesktopIcon({
     >
       <DesktopIcon
         icon={icon}
+        iconImage={iconImage}
         label={label}
         ariaLabel={ariaLabel}
         isFocused={isFocused}
