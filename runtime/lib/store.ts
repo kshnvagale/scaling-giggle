@@ -34,6 +34,16 @@ export interface CaseForgeState {
   // Desktop shell
   activeApp: AppId;
   setActiveApp: (app: AppId) => void;
+  // One-shot request for the Desktop window manager to open a (possibly
+  // closed/minimized) window. Cross-app coordination (e.g. Notebook asking
+  // Desktop to open Chat after Submit-for-Review). Desktop reads & clears.
+  pendingOpenWindow: AppId | null;
+  requestOpenWindow: (app: AppId) => void;
+  clearPendingOpenWindow: () => void;
+  // Last-read timestamp per persona thread. Used to compute unread badges
+  // on the Chat dock icon and the persona row in the chat sidebar.
+  chatLastReadAt: Record<string, number>;
+  markPersonaRead: (personaId: string) => void;
 
   // Wiki
   activeWikiSlug: string | null;
@@ -91,23 +101,15 @@ export interface CaseForgeState {
   bootPyodide: () => Promise<void>;
   setCellLiveOutputs: (cellId: string, outputs: NotebookOutput[]) => void;
 
-  // Netflix sim — iterative submit
-  insightsDraft: string;
-  feedbackHistory: Array<{
-    id: string;
-    round: number;
-    feedback: string;
-    fromPersonaId: string;
-    at: number;
-  }>;
+  // Netflix sim — Submit-for-Review loop
+  reviewStatus: "idle" | "reviewing" | "error";
+  reviewError: string | null;
+  reviewCount: number;
+  lastReviewScore: number | null;
   submissionFinalized: boolean;
-  setInsightsDraft: (text: string) => void;
-  appendFeedback: (entry: {
-    round: number;
-    feedback: string;
-    fromPersonaId: string;
-  }) => void;
+  submitForReview: () => Promise<void>;
   finalizeSubmission: () => void;
+  dismissReviewError: () => void;
 
   // Initialization
   loadCoursePackage: (pkg: CoursePackageData, taskId?: string) => void;
@@ -129,11 +131,40 @@ export interface CaseForgeState {
 
 const INTRO_SEEN_KEY = "caseforge:intro-seen";
 
+// Convert the authored MockFeedbackState[] into rubric tiers the AI judge can anchor to.
+// Each state's `score` defines the tier centre; we widen by ~halfway to the adjacent state.
+function buildRubricTiers(
+  mockFeedback: Array<{ id: string; score?: number; feedback: string }>,
+): Array<{ scoreMin: number; scoreMax: number; label: string; exampleFeedback: string }> {
+  const sorted = mockFeedback
+    .filter((s) => typeof s.score === "number")
+    .sort((a, b) => (a.score as number) - (b.score as number));
+  if (sorted.length === 0) {
+    // No scored states — return a single permissive tier so the LLM still works.
+    return [{ scoreMin: 0, scoreMax: 100, label: "any", exampleFeedback: mockFeedback[0]?.feedback ?? "" }];
+  }
+  return sorted.map((state, idx) => {
+    const center = state.score as number;
+    const prev = idx > 0 ? (sorted[idx - 1].score as number) : -1;
+    const next = idx < sorted.length - 1 ? (sorted[idx + 1].score as number) : 101;
+    const scoreMin = idx === 0 ? 0 : Math.floor((prev + center) / 2) + 1;
+    const scoreMax = idx === sorted.length - 1 ? 100 : Math.floor((center + next) / 2);
+    return {
+      scoreMin: Math.max(0, scoreMin),
+      scoreMax: Math.min(100, scoreMax),
+      label: state.id,
+      exampleFeedback: state.feedback,
+    };
+  });
+}
+
 export const useCaseForgeStore = create<CaseForgeState>()((set, get) => ({
   // Initial values
   coursePackage: null,
   currentTask: null,
   activeApp: "briefing",
+  pendingOpenWindow: null,
+  chatLastReadAt: {},
   activeWikiSlug: null,
   activePersonaId: null,
   chatHistories: {},
@@ -156,13 +187,19 @@ export const useCaseForgeStore = create<CaseForgeState>()((set, get) => ({
   pyodideBootError: null,
   cellLiveOutputs: {},
 
-  // Netflix sim — iterative submit
-  insightsDraft: "",
-  feedbackHistory: [],
+  // Netflix sim — Submit-for-Review loop
+  reviewStatus: "idle",
+  reviewError: null,
+  reviewCount: 0,
+  lastReviewScore: null,
   submissionFinalized: false,
 
   // Desktop
   setActiveApp: (app) => set({ activeApp: app }),
+  requestOpenWindow: (app) => set({ pendingOpenWindow: app }),
+  clearPendingOpenWindow: () => set({ pendingOpenWindow: null }),
+  markPersonaRead: (personaId) =>
+    set((s) => ({ chatLastReadAt: { ...s.chatLastReadAt, [personaId]: Date.now() } })),
   setDesktopTheme: (theme) => set({ desktopTheme: theme }),
   setIsOnline: (online) => set({ isOnline: online }),
   setVolume: (volume) => set({ volume }),
@@ -418,24 +455,126 @@ export const useCaseForgeStore = create<CaseForgeState>()((set, get) => ({
       cellLiveOutputs: { ...s.cellLiveOutputs, [cellId]: outputs },
     })),
 
-  // Netflix sim — iterative submit
-  setInsightsDraft: (text) => set({ insightsDraft: text }),
-
-  appendFeedback: (entry) =>
-    set((s) => ({
-      feedbackHistory: [
-        ...s.feedbackHistory,
-        {
-          id: crypto.randomUUID(),
-          round: entry.round,
-          feedback: entry.feedback,
-          fromPersonaId: entry.fromPersonaId,
-          at: Date.now(),
-        },
-      ],
-    })),
+  // Netflix sim — Submit-for-Review loop
+  dismissReviewError: () => set({ reviewStatus: "idle", reviewError: null }),
 
   finalizeSubmission: () => set({ submissionFinalized: true }),
+
+  submitForReview: async () => {
+    const state = get();
+    if (state.reviewStatus === "reviewing" || state.submissionFinalized) return;
+
+    const pkg = state.coursePackage;
+    const task = state.currentTask ?? pkg?.modules?.[0]?.tasks?.[0];
+    if (!pkg || !task) {
+      set({ reviewStatus: "error", reviewError: "no active case loaded" });
+      return;
+    }
+
+    // Resolve the active notebook (first one linked to the current task).
+    const notebooks = pkg.fixtures?.notebooks ?? [];
+    const notebook =
+      notebooks.find((nb: any) => nb.linkedTasks?.includes(task.id)) ?? notebooks[0];
+    if (!notebook) {
+      set({ reviewStatus: "error", reviewError: "no notebook to submit" });
+      return;
+    }
+
+    // Gather current cell sources from store overlay (live edits) merged with authored.
+    const overlay = state.notebookState?.[notebook.slug];
+    const cellOrder: string[] = overlay?.cellOrder ?? notebook.cells.map((c: any) => c.id);
+    const submittedCells = cellOrder.map((cellId) => {
+      const authored = notebook.cells.find((c: any) => c.id === cellId);
+      const userCell = overlay?.userCells?.[cellId];
+      const editedSource = overlay?.cellSourceEdits?.[cellId];
+      const type = userCell?.type ?? authored?.type ?? "code";
+      const source = editedSource ?? userCell?.source ?? authored?.source ?? "";
+      return { type, source } as { type: "code" | "markdown"; source: string };
+    });
+
+    // Resolve the reviewer persona (first one in mockFeedback, default "priya").
+    const deliverable: any = task.deliverable ?? {};
+    const mockFeedback: any[] = deliverable.mockFeedback ?? [];
+    const reviewerId: string = mockFeedback[0]?.fromPersonaId ?? "priya";
+    const reviewer = pkg.personas?.find((p: any) => p.id === reviewerId);
+    const completionThreshold: number = deliverable.completionScoreThreshold ?? 80;
+
+    set({ reviewStatus: "reviewing", reviewError: null });
+
+    // Try the AI judge first; fall back to the deterministic mock judge on any failure.
+    let result: { score: number; feedback: string } | null = null;
+    try {
+      const rubricTiers = buildRubricTiers(mockFeedback);
+      const res = await fetch("/api/judge-notebook", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          notebookCells: submittedCells,
+          persona: {
+            name: reviewer?.name ?? reviewerId,
+            systemPrompt: reviewer?.systemPrompt ?? "",
+          },
+          rubricTiers,
+          caseContext: task.brief?.slice(0, 800),
+          worldContext: pkg.world?.clientProfile?.slice(0, 600),
+          completionThreshold,
+        }),
+      });
+      if (res.ok) {
+        const data = (await res.json()) as { score?: number; feedback?: string };
+        if (typeof data.score === "number" && typeof data.feedback === "string") {
+          result = { score: data.score, feedback: data.feedback };
+        }
+      }
+    } catch {
+      // network error → fall through to mock judge
+    }
+
+    if (!result) {
+      // Deterministic fallback using the mock judge cascade.
+      const { mockJudge } = await import("@/lib/mock-judge");
+      const sourceConcat = submittedCells.map((c) => c.source.toLowerCase()).join("\n");
+      const matched = mockJudge(
+        { insightsText: "", notebookCellCount: submittedCells.length, notebookSourceConcat: sourceConcat },
+        mockFeedback,
+      );
+      if (matched) {
+        result = {
+          score: typeof matched.score === "number" ? matched.score : 50,
+          feedback: matched.feedback,
+        };
+      } else {
+        result = { score: 50, feedback: "got your draft, but i can't review it right now. try again in a sec?" };
+      }
+    }
+
+    // Deliver feedback as a chat message in the reviewer's thread.
+    const { feedback, score } = result;
+    const reviewCount = state.reviewCount + 1;
+    set((s) => {
+      const history = s.chatHistories[reviewerId] ?? [];
+      const newMsg: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        personaId: reviewerId,
+        content: feedback,
+        timestamp: Date.now(),
+        meta: { kind: "review", round: reviewCount, score },
+      };
+      return {
+        chatHistories: { ...s.chatHistories, [reviewerId]: [...history, newMsg] },
+        reviewStatus: "idle" as const,
+        reviewCount,
+        lastReviewScore: score,
+      };
+    });
+
+    // If at or above threshold, finalize the case.
+    if (score >= completionThreshold) {
+      // Wait a beat so the user sees the feedback message land before the overlay.
+      setTimeout(() => set({ submissionFinalized: true }), 1500);
+    }
+  },
 
   // Init
   loadCoursePackage: (pkg, taskId) => {
@@ -446,6 +585,8 @@ export const useCaseForgeStore = create<CaseForgeState>()((set, get) => ({
       coursePackage: pkg,
       currentTask: task ?? null,
       activeApp: "briefing",
+      pendingOpenWindow: null,
+      chatLastReadAt: {},
       activeWikiSlug: null,
       activePersonaId: null,
       chatHistories: {},
@@ -459,8 +600,10 @@ export const useCaseForgeStore = create<CaseForgeState>()((set, get) => ({
       pyodideBootStatus: "idle",
       pyodideBootError: null,
       cellLiveOutputs: {},
-      insightsDraft: "",
-      feedbackHistory: [],
+      reviewStatus: "idle",
+      reviewError: null,
+      reviewCount: 0,
+      lastReviewScore: null,
       submissionFinalized: false,
     });
   },

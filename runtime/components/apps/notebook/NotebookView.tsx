@@ -20,7 +20,39 @@ export default function NotebookView({ notebook }: NotebookViewProps) {
   const bootError = useCaseForgeStore((s) => s.pyodideBootError);
   const bootPyodide = useCaseForgeStore((s) => s.bootPyodide);
 
+  // Submit-for-Review (iterative judge cases)
+  const currentTask = useCaseForgeStore((s) => s.currentTask);
+  const personas = useCaseForgeStore((s) => s.coursePackage?.personas ?? []);
+  const reviewStatus = useCaseForgeStore((s) => s.reviewStatus);
+  const reviewCount = useCaseForgeStore((s) => s.reviewCount);
+  const submissionFinalized = useCaseForgeStore((s) => s.submissionFinalized);
+  const submitForReview = useCaseForgeStore((s) => s.submitForReview);
+  const setActivePersonaId = useCaseForgeStore((s) => s.setActivePersonaId);
+  const requestOpenWindow = useCaseForgeStore((s) => s.requestOpenWindow);
+
+  const judgeMode: string = currentTask?.deliverable?.judgeMode ?? "single";
+  const isIterativeCase = judgeMode === "iterative";
+  const reviewerId: string =
+    currentTask?.deliverable?.mockFeedback?.[0]?.fromPersonaId ?? "priya";
+  const reviewer = personas.find((p: { id: string }) => p.id === reviewerId);
+  const reviewerName: string = reviewer?.name ?? "Priya";
+
   const isPyodide = notebook.runtime === "pyodide";
+
+  async function handleSubmitForReview() {
+    if (reviewStatus === "reviewing" || submissionFinalized) return;
+    // Open Chat focused on the reviewer's thread BEFORE the API call so the
+    // user immediately sees where feedback will land. The "Priya is reviewing"
+    // indicator appears in the chat thread while submitForReview is in-flight.
+    setActivePersonaId(reviewerId);
+    requestOpenWindow("chat");
+    await submitForReview();
+  }
+
+  const submitDisabled =
+    reviewStatus === "reviewing" ||
+    submissionFinalized ||
+    (isPyodide && bootStatus !== "ready");
 
   useEffect(() => {
     initOverlay(
@@ -123,6 +155,29 @@ export default function NotebookView({ notebook }: NotebookViewProps) {
           >
             + Markdown
           </button>
+          {isIterativeCase && (
+            <>
+              <div className="mx-1 h-4 w-px bg-stone-300" />
+              <button
+                onClick={handleSubmitForReview}
+                disabled={submitDisabled}
+                title={
+                  submissionFinalized
+                    ? "Submission locked"
+                    : reviewStatus === "reviewing"
+                    ? `${reviewerName} is reviewing…`
+                    : `Send your notebook to ${reviewerName} for feedback`
+                }
+                className="rounded bg-[#E50914] px-3 py-1 text-[11.5px] font-semibold text-white shadow-sm hover:bg-[#b30710] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {reviewStatus === "reviewing"
+                  ? `${reviewerName} reviewing…`
+                  : reviewCount === 0
+                  ? "Submit for Review"
+                  : `Submit for Review (round ${reviewCount + 1})`}
+              </button>
+            </>
+          )}
         </div>
       </div>
 

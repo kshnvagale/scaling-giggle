@@ -50,13 +50,6 @@ export const APP_REGISTRY: AppRegistryEntry[] = [
     iconImage: "/icons/notebook.png",
     description: "Interactive notebooks with code and analysis",
   },
-  {
-    id: "submit",
-    label: "Submit",
-    icon: "\u{1F4E4}",
-    iconImage: "/icons/briefing.png",
-    description: "Submit your deliverable for review",
-  },
 ];
 
 export function getAppEntry(id: string) {

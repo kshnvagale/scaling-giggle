@@ -10,6 +10,7 @@ import { DesktopWindow, type MinimizeAnchor } from "./DesktopWindow";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import ControlCenter from "./ControlCenter";
+import CaseCompleteOverlay from "./CaseCompleteOverlay";
 
 const CLOSE_ANIMATION_MS = 220;
 const MAXIMIZE_ANIMATION_MS = 360;
@@ -169,15 +170,6 @@ const WINDOW_PRESETS: Record<AppId, WindowPreset> = {
     minHeight: 540,
     xBias: 0.34,
     yBias: 0.22,
-    open: false,
-  },
-  submit: {
-    width: 980,
-    height: 680,
-    minWidth: 720,
-    minHeight: 480,
-    xBias: 0.32,
-    yBias: 0.2,
     open: false,
   },
 };
@@ -414,6 +406,24 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
   const timer = useCaseForgeStore((s) => s.timer);
   const attemptCount = useCaseForgeStore((s) => s.attemptCount);
   const coursePackage = useCaseForgeStore((s) => s.coursePackage);
+  const pendingOpenWindow = useCaseForgeStore((s) => s.pendingOpenWindow);
+  const clearPendingOpenWindow = useCaseForgeStore((s) => s.clearPendingOpenWindow);
+  const chatHistories = useCaseForgeStore((s) => s.chatHistories);
+  const chatLastReadAt = useCaseForgeStore((s) => s.chatLastReadAt);
+
+  // Chat dock badge: red dot if ANY persona thread has an unseen assistant
+  // message. Threads are "seen" when the user opens or selects that persona;
+  // see ChatApp.handleSelectPersona + the active-thread useEffect.
+  const chatHasUnread = useMemo(() => {
+    for (const [personaId, history] of Object.entries(chatHistories)) {
+      if (!history || history.length === 0) continue;
+      const last = history[history.length - 1];
+      if (last.role !== "assistant") continue;
+      const lastReadAt = chatLastReadAt[personaId] ?? 0;
+      if (last.timestamp > lastReadAt) return true;
+    }
+    return false;
+  }, [chatHistories, chatLastReadAt]);
 
   const desktopTheme = useCaseForgeStore((s) => s.desktopTheme);
   const controlCenterOpen = useCaseForgeStore((s) => s.controlCenterOpen);
@@ -915,6 +925,18 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
     }
   }
 
+  // Consume cross-app "please open this window" requests posted to the store
+  // (e.g. Notebook asking us to open Chat after Submit-for-Review).
+  useEffect(() => {
+    if (pendingOpenWindow) {
+      openWindow(pendingOpenWindow);
+      clearPendingOpenWindow();
+    }
+    // openWindow & clearPendingOpenWindow are stable refs in this component;
+    // we only want to fire when the request id changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingOpenWindow]);
+
   function minimizeWindow(appId: AppId) {
     const nextActiveApp = getTopVisibleWindow(windowStates, appId);
 
@@ -1299,6 +1321,7 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
           brightness={brightness}
           setBrightness={setBrightness}
         />
+        <CaseCompleteOverlay />
 
         <div
           className={`relative flex-1 overflow-hidden ${isRefreshingDesktop ? "desktop-shell-refresh" : ""}`}
@@ -1325,6 +1348,10 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                   viewport.height - MENU_BAR_HEIGHT - layoutMetrics.dockHeight - ICON_CELL_HEIGHT,
                 ),
               );
+              const showChatBadge =
+                entry.id === "chat" &&
+                chatHasUnread &&
+                !(entry.id === activeApp && windowState?.isOpen && !windowState.isMinimized);
               return (
                 <DraggableDesktopIcon
                   key={entry.id}
@@ -1341,6 +1368,7 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                   onPositionChange={(p) => setIconPositionTransient(entry.id, p)}
                   onCommit={(p) => commitIconPosition(entry.id, p)}
                   onClick={() => openWindow(entry.id)}
+                  hasNotification={showChatBadge}
                 />
               );
             })}
@@ -1440,6 +1468,7 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                 const isFocused =
                   entry.id === activeApp && windowState?.isOpen && !windowState.isMinimized;
                 const isRunning = windowState?.isOpen;
+                const showChatBadge = entry.id === "chat" && chatHasUnread && !isFocused;
 
                 return (
                   <button
@@ -1490,6 +1519,12 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
                         }
                       `}
                     />
+                    {showChatBadge && (
+                      <span
+                        aria-label="unread message"
+                        className="absolute -top-1 -right-1 h-3.5 w-3.5 rounded-full bg-[#e01e5a] ring-2 ring-white/90 shadow-[0_0_6px_rgba(224,30,90,0.5)]"
+                      />
+                    )}
                   </button>
                 );
               })}
@@ -1596,6 +1631,7 @@ function DesktopIcon({
   interactive = true,
   showDetail = true,
   isDarkBackground = false,
+  hasNotification = false,
 }: {
   icon: string;
   iconImage?: string;
@@ -1609,6 +1645,7 @@ function DesktopIcon({
   interactive?: boolean;
   showDetail?: boolean;
   isDarkBackground?: boolean;
+  hasNotification?: boolean;
 }) {
   const content = (
     <>
@@ -1641,6 +1678,12 @@ function DesktopIcon({
         )}
         {isOpen && (
           <span className="absolute -bottom-[6px] h-1.5 w-4 rounded-full bg-white/90 shadow-[0_0_8px_rgba(255,255,255,0.55)]" />
+        )}
+        {hasNotification && (
+          <span
+            aria-label="unread notification"
+            className="absolute -top-1 -right-1 h-[14px] w-[14px] rounded-full bg-[#e01e5a] ring-2 ring-white/85 shadow-[0_0_6px_rgba(224,30,90,0.45)]"
+          />
         )}
       </div>
 
@@ -1701,6 +1744,7 @@ function DraggableDesktopIcon({
   onPositionChange,
   onCommit,
   onClick,
+  hasNotification = false,
 }: {
   icon: string;
   iconImage?: string;
@@ -1713,6 +1757,7 @@ function DraggableDesktopIcon({
   onPositionChange: (p: { x: number; y: number }) => void;
   onCommit: (p: { x: number; y: number }) => void;
   onClick: () => void;
+  hasNotification?: boolean;
 }) {
   const dragRef = useRef<{
     startX: number;
@@ -1813,6 +1858,7 @@ function DraggableDesktopIcon({
         onClick={handleClick}
         showDetail={false}
         isDarkBackground={isDarkBackground}
+        hasNotification={hasNotification}
       />
     </div>
   );

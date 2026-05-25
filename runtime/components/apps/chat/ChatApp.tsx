@@ -28,6 +28,9 @@ export default function ChatApp() {
   const [isSending, setIsSending] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const hasAutoScrolledRef = useRef(false);
+  const reviewStatus = useCaseForgeStore((s) => s.reviewStatus);
+  const chatLastReadAt = useCaseForgeStore((s) => s.chatLastReadAt);
+  const markPersonaRead = useCaseForgeStore((s) => s.markPersonaRead);
 
   const linkedPersonas: any[] =
     coursePackage?.personas?.filter(
@@ -57,6 +60,7 @@ export default function ChatApp() {
   const handleSelectPersona = useCallback(
     (id: string) => {
       setActivePersonaId(id);
+      markPersonaRead(id);
       const history = chatHistories[id];
       if (!history || history.length === 0) {
         const persona = linkedPersonas.find((p: any) => p.id === id);
@@ -68,8 +72,17 @@ export default function ChatApp() {
         }
       }
     },
-    [setActivePersonaId, chatHistories, linkedPersonas, addChatMessage],
+    [setActivePersonaId, markPersonaRead, chatHistories, linkedPersonas, addChatMessage],
   );
+
+  // Mark the active persona's thread as read whenever new messages land while
+  // the user is viewing it (so AI replies don't leave an unread badge stuck on
+  // the persona the user is actively chatting with).
+  useEffect(() => {
+    if (activePersonaId && messages.length > 0) {
+      markPersonaRead(activePersonaId);
+    }
+  }, [activePersonaId, messages.length, markPersonaRead]);
 
   const handleSend = useCallback(
     async (text: string) => {
@@ -145,7 +158,15 @@ export default function ChatApp() {
 
           {linkedPersonas.map((persona: any, i: number) => {
             const isActive = persona.id === activePersonaId;
-            const hasHistory = (chatHistories[persona.id]?.length ?? 0) > 0;
+            const history = chatHistories[persona.id] ?? [];
+            const hasHistory = history.length > 0;
+            const lastMessageAt = history.length > 0 ? history[history.length - 1].timestamp : 0;
+            const lastReadAt = chatLastReadAt[persona.id] ?? 0;
+            const lastMessageRole = history.length > 0 ? history[history.length - 1].role : "user";
+            // Unread = there's an assistant message newer than our last read,
+            // AND this thread isn't the one we're currently viewing.
+            const hasUnread =
+              !isActive && lastMessageRole === "assistant" && lastMessageAt > lastReadAt;
             return (
               <button
                 key={persona.id}
@@ -171,9 +192,23 @@ export default function ChatApp() {
                   <span className="absolute -bottom-0.5 -right-0.5 w-[8px] h-[8px] rounded-full bg-[#2bac76] border-[1.5px] border-[#1a1d21]" />
                 </div>
 
-                <span className={`text-[13px] truncate ${isActive ? "font-medium" : hasHistory ? "" : "text-[#cfc3cf]/70"}`}>
+                <span
+                  className={`flex-1 min-w-0 truncate text-[13px] ${
+                    isActive
+                      ? "font-medium"
+                      : hasUnread
+                      ? "font-semibold text-white"
+                      : hasHistory
+                      ? ""
+                      : "text-[#cfc3cf]/70"
+                  }`}
+                >
                   {persona.name}
                 </span>
+
+                {hasUnread && (
+                  <span className="ml-1 inline-block h-[7px] w-[7px] flex-shrink-0 rounded-full bg-[#e01e5a]" />
+                )}
               </button>
             );
           })}
@@ -245,8 +280,8 @@ export default function ChatApp() {
               );
             })}
 
-            {/* Typing indicator */}
-            {isSending && (
+            {/* Typing / reviewing indicator */}
+            {(isSending || reviewStatus === "reviewing") && (
               <div className="flex items-start gap-2 px-5 py-1">
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center text-[11px] font-bold text-white flex-shrink-0 mt-0.5"
@@ -255,10 +290,15 @@ export default function ChatApp() {
                   {getInitials(activePersona.name)}
                 </div>
                 <div className="pt-3">
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     <span className="typing-dot w-[6px] h-[6px] rounded-full bg-[#616061]" />
                     <span className="typing-dot w-[6px] h-[6px] rounded-full bg-[#616061]" />
                     <span className="typing-dot w-[6px] h-[6px] rounded-full bg-[#616061]" />
+                    {reviewStatus === "reviewing" && (
+                      <span className="ml-1.5 text-[11.5px] italic text-[#616061]">
+                        reviewing your notebook…
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

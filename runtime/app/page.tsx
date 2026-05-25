@@ -20,7 +20,6 @@ import SheetsApp from "@/components/apps/sheets/SheetsApp";
 import BigQueryApp from "@/components/apps/bigquery/BigQueryApp";
 import TerminalApp from "@/components/apps/terminal/TerminalApp";
 import NotebookApp from "@/components/apps/notebook/NotebookApp";
-import SubmitApp from "@/components/apps/submit/SubmitApp";
 
 import { IntroGate } from "@/components/intro/IntroGate";
 import { IntroOnboarding } from "@/components/intro/IntroOnboarding";
@@ -33,7 +32,6 @@ const APP_COMPONENTS: Record<AppId, React.ComponentType> = {
   bigquery: BigQueryApp,
   terminal: TerminalApp,
   notebook: NotebookApp,
-  submit: SubmitApp,
 };
 
 export default function HomePage() {
@@ -44,9 +42,10 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
 
   // Dock visibility depends on the active case's judgeMode. Iterative cases
-  // (Netflix) get Submit. Single-shot cases (Helix) get the operational apps
-  // (Sheets / BigQuery / Terminal) that currently still carry Helix-specific
-  // hardcoded content. When those apps become data-driven this gate can relax.
+  // (Netflix) submit-for-review from the Notebook so the legacy operational
+  // apps (Sheets / BigQuery / Terminal) — which currently still carry Helix-
+  // specific hardcoded content — are gated out. When those apps become
+  // data-driven this gate can relax.
   const visibleApps = useMemo(() => {
     const judgeMode =
       currentTask?.deliverable?.judgeMode ??
@@ -54,7 +53,6 @@ export default function HomePage() {
       "single";
     const isIterative = judgeMode === "iterative";
     return APP_REGISTRY.filter((app) => {
-      if (app.id === "submit") return isIterative;
       if (app.id === "sheets" || app.id === "bigquery" || app.id === "terminal") {
         return !isIterative;
       }

@@ -184,48 +184,53 @@
           "moduleIdx": 0,
           "taskIdx": 0,
           "title": "Q2 Content Strategy — Catalog Insights",
-          "brief": "Hey 👋\n\nVP Daniela wants Q2 planning input from our team and you're up. She framed it pretty open-ended: \"what should we make more of, and how do we grow.\"\n\nI'll be honest, the ask is broader than I'd like. **Before you start coding, DM me on Slack** and I'll narrow it down for you. I have a few hours of context with Daniela that will save you a day.\n\n## What you have to work with\n\n- `/data/netflix_titles.csv` (the full catalog)\n- **Notebook** app for your analysis\n- **Submit** tab when you're ready for a review pass\n\n## What you're producing\n\n- A notebook with your EDA\n- A short written set of insights + recommendations (Submit tab, Insights panel)\n\n## How it gets graded\n\n1. Problem framing & basic metrics (10)\n2. Data shape, types, missing values (10)\n3. Value counts, unique attributes (10)\n4. Univariate + bivariate visual analysis (30)\n5. Outlier / missing value treatment (10)\n6. Insights from your analysis (10)\n7. Business insights (10)\n8. Recommendations — no jargon, exec-ready (10)\n\nYou'll get a feedback pass from me each time you submit a draft. Iterate as many times as you want. Final submit locks it in.\n\nDon't overthink it. Most people score 8-10 if they just attempt seriously.\n\n— P.",
+          "brief": "Hey 👋\n\nVP Daniela wants Q2 planning input from our team and you're up. She framed it pretty open-ended: \"what should we make more of, and how do we grow.\"\n\nI'll be honest, the ask is broader than I'd like. **Before you start coding, DM me on Slack** and I'll narrow it down for you. I have a few hours of context with Daniela that will save you a day.\n\n## What you have to work with\n\n- `/data/netflix_titles.csv` (the full catalog, already mounted in your notebook)\n- **Notebook** app — your analysis lives here\n\n## What you're producing\n\nAll of it goes in the notebook. Write your code in code cells, and write your observations + recommendations in **markdown cells** alongside them. I read both when I review.\n\nWhen you're ready for me to take a look, hit **Submit for Review** at the top of the notebook. I'll DM you feedback within a minute. Iterate as many times as you want — when you hit 80+, I'll lock it in and we're done.\n\n## How it gets graded\n\n1. Problem framing & basic metrics (10)\n2. Data shape, types, missing values (10)\n3. Value counts, unique attributes (10)\n4. Univariate + bivariate visual analysis (30)\n5. Outlier / missing value treatment (10)\n6. Insights from your analysis (10)\n7. Business insights (10)\n8. Recommendations — no jargon, exec-ready (10)\n\nDon't overthink it. Most people hit 80+ in 2-3 review rounds.\n\n— P.",
           "deliverable": {
             "type": "document",
             "format": "md",
             "acceptanceSummary": "A notebook of EDA work plus a written insights & recommendations document that addresses Daniela's question about Q2 content strategy.",
             "judgeMode": "iterative",
+            "completionScoreThreshold": 80,
             "mockFeedback": [
               {
                 "id": "empty-draft",
                 "round": 1,
+                "score": 15,
                 "matchCriteria": {
-                  "maxInsightsLength": 49
+                  "maxNotebookCells": 2
                 },
-                "feedback": "hey, looks like you haven't really attempted this yet. submit a real draft and i'll give you proper feedback. doesn't need to be perfect.",
+                "feedback": "hey, looks like you haven't really attempted this yet. write some actual code + observations and i'll give you proper feedback. doesn't need to be perfect, just send something real.",
                 "fromPersonaId": "priya"
               },
               {
                 "id": "no-international-angle",
                 "round": 2,
+                "score": 45,
                 "matchCriteria": {
-                  "minInsightsLength": 50,
+                  "minNotebookCells": 3,
                   "rejectKeywordsAny": ["international", "apac", "latam", "country", "region"]
                 },
-                "feedback": "good start, you've got the basic EDA shape down. but you're missing the angle daniela actually cares about, which is international growth. did we chat about that? go look at where the catalog is light by country and see what shows up. round 2 will be a lot stronger.",
+                "feedback": "good start, you've got the basic EDA shape down 👍 but you're missing the angle daniela actually cares about, which is international growth. did we chat about that? go look at where the catalog is light by country and see what shows up. round 2 will be a lot stronger.",
                 "fromPersonaId": "priya"
               },
               {
                 "id": "no-recommendations",
                 "round": 3,
+                "score": 70,
                 "matchCriteria": {
-                  "minInsightsLength": 50,
+                  "minNotebookCells": 3,
                   "requireKeywordsAny": ["international", "apac", "latam", "country", "region"],
                   "rejectKeywordsAny": ["recommend", "should", "propose", "we'd", "we would", "produce more"]
                 },
-                "feedback": "much better, you're aiming at the right question now. last gap: insights are observations, recommendations are actions. give me three things you'd actually do with this analysis. plain english, like you're saying it to daniela in a hallway.",
+                "feedback": "much better, you're aiming at the right question now. last gap: insights are observations, recommendations are actions. add three markdown cells with actual recommendations daniela could act on. plain english, like you're saying it to her in a hallway.",
                 "fromPersonaId": "priya"
               },
               {
                 "id": "polished",
                 "round": 4,
+                "score": 90,
                 "matchCriteria": {},
-                "feedback": "this is solid work, you can submit when you're ready. one tiny note: lead with the recommendation, then back it with the data. execs read top down. but honestly, ship it.",
+                "feedback": "this is solid work 🎉 great analysis, clear recommendations, you nailed the international angle. locking this in for daniela. thanks for moving fast on this.",
                 "fromPersonaId": "priya"
               }
             ]
@@ -249,13 +254,13 @@
               },
               {
                 "id": "hc-3",
-                "description": "Insights text in Submit is at least 200 characters and addresses international markets.",
-                "verificationMethod": "Check Submit.insightsDraft length and keyword presence (international, APAC, LATAM, country)."
+                "description": "Notebook markdown cells contain commentary addressing international markets (international / APAC / LATAM / country / region).",
+                "verificationMethod": "Inspect markdown cells in the notebook for international-market keywords."
               },
               {
                 "id": "hc-4",
-                "description": "Insights text contains at least 3 actionable recommendations (use of 'recommend' / 'should' / 'propose' or equivalent action verbs).",
-                "verificationMethod": "Count recommendation-style sentences in Submit.insightsDraft."
+                "description": "Notebook markdown cells contain at least 3 actionable recommendations (use of 'recommend' / 'should' / 'propose' or equivalent action verbs).",
+                "verificationMethod": "Inspect markdown cells for recommendation-style sentences."
               }
             ],
             "qualitativeCriteria": [

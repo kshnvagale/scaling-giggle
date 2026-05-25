@@ -29,7 +29,7 @@ export type {
 
 // ── UI-layer types ──────────────────────────────────────────────────
 
-export type AppId = "briefing" | "wiki" | "chat" | "sheets" | "bigquery" | "terminal" | "notebook" | "submit";
+export type AppId = "briefing" | "wiki" | "chat" | "sheets" | "bigquery" | "terminal" | "notebook";
 
 export interface AppRegistryEntry {
   id: AppId;
@@ -45,6 +45,11 @@ export interface ChatMessage {
   personaId: string;
   content: string;
   timestamp: number;
+  meta?: {
+    kind?: "review";
+    round?: number;
+    score?: number;
+  };
 }
 
 export interface JudgeCriterionResult {

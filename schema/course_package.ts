@@ -186,6 +186,7 @@ export type Primitive = z.infer<typeof Primitive>;
 export const MockFeedbackState = z.object({
   id: NonEmpty,
   round: z.number().int().min(1),
+  score: z.number().int().min(0).max(100).optional(),
   matchCriteria: z.object({
     minInsightsLength: z.number().int().optional(),
     maxInsightsLength: z.number().int().optional(),
@@ -206,6 +207,7 @@ export const Deliverable = z.object({
   acceptanceSummary: NonEmpty,
   judgeMode: z.enum(["single", "iterative"]).default("single"),
   mockFeedback: z.array(MockFeedbackState).default([]),
+  completionScoreThreshold: z.number().int().min(0).max(100).default(80),
 });
 
 export const MeetingParticipant = z.object({
