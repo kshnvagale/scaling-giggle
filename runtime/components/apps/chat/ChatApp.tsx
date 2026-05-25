@@ -75,14 +75,12 @@ export default function ChatApp() {
     [setActivePersonaId, markPersonaRead, chatHistories, linkedPersonas, addChatMessage],
   );
 
-  // Mark the active persona's thread as read whenever new messages land while
-  // the user is viewing it (so AI replies don't leave an unread badge stuck on
-  // the persona the user is actively chatting with).
-  useEffect(() => {
-    if (activePersonaId && messages.length > 0) {
-      markPersonaRead(activePersonaId);
-    }
-  }, [activePersonaId, messages.length, markPersonaRead]);
+  // Note: we deliberately do NOT auto-mark messages as read when they land in
+  // the active thread. If we did, the Submit-for-Review flow would clear the
+  // notification dot the instant Priya's feedback message lands (because the
+  // chat window has already been auto-opened to her thread). Instead, the dot
+  // persists until the user explicitly clicks Priya in the sidebar or sends a
+  // message — both real "I've engaged with this" signals.
 
   const handleSend = useCallback(
     async (text: string) => {
@@ -94,6 +92,7 @@ export default function ChatApp() {
         id: crypto.randomUUID(), role: "user", personaId: activePersonaId,
         content: text, timestamp: Date.now(),
       });
+      markPersonaRead(activePersonaId);
       setIsSending(true);
 
       try {
@@ -128,7 +127,7 @@ export default function ChatApp() {
         setIsSending(false);
       }
     },
-    [activePersonaId, activePersona, isSending, chatHistories, addChatMessage, coursePackage],
+    [activePersonaId, activePersona, isSending, chatHistories, addChatMessage, coursePackage, markPersonaRead],
   );
 
   const turnsRemaining = MAX_CHAT_TURNS - messages.length;
