@@ -171,6 +171,15 @@ const WINDOW_PRESETS: Record<AppId, WindowPreset> = {
     yBias: 0.22,
     open: false,
   },
+  submit: {
+    width: 980,
+    height: 680,
+    minWidth: 720,
+    minHeight: 480,
+    xBias: 0.32,
+    yBias: 0.2,
+    open: false,
+  },
 };
 
 const WALLPAPER_STORAGE_KEY = "caseforge.desktop.wallpaper";

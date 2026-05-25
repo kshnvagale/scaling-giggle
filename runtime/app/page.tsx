@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCaseForgeStore } from "@/lib/store";
 import { loadCoursePackage } from "@/lib/course-loader";
 import { APP_REGISTRY } from "@/lib/app-registry";
@@ -20,6 +20,7 @@ import SheetsApp from "@/components/apps/sheets/SheetsApp";
 import BigQueryApp from "@/components/apps/bigquery/BigQueryApp";
 import TerminalApp from "@/components/apps/terminal/TerminalApp";
 import NotebookApp from "@/components/apps/notebook/NotebookApp";
+import SubmitApp from "@/components/apps/submit/SubmitApp";
 
 import { IntroGate } from "@/components/intro/IntroGate";
 import { IntroOnboarding } from "@/components/intro/IntroOnboarding";
@@ -32,13 +33,28 @@ const APP_COMPONENTS: Record<AppId, React.ComponentType> = {
   bigquery: BigQueryApp,
   terminal: TerminalApp,
   notebook: NotebookApp,
+  submit: SubmitApp,
 };
 
 export default function HomePage() {
   const loadPkg = useCaseForgeStore((s) => s.loadCoursePackage);
   const pkg = useCaseForgeStore((s) => s.coursePackage);
+  const currentTask = useCaseForgeStore((s) => s.currentTask);
   const startTimer = useCaseForgeStore((s) => s.startTimer);
   const [error, setError] = useState<string | null>(null);
+
+  // Gate the Submit app into the dock only for iterative judge cases (Netflix).
+  // Helix and other single-shot cases keep the original 7-app dock.
+  const visibleApps = useMemo(() => {
+    const judgeMode =
+      currentTask?.deliverable?.judgeMode ??
+      pkg?.modules?.[0]?.tasks?.[0]?.deliverable?.judgeMode ??
+      "single";
+    return APP_REGISTRY.filter((app) => {
+      if (app.id === "submit") return judgeMode === "iterative";
+      return true;
+    });
+  }, [pkg, currentTask]);
 
   useEffect(() => {
     const search = typeof window !== "undefined" ? window.location.search : "";
@@ -73,7 +89,7 @@ export default function HomePage() {
     <>
       <IntroGate />
       {pkg ? (
-        <Desktop appRegistry={APP_REGISTRY} appComponents={APP_COMPONENTS} />
+        <Desktop appRegistry={visibleApps} appComponents={APP_COMPONENTS} />
       ) : (
         <div className="min-h-screen bg-black" aria-hidden="true" />
       )}
