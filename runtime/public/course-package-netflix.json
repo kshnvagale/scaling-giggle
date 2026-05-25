@@ -130,11 +130,48 @@
     }
   ],
   "fixtures": {
-    "wikiPages": [],
+    "wikiPages": [
+      {
+        "slug": "dataset-dictionary",
+        "title": "netflix_titles.csv — dataset dictionary",
+        "body": "# Dataset Dictionary\n\nThe file at `/data/netflix_titles.csv` is a monthly snapshot of the current Netflix catalog. 8,807 rows + header.\n\n| Column | Type | Notes |\n|---|---|---|\n| `show_id` | string | Unique catalog ID. Always present. |\n| `type` | enum | `Movie` or `TV Show`. Two values total. |\n| `title` | string | Free text. Always present. |\n| `director` | string | Free text. ~30% null, especially for TV Shows. |\n| `cast` | string | Comma-separated actors. Often null. |\n| `country` | string | Comma-separated for co-productions, e.g. `United States, India`. |\n| `date_added` | date | The date Netflix added it. Reliable from 2018 onward; pre-2018 entries were bulk-loaded — treat as approximate. |\n| `release_year` | int | Year the title was originally released. Goes back to 1925. |\n| `rating` | string | TV/film rating code. See Rating Reference page. |\n| `duration` | string | Mixed units! `90 min` for movies, `3 Seasons` for TV. |\n| `listed_in` | string | Comma-separated genres. ~42 unique tags. |\n| `description` | string | Marketing blurb. Always present. |\n\n## Gotchas\n\n- `duration` cannot be cast to a single numeric column without splitting on type.\n- `country` and `listed_in` need to be exploded for accurate counts.\n- Don't rely on `date_added` for trend analysis before 2018.",
+        "linkedTasks": ["netflix.t1"]
+      },
+      {
+        "slug": "rating-reference",
+        "title": "TV / Film rating codes",
+        "body": "# Rating Reference\n\nThe `rating` column uses standard MPAA / TV Parental Guidelines codes.\n\n| Code | Meaning |\n|---|---|\n| G | General audiences |\n| PG | Parental guidance suggested |\n| PG-13 | Parents strongly cautioned, may be inappropriate for <13 |\n| R | Restricted, <17 requires adult |\n| TV-Y | Designed for young children |\n| TV-Y7 | Designed for children 7+ |\n| TV-G | General audience |\n| TV-PG | Parental guidance suggested |\n| TV-14 | Parents strongly cautioned, may be inappropriate for <14 |\n| TV-MA | Mature audiences only |\n| NR | Not rated |\n| UR | Unrated |\n\n`TV-MA` titles cannot reach younger audiences, which limits the addressable market for that content. Useful when thinking about who a title is *for*.",
+        "linkedTasks": ["netflix.t1"]
+      },
+      {
+        "slug": "catalog-note",
+        "title": "Internal note: how to read this dataset",
+        "body": "# Quick context on the catalog dataset\n\nThis file is exported from our catalog system monthly. It contains what's **currently available** on Netflix as of the snapshot date, not the full history of what was ever on the platform. Titles can drop off when licensing expires, so *absence ≠ never had it*.\n\n`date_added` is the date the title was added to **Netflix**, not the release date of the content itself. Useful for 'what was Netflix acquiring in 2020' type questions. Less useful for 'when did this movie come out' — use `release_year` for that.\n\nWhen you're presenting to execs, this distinction matters. `date_added` is about *our* strategy. `release_year` is about *the content*.",
+        "linkedTasks": ["netflix.t1"]
+      }
+    ],
     "datasets": [],
     "documents": [],
     "emails": [],
-    "notebooks": []
+    "notebooks": [
+      {
+        "slug": "netflix-catalog-analysis",
+        "title": "Netflix Catalog Analysis",
+        "description": "Your scratch pad for the Q2 catalog EDA. The dataset is mounted at /data/netflix_titles.csv.",
+        "kernel": "Python 3",
+        "runtime": "pyodide",
+        "linkedTasks": ["netflix.t1"],
+        "cells": [
+          {
+            "id": "starter",
+            "type": "code",
+            "source": "# Start here. The dataset is at /data/netflix_titles.csv\n# Hint: import pandas as pd",
+            "language": "python",
+            "outputs": []
+          }
+        ]
+      }
+    ]
   },
   "modules": [
     {
