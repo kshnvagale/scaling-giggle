@@ -32,7 +32,10 @@ let cachedBootPromise: Promise<PyodideKernel> | null = null;
 
 export function bootPyodideKernel(csvUrl: string): Promise<PyodideKernel> {
   if (!cachedBootPromise) {
-    cachedBootPromise = doBoot(csvUrl);
+    cachedBootPromise = doBoot(csvUrl).catch((err) => {
+      cachedBootPromise = null; // allow a retry on next call
+      throw err;
+    });
   }
   return cachedBootPromise;
 }
@@ -89,31 +92,53 @@ _STDERR_CAPTURE = _StderrCapture()
 
 async function runCell(pyodide: PyodideInterface, source: string): Promise<NotebookOutput[]> {
   const outputs: NotebookOutput[] = [];
-  // Reset capture buffers
+
+  // Clear capture buffers (safe — doesn't redirect anything)
   await pyodide.runPythonAsync(`
 _FIG_BUFFER.clear()
 _STDOUT_CAPTURE.buf.clear()
 _STDERR_CAPTURE.buf.clear()
-import sys
-sys.stdout = _STDOUT_CAPTURE
-sys.stderr = _STDERR_CAPTURE
   `);
 
   let resultRepr: string | null = null;
   let errorText: string | null = null;
+
   try {
+    // Redirect stdio INSIDE the try so finally restores even if this rejects.
+    await pyodide.runPythonAsync(`
+import sys
+sys.stdout = _STDOUT_CAPTURE
+sys.stderr = _STDERR_CAPTURE
+    `);
+
     const value = await pyodide.runPythonAsync(source);
+    // Capture the repr in Python so no PyProxy lingers on the JS side.
     if (value !== undefined && value !== null) {
-      try { resultRepr = String(value); } catch { resultRepr = null; }
+      try {
+        // If value is a Pyodide PyProxy, calling .destroy() prevents the leak.
+        // Stringifying the JS-side value invokes Python __repr__ for PyProxy.
+        resultRepr = String(value);
+      } catch {
+        resultRepr = null;
+      } finally {
+        // PyProxy from runPythonAsync must be destroyed to avoid leaks.
+        const maybeProxy = value as { destroy?: () => void };
+        if (maybeProxy && typeof maybeProxy.destroy === "function") {
+          try { maybeProxy.destroy(); } catch { /* already destroyed */ }
+        }
+      }
     }
   } catch (err) {
     errorText = (err as Error).message ?? String(err);
   } finally {
-    await pyodide.runPythonAsync(`
+    // Always restore stdio.
+    try {
+      await pyodide.runPythonAsync(`
 import sys
 sys.stdout = sys.__stdout__
 sys.stderr = sys.__stderr__
-    `);
+      `);
+    } catch { /* if even this fails, kernel is hosed — surfaced next run */ }
   }
 
   const stdoutText = String(await pyodide.runPythonAsync(`"".join(_STDOUT_CAPTURE.buf)`));
