@@ -50,6 +50,14 @@ async function doBoot(csvUrl: string): Promise<PyodideKernel> {
 
   // Force matplotlib to use the Agg backend so plt.show() doesn't try to open a window.
   await pyodide.runPythonAsync(`
+# Quiet the noisy DeprecationWarning / FutureWarning that pandas + numpy emit
+# in Pyodide builds (e.g. "pyarrow will become a required dependency").
+# Real errors (raised exceptions) still surface — this only filters warnings.
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
+
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt

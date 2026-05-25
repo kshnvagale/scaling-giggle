@@ -16,7 +16,7 @@ export default function CellOutput({ output }: CellOutputProps) {
       );
     case "stderr":
       return (
-        <pre className="whitespace-pre-wrap font-mono text-[12.5px] leading-relaxed text-rose-700 bg-rose-50 rounded px-2 py-1">
+        <pre className="whitespace-pre-wrap font-mono text-[12.5px] leading-relaxed text-amber-900 bg-amber-50 border-l-2 border-amber-300 rounded-r px-2 py-1">
           {output.content}
         </pre>
       );
