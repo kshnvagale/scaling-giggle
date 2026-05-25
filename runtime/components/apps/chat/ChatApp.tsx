@@ -93,6 +93,7 @@ export default function ChatApp() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             personaSystemPrompt: activePersona.systemPrompt,
+            personaName: activePersona.name,
             privateKnowledge: activePersona.privateKnowledge?.map((k: any) => k.value) ?? [],
             worldContext: coursePackage?.world?.clientProfile ?? "",
             messages: apiMessages,
