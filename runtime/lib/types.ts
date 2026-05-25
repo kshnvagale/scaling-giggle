@@ -24,11 +24,12 @@ export type {
   Notebook,
   NotebookCell,
   NotebookOutput,
+  MockFeedbackState,
 } from "@schema/course_package";
 
 // ── UI-layer types ──────────────────────────────────────────────────
 
-export type AppId = "briefing" | "wiki" | "chat" | "sheets" | "bigquery" | "terminal" | "notebook";
+export type AppId = "briefing" | "wiki" | "chat" | "sheets" | "bigquery" | "terminal" | "notebook" | "submit";
 
 export interface AppRegistryEntry {
   id: AppId;
