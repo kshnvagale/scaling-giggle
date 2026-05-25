@@ -18,6 +18,20 @@
         "source_file": "CLAUDE.md"
       },
       {
+        "id": "hyper_solver_validation_loop",
+        "label": "Solver agent validates CoursePackage authoring sufficiency",
+        "nodes": [
+          "solver_agent_caseforge_solver",
+          "solver_agent_toolkit_scripts",
+          "claude_md_coursepackage_contract",
+          "claude_md_author_pipeline"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "agents/solver-agent.md"
+      },
+      {
         "id": "hyper_notebook_app_stack",
         "label": "Notebook app spec/plan/implementation triad",
         "nodes": [
@@ -33,13 +47,45 @@
         "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md"
       },
       {
-        "id": "hyper_solver_validation_loop",
-        "label": "Solver agent validates CoursePackage authoring sufficiency",
+        "id": "course_package_contract_flow",
+        "label": "CoursePackage JSON as load-bearing contract between systems",
         "nodes": [
-          "solver_agent_caseforge_solver",
-          "solver_agent_toolkit_scripts",
-          "claude_md_coursepackage_contract",
-          "claude_md_author_pipeline"
+          "claude_md_course_package_schema",
+          "claude_md_author_pipeline",
+          "claude_md_learner_runtime",
+          "claude_md_course_package_json",
+          "claude_md_validate_script"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "CLAUDE.md"
+      },
+      {
+        "id": "desktop_apps_registry",
+        "label": "Desktop OS Shell with five learner apps (Briefing, Wiki, Chat, Submit, Notebook)",
+        "nodes": [
+          "claude_md_desktop_shell",
+          "claude_md_briefing_app",
+          "claude_md_wiki_app",
+          "claude_md_chat_app",
+          "claude_md_submit_app",
+          "notebook_plan_app"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md"
+      },
+      {
+        "id": "solver_validation_loop",
+        "label": "Solver agent validates CoursePackage via wiki + persona interview + submit",
+        "nodes": [
+          "solver_agent_solver",
+          "solver_agent_read_wiki",
+          "solver_agent_interview",
+          "solver_agent_submit",
+          "claude_md_course_package_json"
         ],
         "relation": "participate_in",
         "confidence": "EXTRACTED",
@@ -145,25 +191,25 @@
       "source_file": "runtime/app/page.tsx",
       "source_location": "L1",
       "id": "runtime_app_page_tsx",
-      "community": 4,
+      "community": 6,
       "norm_label": "page.tsx"
     },
     {
       "label": "APP_COMPONENTS",
       "file_type": "code",
       "source_file": "runtime/app/page.tsx",
-      "source_location": "L24",
+      "source_location": "L27",
       "id": "app_page_app_components",
-      "community": 4,
+      "community": 6,
       "norm_label": "app_components"
     },
     {
       "label": "HomePage()",
       "file_type": "code",
       "source_file": "runtime/app/page.tsx",
-      "source_location": "L34",
+      "source_location": "L37",
       "id": "app_page_homepage",
-      "community": 4,
+      "community": 6,
       "norm_label": "homepage()"
     },
     {
@@ -320,6 +366,204 @@
       "norm_label": "post()"
     },
     {
+      "label": "diagrams.tsx",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L1",
+      "id": "runtime_components_intro_diagrams_tsx",
+      "community": 7,
+      "norm_label": "diagrams.tsx"
+    },
+    {
+      "label": "WORKSPACE_ICONS",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L8",
+      "id": "intro_diagrams_workspace_icons",
+      "community": 7,
+      "norm_label": "workspace_icons"
+    },
+    {
+      "label": "Stage2Lens()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L23",
+      "id": "intro_diagrams_stage2lens",
+      "community": 7,
+      "norm_label": "stage2lens()"
+    },
+    {
+      "label": "Stage3Workspace()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L88",
+      "id": "intro_diagrams_stage3workspace",
+      "community": 7,
+      "norm_label": "stage3workspace()"
+    },
+    {
+      "label": "Stage4People()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L147",
+      "id": "intro_diagrams_stage4people",
+      "community": 7,
+      "norm_label": "stage4people()"
+    },
+    {
+      "label": "Stage5Clock()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L299",
+      "id": "intro_diagrams_stage5clock",
+      "community": 7,
+      "norm_label": "stage5clock()"
+    },
+    {
+      "label": "IntroGate.tsx",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroGate.tsx",
+      "source_location": "L1",
+      "id": "runtime_components_intro_introgate_tsx",
+      "community": 6,
+      "norm_label": "introgate.tsx"
+    },
+    {
+      "label": "IntroGate()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroGate.tsx",
+      "source_location": "L12",
+      "id": "intro_introgate_introgate",
+      "community": 6,
+      "norm_label": "introgate()"
+    },
+    {
+      "label": "IntroOnboarding.tsx",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L1",
+      "id": "runtime_components_intro_introonboarding_tsx",
+      "community": 7,
+      "norm_label": "introonboarding.tsx"
+    },
+    {
+      "label": "IntroOnboarding()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L15",
+      "id": "intro_introonboarding_introonboarding",
+      "community": 7,
+      "norm_label": "introonboarding()"
+    },
+    {
+      "label": "IntroPortal()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L30",
+      "id": "intro_introonboarding_introportal",
+      "community": 7,
+      "norm_label": "introportal()"
+    },
+    {
+      "label": "HelloStage()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L498",
+      "id": "intro_introonboarding_hellostage",
+      "community": 7,
+      "norm_label": "hellostage()"
+    },
+    {
+      "label": "ContentStage()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L520",
+      "id": "intro_introonboarding_contentstage",
+      "community": 7,
+      "norm_label": "contentstage()"
+    },
+    {
+      "label": "PrimaryButtonProps",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L565",
+      "id": "intro_introonboarding_primarybuttonprops",
+      "community": 7,
+      "norm_label": "primarybuttonprops"
+    },
+    {
+      "label": "PrimaryButton",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L572",
+      "id": "intro_introonboarding_primarybutton",
+      "community": 7,
+      "norm_label": "primarybutton"
+    },
+    {
+      "label": "useIsMobile()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L601",
+      "id": "intro_introonboarding_useismobile",
+      "community": 7,
+      "norm_label": "useismobile()"
+    },
+    {
+      "label": "useReducedMotion.ts",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/useReducedMotion.ts",
+      "source_location": "L1",
+      "id": "runtime_components_intro_usereducedmotion_ts",
+      "community": 7,
+      "norm_label": "usereducedmotion.ts"
+    },
+    {
+      "label": "useReducedMotion()",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/useReducedMotion.ts",
+      "source_location": "L7",
+      "id": "intro_usereducedmotion_usereducedmotion",
+      "community": 7,
+      "norm_label": "usereducedmotion()"
+    },
+    {
+      "label": "stages.tsx",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L1",
+      "id": "runtime_components_intro_stages_tsx",
+      "community": 7,
+      "norm_label": "stages.tsx"
+    },
+    {
+      "label": "StageId",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L6",
+      "id": "intro_stages_stageid",
+      "community": 7,
+      "norm_label": "stageid"
+    },
+    {
+      "label": "StageDef",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L8",
+      "id": "intro_stages_stagedef",
+      "community": 7,
+      "norm_label": "stagedef"
+    },
+    {
+      "label": "STAGES",
+      "file_type": "code",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L20",
+      "id": "intro_stages_stages",
+      "community": 7,
+      "norm_label": "stages"
+    },
+    {
       "label": "Desktop.tsx",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
@@ -332,7 +576,7 @@
       "label": "DesktopProps",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L10",
+      "source_location": "L17",
       "id": "desktop_desktop_desktopprops",
       "community": 1,
       "norm_label": "desktopprops"
@@ -341,7 +585,7 @@
       "label": "Bounds",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L15",
+      "source_location": "L22",
       "id": "desktop_desktop_bounds",
       "community": 1,
       "norm_label": "bounds"
@@ -350,7 +594,7 @@
       "label": "ViewportSize",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L22",
+      "source_location": "L29",
       "id": "desktop_desktop_viewportsize",
       "community": 1,
       "norm_label": "viewportsize"
@@ -359,7 +603,7 @@
       "label": "LayoutMetrics",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L27",
+      "source_location": "L34",
       "id": "desktop_desktop_layoutmetrics",
       "community": 1,
       "norm_label": "layoutmetrics"
@@ -368,7 +612,7 @@
       "label": "DesktopWindowState",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L34",
+      "source_location": "L41",
       "id": "desktop_desktop_desktopwindowstate",
       "community": 1,
       "norm_label": "desktopwindowstate"
@@ -377,7 +621,7 @@
       "label": "WindowPreset",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L42",
+      "source_location": "L49",
       "id": "desktop_desktop_windowpreset",
       "community": 1,
       "norm_label": "windowpreset"
@@ -386,7 +630,7 @@
       "label": "WallpaperEntry",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L52",
+      "source_location": "L59",
       "id": "desktop_desktop_wallpaperentry",
       "community": 1,
       "norm_label": "wallpaperentry"
@@ -395,7 +639,7 @@
       "label": "DesktopContextMenuState",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L58",
+      "source_location": "L65",
       "id": "desktop_desktop_desktopcontextmenustate",
       "community": 1,
       "norm_label": "desktopcontextmenustate"
@@ -404,7 +648,7 @@
       "label": "ResizeDirection",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L63",
+      "source_location": "L70",
       "id": "desktop_desktop_resizedirection",
       "community": 1,
       "norm_label": "resizedirection"
@@ -413,7 +657,7 @@
       "label": "PointerInteraction",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L65",
+      "source_location": "L72",
       "id": "desktop_desktop_pointerinteraction",
       "community": 1,
       "norm_label": "pointerinteraction"
@@ -422,7 +666,7 @@
       "label": "DEFAULT_VIEWPORT",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L84",
+      "source_location": "L91",
       "id": "desktop_desktop_default_viewport",
       "community": 1,
       "norm_label": "default_viewport"
@@ -431,7 +675,7 @@
       "label": "RESIZE_CURSOR",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L92",
+      "source_location": "L99",
       "id": "desktop_desktop_resize_cursor",
       "community": 1,
       "norm_label": "resize_cursor"
@@ -440,7 +684,7 @@
       "label": "WINDOW_PRESETS",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L103",
+      "source_location": "L110",
       "id": "desktop_desktop_window_presets",
       "community": 1,
       "norm_label": "window_presets"
@@ -449,7 +693,7 @@
       "label": "DESKTOP_CONTEXT_MENU",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L175",
+      "source_location": "L182",
       "id": "desktop_desktop_desktop_context_menu",
       "community": 1,
       "norm_label": "desktop_context_menu"
@@ -458,7 +702,7 @@
       "label": "clamp()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L182",
+      "source_location": "L189",
       "id": "desktop_desktop_clamp",
       "community": 1,
       "norm_label": "clamp()"
@@ -467,7 +711,7 @@
       "label": "getLayoutMetrics()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L186",
+      "source_location": "L193",
       "id": "desktop_desktop_getlayoutmetrics",
       "community": 1,
       "norm_label": "getlayoutmetrics()"
@@ -476,7 +720,7 @@
       "label": "getWorkspace()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L197",
+      "source_location": "L204",
       "id": "desktop_desktop_getworkspace",
       "community": 1,
       "norm_label": "getworkspace()"
@@ -485,7 +729,7 @@
       "label": "getWindowSpawnArea()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L206",
+      "source_location": "L213",
       "id": "desktop_desktop_getwindowspawnarea",
       "community": 1,
       "norm_label": "getwindowspawnarea()"
@@ -494,7 +738,7 @@
       "label": "clampBounds()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L218",
+      "source_location": "L223",
       "id": "desktop_desktop_clampbounds",
       "community": 1,
       "norm_label": "clampbounds()"
@@ -503,7 +747,7 @@
       "label": "createInitialWindowStates()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L232",
+      "source_location": "L237",
       "id": "desktop_desktop_createinitialwindowstates",
       "community": 1,
       "norm_label": "createinitialwindowstates()"
@@ -512,7 +756,7 @@
       "label": "reconcileWindowState()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L267",
+      "source_location": "L275",
       "id": "desktop_desktop_reconcilewindowstate",
       "community": 1,
       "norm_label": "reconcilewindowstate()"
@@ -521,7 +765,7 @@
       "label": "resizeBounds()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L294",
+      "source_location": "L302",
       "id": "desktop_desktop_resizebounds",
       "community": 1,
       "norm_label": "resizebounds()"
@@ -530,7 +774,7 @@
       "label": "getTopVisibleWindow()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L353",
+      "source_location": "L361",
       "id": "desktop_desktop_gettopvisiblewindow",
       "community": 1,
       "norm_label": "gettopvisiblewindow()"
@@ -539,7 +783,7 @@
       "label": "formatWallpaperLabel()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L369",
+      "source_location": "L377",
       "id": "desktop_desktop_formatwallpaperlabel",
       "community": 1,
       "norm_label": "formatwallpaperlabel()"
@@ -548,7 +792,7 @@
       "label": "clampContextMenuPosition()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L381",
+      "source_location": "L389",
       "id": "desktop_desktop_clampcontextmenuposition",
       "community": 1,
       "norm_label": "clampcontextmenuposition()"
@@ -557,7 +801,7 @@
       "label": "Desktop()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L393",
+      "source_location": "L401",
       "id": "desktop_desktop_desktop",
       "community": 1,
       "norm_label": "desktop()"
@@ -566,7 +810,7 @@
       "label": "ResizeHandle()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L1261",
+      "source_location": "L1551",
       "id": "desktop_desktop_resizehandle",
       "community": 1,
       "norm_label": "resizehandle()"
@@ -575,7 +819,7 @@
       "label": "DesktopIcon()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L1287",
+      "source_location": "L1577",
       "id": "desktop_desktop_desktopicon",
       "community": 1,
       "norm_label": "desktopicon()"
@@ -584,7 +828,7 @@
       "label": "DraggableDesktopIcon()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L1393",
+      "source_location": "L1683",
       "id": "desktop_desktop_draggabledesktopicon",
       "community": 1,
       "norm_label": "draggabledesktopicon()"
@@ -620,10 +864,100 @@
       "label": "TrafficLight()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/WindowChrome.tsx",
-      "source_location": "L137",
+      "source_location": "L145",
       "id": "desktop_windowchrome_trafficlight",
       "community": 1,
       "norm_label": "trafficlight()"
+    },
+    {
+      "label": "DesktopWindow.tsx",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L1",
+      "id": "runtime_components_desktop_desktopwindow_tsx",
+      "community": 1,
+      "norm_label": "desktopwindow.tsx"
+    },
+    {
+      "label": "MinimizeAnchor",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L7",
+      "id": "desktop_desktopwindow_minimizeanchor",
+      "community": 1,
+      "norm_label": "minimizeanchor"
+    },
+    {
+      "label": "DesktopWindowProps",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L14",
+      "id": "desktop_desktopwindow_desktopwindowprops",
+      "community": 1,
+      "norm_label": "desktopwindowprops"
+    },
+    {
+      "label": "ENTER_TRANSITION",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L43",
+      "id": "desktop_desktopwindow_enter_transition",
+      "community": 1,
+      "norm_label": "enter_transition"
+    },
+    {
+      "label": "CLOSE_TRANSITION",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L53",
+      "id": "desktop_desktopwindow_close_transition",
+      "community": 1,
+      "norm_label": "close_transition"
+    },
+    {
+      "label": "MINIMIZE_TRANSITION",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L58",
+      "id": "desktop_desktopwindow_minimize_transition",
+      "community": 1,
+      "norm_label": "minimize_transition"
+    },
+    {
+      "label": "RESTORE_TRANSITION",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L64",
+      "id": "desktop_desktopwindow_restore_transition",
+      "community": 1,
+      "norm_label": "restore_transition"
+    },
+    {
+      "label": "MAXIMIZE_TRANSITION",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L73",
+      "id": "desktop_desktopwindow_maximize_transition",
+      "community": 1,
+      "norm_label": "maximize_transition"
+    },
+    {
+      "label": "INTERACTION_TRANSITION",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L82",
+      "id": "desktop_desktopwindow_interaction_transition",
+      "community": 1,
+      "norm_label": "interaction_transition"
+    },
+    {
+      "label": "DesktopWindow()",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L88",
+      "id": "desktop_desktopwindow_desktopwindow",
+      "community": 1,
+      "norm_label": "desktopwindow()"
     },
     {
       "label": "TaskBar.tsx",
@@ -662,6 +996,33 @@
       "norm_label": "taskbar()"
     },
     {
+      "label": "ControlCenter.tsx",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/ControlCenter.tsx",
+      "source_location": "L1",
+      "id": "runtime_components_desktop_controlcenter_tsx",
+      "community": 0,
+      "norm_label": "controlcenter.tsx"
+    },
+    {
+      "label": "ControlCenterProps",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/ControlCenter.tsx",
+      "source_location": "L8",
+      "id": "desktop_controlcenter_controlcenterprops",
+      "community": 0,
+      "norm_label": "controlcenterprops"
+    },
+    {
+      "label": "ControlCenter()",
+      "file_type": "code",
+      "source_file": "runtime/components/desktop/ControlCenter.tsx",
+      "source_location": "L15",
+      "id": "desktop_controlcenter_controlcenter",
+      "community": 0,
+      "norm_label": "controlcenter()"
+    },
+    {
       "label": "DesktopIcons.tsx",
       "file_type": "code",
       "source_file": "runtime/components/desktop/DesktopIcons.tsx",
@@ -692,7 +1053,7 @@
       "label": "MenuBarProps",
       "file_type": "code",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L5",
+      "source_location": "L6",
       "id": "desktop_menubar_menubarprops",
       "community": 1,
       "norm_label": "menubarprops"
@@ -701,7 +1062,7 @@
       "label": "formatTime()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L17",
+      "source_location": "L21",
       "id": "desktop_menubar_formattime",
       "community": 1,
       "norm_label": "formattime()"
@@ -710,7 +1071,7 @@
       "label": "formatClock()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L25",
+      "source_location": "L29",
       "id": "desktop_menubar_formatclock",
       "community": 1,
       "norm_label": "formatclock()"
@@ -719,7 +1080,7 @@
       "label": "MenuBar()",
       "file_type": "code",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L33",
+      "source_location": "L38",
       "id": "desktop_menubar_menubar",
       "community": 1,
       "norm_label": "menubar()"
@@ -730,7 +1091,7 @@
       "source_file": "runtime/components/desktop/Sidebar.tsx",
       "source_location": "L1",
       "id": "runtime_components_desktop_sidebar_tsx",
-      "community": 5,
+      "community": 6,
       "norm_label": "sidebar.tsx"
     },
     {
@@ -739,7 +1100,7 @@
       "source_file": "runtime/components/desktop/Sidebar.tsx",
       "source_location": "L6",
       "id": "desktop_sidebar_sidebarprops",
-      "community": 5,
+      "community": 6,
       "norm_label": "sidebarprops"
     },
     {
@@ -748,7 +1109,7 @@
       "source_file": "runtime/components/desktop/Sidebar.tsx",
       "source_location": "L12",
       "id": "desktop_sidebar_sidebar",
-      "community": 5,
+      "community": 6,
       "norm_label": "sidebar()"
     },
     {
@@ -757,7 +1118,7 @@
       "source_file": "runtime/components/desktop/AppSlot.tsx",
       "source_location": "L1",
       "id": "runtime_components_desktop_appslot_tsx",
-      "community": 5,
+      "community": 6,
       "norm_label": "appslot.tsx"
     },
     {
@@ -766,7 +1127,7 @@
       "source_file": "runtime/components/desktop/AppSlot.tsx",
       "source_location": "L9",
       "id": "desktop_appslot_appslotprops",
-      "community": 5,
+      "community": 6,
       "norm_label": "appslotprops"
     },
     {
@@ -775,7 +1136,7 @@
       "source_file": "runtime/components/desktop/AppSlot.tsx",
       "source_location": "L14",
       "id": "desktop_appslot_appslot",
-      "community": 5,
+      "community": 6,
       "norm_label": "appslot()"
     },
     {
@@ -784,7 +1145,7 @@
       "source_file": "runtime/components/shared/Icon.tsx",
       "source_location": "L1",
       "id": "runtime_components_shared_icon_tsx",
-      "community": 5,
+      "community": 6,
       "norm_label": "icon.tsx"
     },
     {
@@ -793,7 +1154,7 @@
       "source_file": "runtime/components/shared/Icon.tsx",
       "source_location": "L1",
       "id": "shared_icon_iconprops",
-      "community": 5,
+      "community": 6,
       "norm_label": "iconprops"
     },
     {
@@ -802,7 +1163,7 @@
       "source_file": "runtime/components/shared/Icon.tsx",
       "source_location": "L7",
       "id": "shared_icon_sizemap",
-      "community": 5,
+      "community": 6,
       "norm_label": "sizemap"
     },
     {
@@ -811,7 +1172,7 @@
       "source_file": "runtime/components/shared/Icon.tsx",
       "source_location": "L9",
       "id": "shared_icon_icon",
-      "community": 5,
+      "community": 6,
       "norm_label": "icon()"
     },
     {
@@ -847,7 +1208,7 @@
       "source_file": "runtime/components/apps/sheets/SheetsApp.tsx",
       "source_location": "L1",
       "id": "runtime_components_apps_sheets_sheetsapp_tsx",
-      "community": 10,
+      "community": 11,
       "norm_label": "sheetsapp.tsx"
     },
     {
@@ -856,7 +1217,7 @@
       "source_file": "runtime/components/apps/sheets/SheetsApp.tsx",
       "source_location": "L5",
       "id": "sheets_sheetsapp_sheet",
-      "community": 10,
+      "community": 11,
       "norm_label": "sheet"
     },
     {
@@ -865,7 +1226,7 @@
       "source_file": "runtime/components/apps/sheets/SheetsApp.tsx",
       "source_location": "L13",
       "id": "sheets_sheetsapp_sheets",
-      "community": 10,
+      "community": 11,
       "norm_label": "sheets"
     },
     {
@@ -874,7 +1235,7 @@
       "source_file": "runtime/components/apps/sheets/SheetsApp.tsx",
       "source_location": "L100",
       "id": "sheets_sheetsapp_sheetsapp",
-      "community": 10,
+      "community": 11,
       "norm_label": "sheetsapp()"
     },
     {
@@ -883,7 +1244,7 @@
       "source_file": "runtime/components/apps/sheets/SheetsApp.tsx",
       "source_location": "L347",
       "id": "sheets_sheetsapp_colletter",
-      "community": 10,
+      "community": 11,
       "norm_label": "colletter()"
     },
     {
@@ -892,7 +1253,7 @@
       "source_file": "runtime/components/apps/sheets/SheetsApp.tsx",
       "source_location": "L357",
       "id": "sheets_sheetsapp_formatcell",
-      "community": 10,
+      "community": 11,
       "norm_label": "formatcell()"
     },
     {
@@ -901,7 +1262,7 @@
       "source_file": "runtime/components/apps/sheets/SheetsApp.tsx",
       "source_location": "L364",
       "id": "sheets_sheetsapp_toolbtn",
-      "community": 10,
+      "community": 11,
       "norm_label": "toolbtn()"
     },
     {
@@ -964,7 +1325,7 @@
       "source_file": "runtime/components/apps/chat/MessageBubble.tsx",
       "source_location": "L1",
       "id": "runtime_components_apps_chat_messagebubble_tsx",
-      "community": 5,
+      "community": 0,
       "norm_label": "messagebubble.tsx"
     },
     {
@@ -973,7 +1334,7 @@
       "source_file": "runtime/components/apps/chat/MessageBubble.tsx",
       "source_location": "L6",
       "id": "chat_messagebubble_messagebubbleprops",
-      "community": 5,
+      "community": 0,
       "norm_label": "messagebubbleprops"
     },
     {
@@ -982,7 +1343,7 @@
       "source_file": "runtime/components/apps/chat/MessageBubble.tsx",
       "source_location": "L12",
       "id": "chat_messagebubble_getinitials",
-      "community": 5,
+      "community": 0,
       "norm_label": "getinitials()"
     },
     {
@@ -991,7 +1352,7 @@
       "source_file": "runtime/components/apps/chat/MessageBubble.tsx",
       "source_location": "L16",
       "id": "chat_messagebubble_formattime",
-      "community": 5,
+      "community": 0,
       "norm_label": "formattime()"
     },
     {
@@ -1000,7 +1361,7 @@
       "source_file": "runtime/components/apps/chat/MessageBubble.tsx",
       "source_location": "L21",
       "id": "chat_messagebubble_messagebubble",
-      "community": 5,
+      "community": 0,
       "norm_label": "messagebubble()"
     },
     {
@@ -1009,7 +1370,7 @@
       "source_file": "runtime/components/apps/chat/ChatInput.tsx",
       "source_location": "L1",
       "id": "runtime_components_apps_chat_chatinput_tsx",
-      "community": 8,
+      "community": 0,
       "norm_label": "chatinput.tsx"
     },
     {
@@ -1018,7 +1379,7 @@
       "source_file": "runtime/components/apps/chat/ChatInput.tsx",
       "source_location": "L5",
       "id": "chat_chatinput_chatinputprops",
-      "community": 8,
+      "community": 0,
       "norm_label": "chatinputprops"
     },
     {
@@ -1027,7 +1388,7 @@
       "source_file": "runtime/components/apps/chat/ChatInput.tsx",
       "source_location": "L10",
       "id": "chat_chatinput_chatinput",
-      "community": 8,
+      "community": 0,
       "norm_label": "chatinput()"
     },
     {
@@ -1036,7 +1397,7 @@
       "source_file": "runtime/components/apps/chat/ChatInput.tsx",
       "source_location": "L134",
       "id": "chat_chatinput_toolbarbtn",
-      "community": 8,
+      "community": 0,
       "norm_label": "toolbarbtn()"
     },
     {
@@ -1045,7 +1406,7 @@
       "source_file": "runtime/components/apps/chat/ChatApp.tsx",
       "source_location": "L1",
       "id": "runtime_components_apps_chat_chatapp_tsx",
-      "community": 8,
+      "community": 0,
       "norm_label": "chatapp.tsx"
     },
     {
@@ -1054,7 +1415,7 @@
       "source_file": "runtime/components/apps/chat/ChatApp.tsx",
       "source_location": "L10",
       "id": "chat_chatapp_avatar_colors",
-      "community": 8,
+      "community": 0,
       "norm_label": "avatar_colors"
     },
     {
@@ -1063,7 +1424,7 @@
       "source_file": "runtime/components/apps/chat/ChatApp.tsx",
       "source_location": "L12",
       "id": "chat_chatapp_getinitials",
-      "community": 8,
+      "community": 0,
       "norm_label": "getinitials()"
     },
     {
@@ -1072,7 +1433,7 @@
       "source_file": "runtime/components/apps/chat/ChatApp.tsx",
       "source_location": "L16",
       "id": "chat_chatapp_formattime",
-      "community": 8,
+      "community": 0,
       "norm_label": "formattime()"
     },
     {
@@ -1081,7 +1442,7 @@
       "source_file": "runtime/components/apps/chat/ChatApp.tsx",
       "source_location": "L20",
       "id": "chat_chatapp_chatapp",
-      "community": 8,
+      "community": 0,
       "norm_label": "chatapp()"
     },
     {
@@ -1090,7 +1451,7 @@
       "source_file": "runtime/components/apps/terminal/TerminalApp.tsx",
       "source_location": "L1",
       "id": "runtime_components_apps_terminal_terminalapp_tsx",
-      "community": 11,
+      "community": 6,
       "norm_label": "terminalapp.tsx"
     },
     {
@@ -1099,7 +1460,7 @@
       "source_file": "runtime/components/apps/terminal/TerminalApp.tsx",
       "source_location": "L5",
       "id": "terminal_terminalapp_terminalline",
-      "community": 11,
+      "community": 6,
       "norm_label": "terminalline"
     },
     {
@@ -1108,7 +1469,7 @@
       "source_file": "runtime/components/apps/terminal/TerminalApp.tsx",
       "source_location": "L17",
       "id": "terminal_terminalapp_files",
-      "community": 11,
+      "community": 6,
       "norm_label": "files"
     },
     {
@@ -1117,7 +1478,7 @@
       "source_file": "runtime/components/apps/terminal/TerminalApp.tsx",
       "source_location": "L33",
       "id": "terminal_terminalapp_help_text",
-      "community": 11,
+      "community": 6,
       "norm_label": "help_text"
     },
     {
@@ -1126,7 +1487,7 @@
       "source_file": "runtime/components/apps/terminal/TerminalApp.tsx",
       "source_location": "L49",
       "id": "terminal_terminalapp_resolvepath",
-      "community": 11,
+      "community": 6,
       "norm_label": "resolvepath()"
     },
     {
@@ -1135,7 +1496,7 @@
       "source_file": "runtime/components/apps/terminal/TerminalApp.tsx",
       "source_location": "L63",
       "id": "terminal_terminalapp_normalize",
-      "community": 11,
+      "community": 6,
       "norm_label": "normalize()"
     },
     {
@@ -1144,7 +1505,7 @@
       "source_file": "runtime/components/apps/terminal/TerminalApp.tsx",
       "source_location": "L67",
       "id": "terminal_terminalapp_terminalapp",
-      "community": 11,
+      "community": 6,
       "norm_label": "terminalapp()"
     },
     {
@@ -1234,7 +1595,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L1",
       "id": "runtime_components_apps_bigquery_bigqueryapp_tsx",
-      "community": 4,
+      "community": 8,
       "norm_label": "bigqueryapp.tsx"
     },
     {
@@ -1243,7 +1604,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L5",
       "id": "bigquery_bigqueryapp_tabledef",
-      "community": 4,
+      "community": 8,
       "norm_label": "tabledef"
     },
     {
@@ -1252,7 +1613,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L11",
       "id": "bigquery_bigqueryapp_datasetdef",
-      "community": 4,
+      "community": 8,
       "norm_label": "datasetdef"
     },
     {
@@ -1261,7 +1622,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L16",
       "id": "bigquery_bigqueryapp_querytab",
-      "community": 4,
+      "community": 8,
       "norm_label": "querytab"
     },
     {
@@ -1270,7 +1631,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L28",
       "id": "bigquery_bigqueryapp_datasets",
-      "community": 4,
+      "community": 8,
       "norm_label": "datasets"
     },
     {
@@ -1279,7 +1640,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L53",
       "id": "bigquery_bigqueryapp_tabs",
-      "community": 4,
+      "community": 8,
       "norm_label": "tabs"
     },
     {
@@ -1288,7 +1649,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L143",
       "id": "bigquery_bigqueryapp_sql_keywords",
-      "community": 4,
+      "community": 8,
       "norm_label": "sql_keywords"
     },
     {
@@ -1297,7 +1658,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L151",
       "id": "bigquery_bigqueryapp_bigqueryapp",
-      "community": 4,
+      "community": 8,
       "norm_label": "bigqueryapp()"
     },
     {
@@ -1306,7 +1667,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L487",
       "id": "bigquery_bigqueryapp_resultstable",
-      "community": 4,
+      "community": 8,
       "norm_label": "resultstable()"
     },
     {
@@ -1315,7 +1676,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L537",
       "id": "bigquery_bigqueryapp_jobinfo",
-      "community": 4,
+      "community": 8,
       "norm_label": "jobinfo()"
     },
     {
@@ -1324,7 +1685,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L565",
       "id": "bigquery_bigqueryapp_treerow",
-      "community": 4,
+      "community": 8,
       "norm_label": "treerow()"
     },
     {
@@ -1333,7 +1694,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L606",
       "id": "bigquery_bigqueryapp_explorericon",
-      "community": 4,
+      "community": 8,
       "norm_label": "explorericon()"
     },
     {
@@ -1342,7 +1703,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L625",
       "id": "bigquery_bigqueryapp_resultstab",
-      "community": 4,
+      "community": 8,
       "norm_label": "resultstab()"
     },
     {
@@ -1351,7 +1712,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L648",
       "id": "bigquery_bigqueryapp_actionbtn",
-      "community": 4,
+      "community": 8,
       "norm_label": "actionbtn()"
     },
     {
@@ -1360,7 +1721,7 @@
       "source_file": "runtime/components/apps/bigquery/BigQueryApp.tsx",
       "source_location": "L666",
       "id": "bigquery_bigqueryapp_highlightsql",
-      "community": 4,
+      "community": 8,
       "norm_label": "highlightsql()"
     },
     {
@@ -1387,7 +1748,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L1",
       "id": "runtime_components_apps_briefing_meetingrecording_tsx",
-      "community": 7,
+      "community": 9,
       "norm_label": "meetingrecording.tsx"
     },
     {
@@ -1396,7 +1757,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L10",
       "id": "briefing_meetingrecording_props",
-      "community": 7,
+      "community": 9,
       "norm_label": "props"
     },
     {
@@ -1405,7 +1766,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L16",
       "id": "briefing_meetingrecording_tile_colors",
-      "community": 7,
+      "community": 9,
       "norm_label": "tile_colors"
     },
     {
@@ -1414,7 +1775,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L27",
       "id": "briefing_meetingrecording_colorfor",
-      "community": 7,
+      "community": 9,
       "norm_label": "colorfor()"
     },
     {
@@ -1423,7 +1784,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L35",
       "id": "briefing_meetingrecording_initials",
-      "community": 7,
+      "community": 9,
       "norm_label": "initials()"
     },
     {
@@ -1432,7 +1793,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L46",
       "id": "briefing_meetingrecording_formattime",
-      "community": 7,
+      "community": 9,
       "norm_label": "formattime()"
     },
     {
@@ -1441,7 +1802,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L53",
       "id": "briefing_meetingrecording_formatrecordedat",
-      "community": 7,
+      "community": 9,
       "norm_label": "formatrecordedat()"
     },
     {
@@ -1450,7 +1811,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L65",
       "id": "briefing_meetingrecording_gridclass",
-      "community": 7,
+      "community": 9,
       "norm_label": "gridclass()"
     },
     {
@@ -1459,7 +1820,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L73",
       "id": "briefing_meetingrecording_findactivesegment",
-      "community": 7,
+      "community": 9,
       "norm_label": "findactivesegment()"
     },
     {
@@ -1468,7 +1829,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L81",
       "id": "briefing_meetingrecording_tileprops",
-      "community": 7,
+      "community": 9,
       "norm_label": "tileprops"
     },
     {
@@ -1477,7 +1838,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L89",
       "id": "briefing_meetingrecording_participanttile",
-      "community": 7,
+      "community": 9,
       "norm_label": "participanttile()"
     },
     {
@@ -1486,7 +1847,7 @@
       "source_file": "runtime/components/apps/briefing/MeetingRecording.tsx",
       "source_location": "L168",
       "id": "briefing_meetingrecording_meetingrecording",
-      "community": 7,
+      "community": 9,
       "norm_label": "meetingrecording()"
     },
     {
@@ -1585,7 +1946,7 @@
       "source_file": "runtime/components/apps/notebook/CellOutput.tsx",
       "source_location": "L1",
       "id": "runtime_components_apps_notebook_celloutput_tsx",
-      "community": 5,
+      "community": 0,
       "norm_label": "celloutput.tsx"
     },
     {
@@ -1594,7 +1955,7 @@
       "source_file": "runtime/components/apps/notebook/CellOutput.tsx",
       "source_location": "L5",
       "id": "notebook_celloutput_celloutputprops",
-      "community": 5,
+      "community": 0,
       "norm_label": "celloutputprops"
     },
     {
@@ -1603,7 +1964,7 @@
       "source_file": "runtime/components/apps/notebook/CellOutput.tsx",
       "source_location": "L9",
       "id": "notebook_celloutput_celloutput",
-      "community": 5,
+      "community": 0,
       "norm_label": "celloutput()"
     },
     {
@@ -1747,7 +2108,7 @@
       "source_file": "runtime/lib/types.ts",
       "source_location": "L1",
       "id": "runtime_lib_types_ts",
-      "community": 5,
+      "community": 0,
       "norm_label": "types.ts"
     },
     {
@@ -1756,7 +2117,7 @@
       "source_file": "runtime/lib/types.ts",
       "source_location": "L31",
       "id": "lib_types_appid",
-      "community": 5,
+      "community": 6,
       "norm_label": "appid"
     },
     {
@@ -1765,7 +2126,7 @@
       "source_file": "runtime/lib/types.ts",
       "source_location": "L33",
       "id": "lib_types_appregistryentry",
-      "community": 5,
+      "community": 6,
       "norm_label": "appregistryentry"
     },
     {
@@ -1774,7 +2135,7 @@
       "source_file": "runtime/lib/types.ts",
       "source_location": "L41",
       "id": "lib_types_chatmessage",
-      "community": 5,
+      "community": 0,
       "norm_label": "chatmessage"
     },
     {
@@ -1783,7 +2144,7 @@
       "source_file": "runtime/lib/types.ts",
       "source_location": "L49",
       "id": "lib_types_judgecriterionresult",
-      "community": 5,
+      "community": 0,
       "norm_label": "judgecriterionresult"
     },
     {
@@ -1810,7 +2171,7 @@
       "source_file": "runtime/lib/constants.ts",
       "source_location": "L1",
       "id": "runtime_lib_constants_ts",
-      "community": 8,
+      "community": 0,
       "norm_label": "constants.ts"
     },
     {
@@ -1819,7 +2180,7 @@
       "source_file": "runtime/lib/course-loader.ts",
       "source_location": "L1",
       "id": "runtime_lib_course_loader_ts",
-      "community": 4,
+      "community": 6,
       "norm_label": "course-loader.ts"
     },
     {
@@ -1828,7 +2189,7 @@
       "source_file": "runtime/lib/course-loader.ts",
       "source_location": "L1",
       "id": "lib_course_loader_loadcoursepackage",
-      "community": 4,
+      "community": 6,
       "norm_label": "loadcoursepackage()"
     },
     {
@@ -1889,7 +2250,7 @@
       "label": "useCaseForgeStore",
       "file_type": "code",
       "source_file": "runtime/lib/store.ts",
-      "source_location": "L86",
+      "source_location": "L104",
       "id": "lib_store_usecaseforgestore",
       "community": 0,
       "norm_label": "usecaseforgestore"
@@ -1900,7 +2261,7 @@
       "source_file": "runtime/lib/app-registry.ts",
       "source_location": "L1",
       "id": "runtime_lib_app_registry_ts",
-      "community": 4,
+      "community": 6,
       "norm_label": "app-registry.ts"
     },
     {
@@ -1909,7 +2270,7 @@
       "source_file": "runtime/lib/app-registry.ts",
       "source_location": "L3",
       "id": "lib_app_registry_app_registry",
-      "community": 4,
+      "community": 6,
       "norm_label": "app_registry"
     },
     {
@@ -1918,7 +2279,7 @@
       "source_file": "runtime/lib/app-registry.ts",
       "source_location": "L55",
       "id": "lib_app_registry_getappentry",
-      "community": 4,
+      "community": 6,
       "norm_label": "getappentry()"
     },
     {
@@ -1927,7 +2288,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L1",
       "id": "schema_course_package_ts",
-      "community": 2,
+      "community": 5,
       "norm_label": "course_package.ts"
     },
     {
@@ -1936,7 +2297,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L15",
       "id": "schema_course_package_source",
-      "community": 2,
+      "community": 5,
       "norm_label": "source"
     },
     {
@@ -1945,7 +2306,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L18",
       "id": "schema_course_package_nonempty",
-      "community": 2,
+      "community": 5,
       "norm_label": "nonempty"
     },
     {
@@ -1954,7 +2315,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L24",
       "id": "schema_course_package_glossaryentry",
-      "community": 2,
+      "community": 5,
       "norm_label": "glossaryentry"
     },
     {
@@ -1963,7 +2324,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L31",
       "id": "schema_course_package_system",
-      "community": 2,
+      "community": 5,
       "norm_label": "system"
     },
     {
@@ -1972,7 +2333,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L40",
       "id": "schema_course_package_regulation",
-      "community": 2,
+      "community": 5,
       "norm_label": "regulation"
     },
     {
@@ -1981,7 +2342,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L46",
       "id": "schema_course_package_world",
-      "community": 2,
+      "community": 5,
       "norm_label": "world"
     },
     {
@@ -1990,7 +2351,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L69",
       "id": "schema_course_package_knowledgenugget",
-      "community": 2,
+      "community": 5,
       "norm_label": "knowledgenugget"
     },
     {
@@ -1999,7 +2360,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L76",
       "id": "schema_course_package_persona",
-      "community": 2,
+      "community": 5,
       "norm_label": "persona"
     },
     {
@@ -2008,7 +2369,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L93",
       "id": "schema_course_package_wikipage",
-      "community": 2,
+      "community": 5,
       "norm_label": "wikipage"
     },
     {
@@ -2017,7 +2378,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L100",
       "id": "schema_course_package_dataset",
-      "community": 2,
+      "community": 5,
       "norm_label": "dataset"
     },
     {
@@ -2026,7 +2387,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L108",
       "id": "schema_course_package_inworlddocument",
-      "community": 2,
+      "community": 5,
       "norm_label": "inworlddocument"
     },
     {
@@ -2035,7 +2396,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L122",
       "id": "schema_course_package_email",
-      "community": 2,
+      "community": 5,
       "norm_label": "email"
     },
     {
@@ -2044,7 +2405,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L132",
       "id": "schema_course_package_notebookoutput",
-      "community": 2,
+      "community": 5,
       "norm_label": "notebookoutput"
     },
     {
@@ -2053,7 +2414,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L138",
       "id": "schema_course_package_notebookcell",
-      "community": 2,
+      "community": 5,
       "norm_label": "notebookcell"
     },
     {
@@ -2062,7 +2423,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L147",
       "id": "schema_course_package_notebook",
-      "community": 2,
+      "community": 5,
       "norm_label": "notebook"
     },
     {
@@ -2071,7 +2432,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L159",
       "id": "schema_course_package_fixtures",
-      "community": 2,
+      "community": 5,
       "norm_label": "fixtures"
     },
     {
@@ -2080,7 +2441,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L172",
       "id": "schema_course_package_primitive",
-      "community": 2,
+      "community": 5,
       "norm_label": "primitive"
     },
     {
@@ -2089,7 +2450,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L185",
       "id": "schema_course_package_deliverable",
-      "community": 2,
+      "community": 5,
       "norm_label": "deliverable"
     },
     {
@@ -2098,7 +2459,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L191",
       "id": "schema_course_package_meetingparticipant",
-      "community": 2,
+      "community": 5,
       "norm_label": "meetingparticipant"
     },
     {
@@ -2107,7 +2468,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L197",
       "id": "schema_course_package_meetingsegment",
-      "community": 2,
+      "community": 5,
       "norm_label": "meetingsegment"
     },
     {
@@ -2116,7 +2477,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L204",
       "id": "schema_course_package_meetingrecording",
-      "community": 2,
+      "community": 5,
       "norm_label": "meetingrecording"
     },
     {
@@ -2125,7 +2486,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L218",
       "id": "schema_course_package_hardcriterion",
-      "community": 2,
+      "community": 5,
       "norm_label": "hardcriterion"
     },
     {
@@ -2134,7 +2495,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L224",
       "id": "schema_course_package_qualitativecriterion",
-      "community": 2,
+      "community": 5,
       "norm_label": "qualitativecriterion"
     },
     {
@@ -2143,7 +2504,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L234",
       "id": "schema_course_package_rubric",
-      "community": 2,
+      "community": 5,
       "norm_label": "rubric"
     },
     {
@@ -2152,7 +2513,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L241",
       "id": "schema_course_package_task",
-      "community": 2,
+      "community": 5,
       "norm_label": "task"
     },
     {
@@ -2161,7 +2522,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L259",
       "id": "schema_course_package_module",
-      "community": 2,
+      "community": 5,
       "norm_label": "module"
     },
     {
@@ -2170,7 +2531,7 @@
       "source_file": "schema/course_package.ts",
       "source_location": "L270",
       "id": "schema_course_package_coursepackage",
-      "community": 2,
+      "community": 5,
       "norm_label": "coursepackage"
     },
     {
@@ -2179,7 +2540,7 @@
       "source_file": "schema/validate.ts",
       "source_location": "L1",
       "id": "schema_validate_ts",
-      "community": 2,
+      "community": 5,
       "norm_label": "validate.ts"
     },
     {
@@ -2188,7 +2549,7 @@
       "source_file": "schema/validate.ts",
       "source_location": "L28",
       "id": "schema_validate_result",
-      "community": 2,
+      "community": 5,
       "norm_label": "result"
     },
     {
@@ -2197,7 +2558,7 @@
       "source_file": "schema/validate.ts",
       "source_location": "L40",
       "id": "schema_validate_taskcount",
-      "community": 2,
+      "community": 5,
       "norm_label": "taskcount"
     },
     {
@@ -2467,7 +2828,7 @@
       "source_file": "scripts/solver/setup.js",
       "source_location": "L1",
       "id": "scripts_solver_setup_js",
-      "community": 9,
+      "community": 10,
       "norm_label": "setup.js"
     },
     {
@@ -2476,7 +2837,7 @@
       "source_file": "scripts/solver/setup.js",
       "source_location": "L8",
       "id": "solver_setup_fs",
-      "community": 9,
+      "community": 10,
       "norm_label": "fs"
     },
     {
@@ -2485,7 +2846,7 @@
       "source_file": "scripts/solver/setup.js",
       "source_location": "L9",
       "id": "solver_setup_path",
-      "community": 9,
+      "community": 10,
       "norm_label": "path"
     },
     {
@@ -2494,7 +2855,7 @@
       "source_file": "scripts/solver/setup.js",
       "source_location": "L10",
       "id": "solver_setup_execsync",
-      "community": 9,
+      "community": 10,
       "norm_label": "{ execsync }"
     },
     {
@@ -2503,7 +2864,7 @@
       "source_file": "scripts/solver/setup.js",
       "source_location": "L14",
       "id": "solver_setup_expected_files",
-      "community": 9,
+      "community": 10,
       "norm_label": "expected_files"
     },
     {
@@ -2512,7 +2873,7 @@
       "source_file": "scripts/solver/setup.js",
       "source_location": "L26",
       "id": "solver_setup_upload_dirs",
-      "community": 9,
+      "community": 10,
       "norm_label": "upload_dirs"
     },
     {
@@ -2521,7 +2882,7 @@
       "source_file": "scripts/solver/setup.js",
       "source_location": "L28",
       "id": "solver_setup_finduploadedfile",
-      "community": 9,
+      "community": 10,
       "norm_label": "finduploadedfile()"
     },
     {
@@ -2530,7 +2891,7 @@
       "source_file": "scripts/solver/setup.js",
       "source_location": "L50",
       "id": "solver_setup_found",
-      "community": 9,
+      "community": 10,
       "norm_label": "found"
     },
     {
@@ -2539,7 +2900,7 @@
       "source_file": "scripts/solver/setup.js",
       "source_location": "L99",
       "id": "solver_setup_pkg",
-      "community": 9,
+      "community": 10,
       "norm_label": "pkg"
     },
     {
@@ -2633,7 +2994,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_programme",
-      "community": 6,
+      "community": 2,
       "norm_label": "virtusa forward deployed engineer programme"
     },
     {
@@ -2646,7 +3007,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_meridian_insurance",
-      "community": 6,
+      "community": 2,
       "norm_label": "meridian insurance (fictional client)"
     },
     {
@@ -2659,7 +3020,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_module1",
-      "community": 6,
+      "community": 2,
       "norm_label": "module 1: insurance domain immersion & system discovery"
     },
     {
@@ -2672,7 +3033,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_module2",
-      "community": 6,
+      "community": 2,
       "norm_label": "module 2: rapid prototyping on legacy insurance systems"
     },
     {
@@ -2685,7 +3046,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_module3",
-      "community": 6,
+      "community": 2,
       "norm_label": "module 3: ai/ml for insurance operations"
     },
     {
@@ -2698,7 +3059,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_module4",
-      "community": 6,
+      "community": 2,
       "norm_label": "module 4: production engineering & reliability"
     },
     {
@@ -2711,7 +3072,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_module5",
-      "community": 6,
+      "community": 2,
       "norm_label": "module 5: client impact & stakeholder delivery"
     },
     {
@@ -2724,7 +3085,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_module6",
-      "community": 6,
+      "community": 2,
       "norm_label": "module 6: capstone end-to-end insurance product build"
     },
     {
@@ -2737,7 +3098,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_guidewire_insurancesuite",
-      "community": 6,
+      "community": 2,
       "norm_label": "guidewire insurancesuite (policycenter, claimcenter, billingcenter)"
     },
     {
@@ -2750,7 +3111,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_acord_xml",
-      "community": 6,
+      "community": 2,
       "norm_label": "acord xml/json insurance data standard"
     },
     {
@@ -2763,7 +3124,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_fnol",
-      "community": 6,
+      "community": 2,
       "norm_label": "fnol (first notice of loss)"
     },
     {
@@ -2776,7 +3137,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_policy_lifecycle",
-      "community": 6,
+      "community": 2,
       "norm_label": "policy lifecycle (quote-bind-issue-endorse-renew-cancel)"
     },
     {
@@ -2789,7 +3150,7 @@
       "author": null,
       "contributor": null,
       "id": "virtusa_fde_curriculum_compliance_naic_gdpr",
-      "community": 6,
+      "community": 2,
       "norm_label": "regulatory compliance (naic, gdpr/ccpa, soc 2)"
     },
     {
@@ -3140,7 +3501,7 @@
       "author": null,
       "contributor": null,
       "id": "notebook_app_plan_policy_lifecycle_explorer_sample",
-      "community": 6,
+      "community": 2,
       "norm_label": "policy lifecycle explorer sample notebook (m1.t1)"
     },
     {
@@ -3220,6 +3581,903 @@
       "id": "notebook_app_design_yagni_out_of_scope",
       "community": 3,
       "norm_label": "yagni scope cuts (no pyodide, no monaco, no localstorage)"
+    },
+    {
+      "label": "CaseForge Project",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_caseforge_project",
+      "community": 36,
+      "norm_label": "caseforge project"
+    },
+    {
+      "label": "CoursePackage Schema (load-bearing contract)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": "schema/course_package.ts",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_course_package_schema",
+      "community": 4,
+      "norm_label": "coursepackage schema (load-bearing contract)"
+    },
+    {
+      "label": "Anthropic Managed Agents SDK (beta managed-agents-2026-04-01)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_managed_agents_sdk",
+      "community": 3,
+      "norm_label": "anthropic managed agents sdk (beta managed-agents-2026-04-01)"
+    },
+    {
+      "label": "npm run upload",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_upload_script",
+      "community": 3,
+      "norm_label": "npm run upload"
+    },
+    {
+      "label": "npm run download",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_download_script",
+      "community": 3,
+      "norm_label": "npm run download"
+    },
+    {
+      "label": "npm run validate",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_validate_script",
+      "community": 4,
+      "norm_label": "npm run validate"
+    },
+    {
+      "label": "npm run solver",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_solver_script",
+      "community": 4,
+      "norm_label": "npm run solver"
+    },
+    {
+      "label": "runtime/public/course-package.json (runtime fixture)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_course_package_json",
+      "community": 3,
+      "norm_label": "runtime/public/course-package.json (runtime fixture)"
+    },
+    {
+      "label": "Zero-prop component pattern",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_zero_prop_pattern",
+      "community": 3,
+      "norm_label": "zero-prop component pattern"
+    },
+    {
+      "label": "Desktop OS Shell (Desktop.tsx)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_desktop_shell",
+      "community": 4,
+      "norm_label": "desktop os shell (desktop.tsx)"
+    },
+    {
+      "label": "Briefing App",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_briefing_app",
+      "community": 4,
+      "norm_label": "briefing app"
+    },
+    {
+      "label": "Wiki App",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_wiki_app",
+      "community": 4,
+      "norm_label": "wiki app"
+    },
+    {
+      "label": "Chat App",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_chat_app",
+      "community": 4,
+      "norm_label": "chat app"
+    },
+    {
+      "label": "Submit App",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_submit_app",
+      "community": 4,
+      "norm_label": "submit app"
+    },
+    {
+      "label": "Chat API route (app/api/chat)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_chat_api_route",
+      "community": 4,
+      "norm_label": "chat api route (app/api/chat)"
+    },
+    {
+      "label": "Judge API route (app/api/judge)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_judge_api_route",
+      "community": 4,
+      "norm_label": "judge api route (app/api/judge)"
+    },
+    {
+      "label": "Slack voice persona system prompt",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": "app/api/chat/route.ts",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_slack_voice_persona",
+      "community": 4,
+      "norm_label": "slack voice persona system prompt"
+    },
+    {
+      "label": "Wallpapers API route",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_wallpapers_api",
+      "community": 37,
+      "norm_label": "wallpapers api route"
+    },
+    {
+      "label": "vercel.json deployment config",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_vercel_deployment",
+      "community": 3,
+      "norm_label": "vercel.json deployment config"
+    },
+    {
+      "label": "CaseForge Solver Agent",
+      "file_type": "document",
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_solver",
+      "community": 4,
+      "norm_label": "caseforge solver agent"
+    },
+    {
+      "label": "Solver Bootstrap Script (/work setup)",
+      "file_type": "document",
+      "source_file": "agents/solver-agent.md",
+      "source_location": "BOOTSTRAP block",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_bootstrap",
+      "community": 4,
+      "norm_label": "solver bootstrap script (/work setup)"
+    },
+    {
+      "label": "read-brief.js tool",
+      "file_type": "document",
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_read_brief",
+      "community": 4,
+      "norm_label": "read-brief.js tool"
+    },
+    {
+      "label": "list-wiki.js tool",
+      "file_type": "document",
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_list_wiki",
+      "community": 4,
+      "norm_label": "list-wiki.js tool"
+    },
+    {
+      "label": "read-wiki.js tool",
+      "file_type": "document",
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_read_wiki",
+      "community": 4,
+      "norm_label": "read-wiki.js tool"
+    },
+    {
+      "label": "list-personas.js tool",
+      "file_type": "document",
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_list_personas",
+      "community": 4,
+      "norm_label": "list-personas.js tool"
+    },
+    {
+      "label": "interview.js tool (multi-turn persona)",
+      "file_type": "document",
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_interview",
+      "community": 4,
+      "norm_label": "interview.js tool (multi-turn persona)"
+    },
+    {
+      "label": "submit.js tool",
+      "file_type": "document",
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_submit",
+      "community": 4,
+      "norm_label": "submit.js tool"
+    },
+    {
+      "label": "Rule: do not use outside training knowledge",
+      "file_type": "rationale",
+      "source_file": "agents/solver-agent.md",
+      "source_location": "RULES",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_no_outside_knowledge",
+      "community": 4,
+      "norm_label": "rule: do not use outside training knowledge"
+    },
+    {
+      "label": "Solver validates CoursePackage has enough info for humans to succeed",
+      "file_type": "rationale",
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "solver_agent_validate_simulation",
+      "community": 4,
+      "norm_label": "solver validates coursepackage has enough info for humans to succeed"
+    },
+    {
+      "label": "Notebook App (planned 5th desktop app)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_plan_app",
+      "community": 4,
+      "norm_label": "notebook app (planned 5th desktop app)"
+    },
+    {
+      "label": "Schema-first development approach",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Architecture",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_plan_schema_first",
+      "community": 4,
+      "norm_label": "schema-first development approach"
+    },
+    {
+      "label": "Zustand notebookState overlay (cellOrder, userCells, edits, runStates)",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_plan_zustand_overlay",
+      "community": 3,
+      "norm_label": "zustand notebookstate overlay (cellorder, usercells, edits, runstates)"
+    },
+    {
+      "label": "Simulated run flow (~600ms delay, no real exec)",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_plan_simulated_run",
+      "community": 4,
+      "norm_label": "simulated run flow (~600ms delay, no real exec)"
+    },
+    {
+      "label": "Prism syntax highlighting (Python + Markdown only)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 5",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_plan_prism",
+      "community": 4,
+      "norm_label": "prism syntax highlighting (python + markdown only)"
+    },
+    {
+      "label": "react-simple-code-editor dependency",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_plan_react_simple_code_editor",
+      "community": 4,
+      "norm_label": "react-simple-code-editor dependency"
+    },
+    {
+      "label": "Sample Notebook: Policy Lifecycle Explorer",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_plan_sample_notebook",
+      "community": 2,
+      "norm_label": "sample notebook: policy lifecycle explorer"
+    },
+    {
+      "label": "AppId union extension (add 'notebook')",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_plan_app_id_extension",
+      "community": 4,
+      "norm_label": "appid union extension (add 'notebook')"
+    },
+    {
+      "label": "Notebook App Design Spec",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_spec_design",
+      "community": 4,
+      "norm_label": "notebook app design spec"
+    },
+    {
+      "label": "Cell resolution rule (overlay vs authored outputs)",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Cell resolution rule",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_spec_cell_resolution_rule",
+      "community": 4,
+      "norm_label": "cell resolution rule (overlay vs authored outputs)"
+    },
+    {
+      "label": "Honest simulation semantics (no faked REPL)",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Design principles",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_spec_honest_semantics",
+      "community": 4,
+      "norm_label": "honest simulation semantics (no faked repl)"
+    },
+    {
+      "label": "YAGNI: no real exec, no .ipynb, no Pyodide",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Explicitly out of scope",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_spec_yagni_scope",
+      "community": 4,
+      "norm_label": "yagni: no real exec, no .ipynb, no pyodide"
+    },
+    {
+      "label": "NotebookCell schema type",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Schema additions",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_spec_notebook_cell",
+      "community": 4,
+      "norm_label": "notebookcell schema type"
+    },
+    {
+      "label": "NotebookOutput schema type",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Schema additions",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_spec_notebook_output",
+      "community": 4,
+      "norm_label": "notebookoutput schema type"
+    },
+    {
+      "label": "Notebook schema type",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Schema additions",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_spec_notebook_type",
+      "community": 4,
+      "norm_label": "notebook schema type"
+    },
+    {
+      "label": "linkedTasks field (notebook \u2192 task wiring)",
+      "file_type": "rationale",
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "notebook_spec_linked_tasks",
+      "community": 4,
+      "norm_label": "linkedtasks field (notebook \u2192 task wiring)"
+    },
+    {
+      "label": "Virtusa FDE 14-Week Curriculum",
+      "file_type": "document",
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "virtusa_fde_curriculum_curriculum",
+      "community": 2,
+      "norm_label": "virtusa fde 14-week curriculum"
+    },
+    {
+      "label": "Meridian Insurance (fictional Tier-1 P&C and Life insurer)",
+      "file_type": "document",
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": "Client Context",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "virtusa_fde_curriculum_meridian",
+      "community": 2,
+      "norm_label": "meridian insurance (fictional tier-1 p&c and life insurer)"
+    },
+    {
+      "label": "Module 6: Capstone \u2014 End-to-End Insurance Product Build",
+      "file_type": "document",
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": "Module 6",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "virtusa_fde_curriculum_capstone",
+      "community": 2,
+      "norm_label": "module 6: capstone \u2014 end-to-end insurance product build"
+    },
+    {
+      "label": "100% Task-Driven, Zero Lectures principle",
+      "file_type": "rationale",
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": "Programme Overview",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "virtusa_fde_curriculum_task_driven",
+      "community": 2,
+      "norm_label": "100% task-driven, zero lectures principle"
+    },
+    {
+      "label": "Pass/Fail Assessment (no subjective grading)",
+      "file_type": "rationale",
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": "Programme Design Principles",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "virtusa_fde_curriculum_pass_fail",
+      "community": 2,
+      "norm_label": "pass/fail assessment (no subjective grading)"
+    },
+    {
+      "label": "Meridian Policy Lifecycle Process Map (M1.T1 deliverable)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_meridian_process_map",
+      "community": 2,
+      "norm_label": "meridian policy lifecycle process map (m1.t1 deliverable)"
+    },
+    {
+      "label": "Six Policy Lifecycle Stages (Quote\u2192Bind\u2192Issue\u2192Endorse\u2192Renew\u2192Cancel)",
+      "file_type": "rationale",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 1.1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_policy_lifecycle_stages",
+      "community": 2,
+      "norm_label": "six policy lifecycle stages (quote\u2192bind\u2192issue\u2192endorse\u2192renew\u2192cancel)"
+    },
+    {
+      "label": "Dual-PAS Architecture (Mainframe + Guidewire PolicyCenter)",
+      "file_type": "rationale",
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_dual_pas",
+      "community": 2,
+      "norm_label": "dual-pas architecture (mainframe + guidewire policycenter)"
+    },
+    {
+      "label": "Guidewire PolicyCenter",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_policy_center",
+      "community": 2,
+      "norm_label": "guidewire policycenter"
+    },
+    {
+      "label": "Legacy Mainframe PAS",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_legacy_mainframe_pas",
+      "community": 2,
+      "norm_label": "legacy mainframe pas"
+    },
+    {
+      "label": "BillingCenter",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_billing_center",
+      "community": 2,
+      "norm_label": "billingcenter"
+    },
+    {
+      "label": "ClaimCenter",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_claim_center",
+      "community": 2,
+      "norm_label": "claimcenter"
+    },
+    {
+      "label": "Rating Engine (ACORD XML)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_rating_engine",
+      "community": 2,
+      "norm_label": "rating engine (acord xml)"
+    },
+    {
+      "label": "Thunderhead / Smart Communications (Document Generation)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_thunderhead",
+      "community": 2,
+      "norm_label": "thunderhead / smart communications (document generation)"
+    },
+    {
+      "label": "ACORD XML version mismatch (~12% rating error rate)",
+      "file_type": "rationale",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Issue A",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_acord_xml_issue",
+      "community": 2,
+      "norm_label": "acord xml version mismatch (~12% rating error rate)"
+    },
+    {
+      "label": "Nightly DataStage Sync Window Gap (24-48h lag)",
+      "file_type": "rationale",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Issue B",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_datastage_sync_gap",
+      "community": 2,
+      "norm_label": "nightly datastage sync window gap (24-48h lag)"
+    },
+    {
+      "label": "Priya Nair (PolicyCenter Configuration Analyst)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 10.1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_persona_priya_nair",
+      "community": 2,
+      "norm_label": "priya nair (policycenter configuration analyst)"
+    },
+    {
+      "label": "Raj Krishnamurthy (Senior Mainframe Developer)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 10.1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_persona_raj_krishnamurthy",
+      "community": 2,
+      "norm_label": "raj krishnamurthy (senior mainframe developer)"
+    },
+    {
+      "label": "Diane Kowalski (Personal Lines Underwriting Manager)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 10.1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_persona_diane_kowalski",
+      "community": 2,
+      "norm_label": "diane kowalski (personal lines underwriting manager)"
+    },
+    {
+      "label": "Marcus Bell (Policy Operations Supervisor)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 10.1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_persona_marcus_bell",
+      "community": 2,
+      "norm_label": "marcus bell (policy operations supervisor)"
+    },
+    {
+      "label": "Nkechi Okafor (Enterprise Data Architect)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 10.1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_persona_nkechi_okafor",
+      "community": 2,
+      "norm_label": "nkechi okafor (enterprise data architect)"
+    },
+    {
+      "label": "Sarah Lindgren (VP of Compliance)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 10.1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_persona_sarah_lindgren",
+      "community": 2,
+      "norm_label": "sarah lindgren (vp of compliance)"
+    },
+    {
+      "label": "CT/CO Cancellation Notice Compliance Gap (Q1 2026)",
+      "file_type": "rationale",
+      "source_file": "packages/deliverable.md",
+      "source_location": "Issue E",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_ct_co_compliance_gap",
+      "community": 2,
+      "norm_label": "ct/co cancellation notice compliance gap (q1 2026)"
+    },
+    {
+      "label": "Task M1.T1 (Policy Lifecycle Mapping)",
+      "file_type": "document",
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "deliverable_m1t1_task",
+      "community": 2,
+      "norm_label": "task m1.t1 (policy lifecycle mapping)"
     }
   ],
   "links": [
@@ -3461,10 +4719,54 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "contains",
+      "relation": "imports_from",
+      "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "runtime/app/page.tsx",
       "source_location": "L24",
+      "weight": 1.0,
+      "source": "runtime_app_page_tsx",
+      "target": "runtime_components_intro_introgate_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/app/page.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "runtime_app_page_tsx",
+      "target": "intro_introgate_introgate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/app/page.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "runtime_app_page_tsx",
+      "target": "runtime_components_intro_introonboarding_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/app/page.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "runtime_app_page_tsx",
+      "target": "intro_introonboarding_introonboarding",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/app/page.tsx",
+      "source_location": "L27",
       "weight": 1.0,
       "source": "runtime_app_page_tsx",
       "target": "app_page_app_components",
@@ -3474,7 +4776,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/app/page.tsx",
-      "source_location": "L34",
+      "source_location": "L37",
       "weight": 1.0,
       "source": "runtime_app_page_tsx",
       "target": "app_page_homepage",
@@ -3486,7 +4788,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/app/page.tsx",
-      "source_location": "L35",
+      "source_location": "L38",
       "weight": 1.0,
       "source": "app_page_homepage",
       "target": "lib_store_usecaseforgestore"
@@ -3637,6 +4939,440 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "runtime_components_intro_diagrams_tsx",
+      "target": "runtime_components_intro_usereducedmotion_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "runtime_components_intro_diagrams_tsx",
+      "target": "intro_usereducedmotion_usereducedmotion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "runtime_components_intro_diagrams_tsx",
+      "target": "intro_diagrams_workspace_icons",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "runtime_components_intro_diagrams_tsx",
+      "target": "intro_diagrams_stage2lens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "runtime_components_intro_diagrams_tsx",
+      "target": "intro_diagrams_stage3workspace",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "runtime_components_intro_diagrams_tsx",
+      "target": "intro_diagrams_stage4people",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L299",
+      "weight": 1.0,
+      "source": "runtime_components_intro_diagrams_tsx",
+      "target": "intro_diagrams_stage5clock",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "runtime_components_intro_stages_tsx",
+      "target": "runtime_components_intro_diagrams_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "runtime_components_intro_stages_tsx",
+      "target": "intro_diagrams_stage2lens",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "intro_diagrams_stage2lens",
+      "target": "intro_usereducedmotion_usereducedmotion"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "runtime_components_intro_stages_tsx",
+      "target": "intro_diagrams_stage3workspace",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "intro_diagrams_stage3workspace",
+      "target": "intro_usereducedmotion_usereducedmotion"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "runtime_components_intro_stages_tsx",
+      "target": "intro_diagrams_stage4people",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L149",
+      "weight": 1.0,
+      "source": "intro_diagrams_stage4people",
+      "target": "intro_usereducedmotion_usereducedmotion"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "runtime_components_intro_stages_tsx",
+      "target": "intro_diagrams_stage5clock",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/components/intro/diagrams.tsx",
+      "source_location": "L301",
+      "weight": 1.0,
+      "source": "intro_diagrams_stage5clock",
+      "target": "intro_usereducedmotion_usereducedmotion"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroGate.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introgate_tsx",
+      "target": "runtime_lib_store_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroGate.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introgate_tsx",
+      "target": "lib_store_usecaseforgestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroGate.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introgate_tsx",
+      "target": "intro_introgate_introgate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/components/intro/IntroGate.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "intro_introgate_introgate",
+      "target": "lib_store_usecaseforgestore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "runtime_lib_store_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "lib_store_usecaseforgestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "runtime_components_intro_stages_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_stages_stages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_stages_stagedef",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "runtime_components_intro_usereducedmotion_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_usereducedmotion_usereducedmotion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_introonboarding_introonboarding",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_introonboarding_introportal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L498",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_introonboarding_hellostage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L520",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_introonboarding_contentstage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L565",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_introonboarding_primarybuttonprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L572",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_introonboarding_primarybutton",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L601",
+      "weight": 1.0,
+      "source": "runtime_components_intro_introonboarding_tsx",
+      "target": "intro_introonboarding_useismobile",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "intro_introonboarding_introonboarding",
+      "target": "lib_store_usecaseforgestore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "intro_introonboarding_introportal",
+      "target": "intro_introonboarding_useismobile",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/components/intro/IntroOnboarding.tsx",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "intro_introonboarding_introportal",
+      "target": "intro_usereducedmotion_usereducedmotion"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/useReducedMotion.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "runtime_components_intro_usereducedmotion_ts",
+      "target": "intro_usereducedmotion_usereducedmotion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "runtime_components_intro_stages_tsx",
+      "target": "intro_stages_stageid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "runtime_components_intro_stages_tsx",
+      "target": "intro_stages_stagedef",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/intro/stages.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "runtime_components_intro_stages_tsx",
+      "target": "intro_stages_stages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
       "source_location": "L4",
       "weight": 1.0,
@@ -3755,10 +5491,54 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/Desktop.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktop_tsx",
+      "target": "runtime_components_desktop_desktopwindow_tsx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/Desktop.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktop_tsx",
+      "target": "desktop_desktopwindow_desktopwindow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/Desktop.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktop_tsx",
+      "target": "desktop_desktopwindow_minimizeanchor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/Desktop.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktop_tsx",
+      "target": "runtime_components_desktop_controlcenter_tsx",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L10",
+      "source_location": "L17",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_desktopprops",
@@ -3768,7 +5548,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L15",
+      "source_location": "L22",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_bounds",
@@ -3778,7 +5558,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L22",
+      "source_location": "L29",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_viewportsize",
@@ -3788,7 +5568,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L27",
+      "source_location": "L34",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_layoutmetrics",
@@ -3798,7 +5578,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L34",
+      "source_location": "L41",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_desktopwindowstate",
@@ -3808,7 +5588,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L42",
+      "source_location": "L49",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_windowpreset",
@@ -3818,7 +5598,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L52",
+      "source_location": "L59",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_wallpaperentry",
@@ -3828,7 +5608,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L58",
+      "source_location": "L65",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_desktopcontextmenustate",
@@ -3838,7 +5618,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L63",
+      "source_location": "L70",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_resizedirection",
@@ -3848,7 +5628,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L65",
+      "source_location": "L72",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_pointerinteraction",
@@ -3858,7 +5638,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L84",
+      "source_location": "L91",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_default_viewport",
@@ -3868,7 +5648,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L92",
+      "source_location": "L99",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_resize_cursor",
@@ -3878,7 +5658,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L103",
+      "source_location": "L110",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_window_presets",
@@ -3888,7 +5668,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L175",
+      "source_location": "L182",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_desktop_context_menu",
@@ -3898,7 +5678,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L182",
+      "source_location": "L189",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_clamp",
@@ -3908,7 +5688,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L186",
+      "source_location": "L193",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_getlayoutmetrics",
@@ -3918,7 +5698,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L197",
+      "source_location": "L204",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_getworkspace",
@@ -3928,7 +5708,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L206",
+      "source_location": "L213",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_getwindowspawnarea",
@@ -3938,7 +5718,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L218",
+      "source_location": "L223",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_clampbounds",
@@ -3948,7 +5728,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L232",
+      "source_location": "L237",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_createinitialwindowstates",
@@ -3958,7 +5738,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L267",
+      "source_location": "L275",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_reconcilewindowstate",
@@ -3968,7 +5748,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L294",
+      "source_location": "L302",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_resizebounds",
@@ -3978,7 +5758,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L353",
+      "source_location": "L361",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_gettopvisiblewindow",
@@ -3988,7 +5768,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L369",
+      "source_location": "L377",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_formatwallpaperlabel",
@@ -3998,7 +5778,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L381",
+      "source_location": "L389",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_clampcontextmenuposition",
@@ -4008,7 +5788,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L393",
+      "source_location": "L401",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_desktop",
@@ -4018,7 +5798,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L1261",
+      "source_location": "L1551",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_resizehandle",
@@ -4028,7 +5808,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L1287",
+      "source_location": "L1577",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_desktopicon",
@@ -4038,7 +5818,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L1393",
+      "source_location": "L1683",
       "weight": 1.0,
       "source": "runtime_components_desktop_desktop_tsx",
       "target": "desktop_desktop_draggabledesktopicon",
@@ -4049,7 +5829,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L219",
+      "source_location": "L224",
       "weight": 1.0,
       "source": "desktop_desktop_clampbounds",
       "target": "desktop_desktop_clamp",
@@ -4060,7 +5840,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L308",
+      "source_location": "L316",
       "weight": 1.0,
       "source": "desktop_desktop_resizebounds",
       "target": "desktop_desktop_clamp",
@@ -4071,7 +5851,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L388",
+      "source_location": "L396",
       "weight": 1.0,
       "source": "desktop_desktop_clampcontextmenuposition",
       "target": "desktop_desktop_clamp",
@@ -4082,7 +5862,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L280",
+      "source_location": "L288",
       "weight": 1.0,
       "source": "desktop_desktop_reconcilewindowstate",
       "target": "desktop_desktop_clampbounds",
@@ -4093,7 +5873,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L341",
+      "source_location": "L349",
       "weight": 1.0,
       "source": "desktop_desktop_resizebounds",
       "target": "desktop_desktop_clampbounds",
@@ -4104,7 +5884,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L974",
+      "source_location": "L1231",
       "weight": 1.0,
       "source": "desktop_desktop_desktop",
       "target": "desktop_desktop_gettopvisiblewindow",
@@ -4116,7 +5896,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "runtime/components/desktop/Desktop.tsx",
-      "source_location": "L394",
+      "source_location": "L402",
       "weight": 1.0,
       "source": "desktop_desktop_desktop",
       "target": "lib_store_usecaseforgestore"
@@ -4145,10 +5925,122 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/WindowChrome.tsx",
-      "source_location": "L137",
+      "source_location": "L145",
       "weight": 1.0,
       "source": "runtime_components_desktop_windowchrome_tsx",
       "target": "desktop_windowchrome_trafficlight",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "runtime_lib_types_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "lib_types_appid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "desktop_desktopwindow_minimizeanchor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "desktop_desktopwindow_desktopwindowprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "desktop_desktopwindow_enter_transition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "desktop_desktopwindow_close_transition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "desktop_desktopwindow_minimize_transition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "desktop_desktopwindow_restore_transition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "desktop_desktopwindow_maximize_transition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "desktop_desktopwindow_interaction_transition",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/DesktopWindow.tsx",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_desktopwindow_tsx",
+      "target": "desktop_desktopwindow_desktopwindow",
       "confidence_score": 1.0
     },
     {
@@ -4193,6 +6085,59 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/ControlCenter.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_controlcenter_tsx",
+      "target": "runtime_lib_store_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/ControlCenter.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_controlcenter_tsx",
+      "target": "lib_store_usecaseforgestore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/ControlCenter.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_controlcenter_tsx",
+      "target": "desktop_controlcenter_controlcenterprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/ControlCenter.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_controlcenter_tsx",
+      "target": "desktop_controlcenter_controlcenter",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/components/desktop/ControlCenter.tsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "desktop_controlcenter_controlcenter",
+      "target": "lib_store_usecaseforgestore"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/DesktopIcons.tsx",
@@ -4203,10 +6148,32 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/MenuBar.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_menubar_tsx",
+      "target": "runtime_lib_store_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "runtime/components/desktop/MenuBar.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "runtime_components_desktop_menubar_tsx",
+      "target": "lib_store_usecaseforgestore",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L5",
+      "source_location": "L6",
       "weight": 1.0,
       "source": "runtime_components_desktop_menubar_tsx",
       "target": "desktop_menubar_menubarprops",
@@ -4216,7 +6183,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L17",
+      "source_location": "L21",
       "weight": 1.0,
       "source": "runtime_components_desktop_menubar_tsx",
       "target": "desktop_menubar_formattime",
@@ -4226,7 +6193,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L25",
+      "source_location": "L29",
       "weight": 1.0,
       "source": "runtime_components_desktop_menubar_tsx",
       "target": "desktop_menubar_formatclock",
@@ -4236,7 +6203,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L33",
+      "source_location": "L38",
       "weight": 1.0,
       "source": "runtime_components_desktop_menubar_tsx",
       "target": "desktop_menubar_menubar",
@@ -4247,7 +6214,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L105",
+      "source_location": "L311",
       "weight": 1.0,
       "source": "desktop_menubar_menubar",
       "target": "desktop_menubar_formattime",
@@ -4258,11 +6225,22 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "runtime/components/desktop/MenuBar.tsx",
-      "source_location": "L113",
+      "source_location": "L350",
       "weight": 1.0,
       "source": "desktop_menubar_menubar",
       "target": "desktop_menubar_formatclock",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "runtime/components/desktop/MenuBar.tsx",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "desktop_menubar_menubar",
+      "target": "lib_store_usecaseforgestore"
     },
     {
       "relation": "imports_from",
@@ -6303,7 +8281,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "runtime/lib/store.ts",
-      "source_location": "L86",
+      "source_location": "L104",
       "weight": 1.0,
       "source": "runtime_lib_store_ts",
       "target": "lib_store_usecaseforgestore",
@@ -7159,6 +9137,26 @@
       "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
       "source_location": null,
       "weight": 1.0,
+      "source": "virtusa_fde_curriculum_curriculum",
+      "target": "virtusa_fde_curriculum_module1"
+    },
+    {
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "deliverable_m1t1_task",
+      "target": "virtusa_fde_curriculum_module1"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": null,
+      "weight": 1.0,
       "source": "virtusa_fde_curriculum_module2",
       "target": "virtusa_fde_curriculum_guidewire_insurancesuite"
     },
@@ -7179,6 +9177,16 @@
       "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
       "source_location": null,
       "weight": 1.0,
+      "source": "virtusa_fde_curriculum_curriculum",
+      "target": "virtusa_fde_curriculum_module2"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": null,
+      "weight": 1.0,
       "source": "virtusa_fde_curriculum_module3",
       "target": "virtusa_fde_curriculum_fnol"
     },
@@ -7189,8 +9197,38 @@
       "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
       "source_location": null,
       "weight": 1.0,
+      "source": "virtusa_fde_curriculum_curriculum",
+      "target": "virtusa_fde_curriculum_module3"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": null,
+      "weight": 1.0,
       "source": "virtusa_fde_curriculum_module4",
       "target": "virtusa_fde_curriculum_compliance_naic_gdpr"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "virtusa_fde_curriculum_curriculum",
+      "target": "virtusa_fde_curriculum_module4"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "virtusa_fde_curriculum_curriculum",
+      "target": "virtusa_fde_curriculum_module5"
     },
     {
       "relation": "references",
@@ -7217,7 +9255,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "CLAUDE.md",
-      "source_location": null,
+      "source_location": "Two-system architecture",
       "weight": 1.0,
       "source": "claude_md_two_system_architecture",
       "target": "claude_md_author_pipeline"
@@ -7227,7 +9265,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "CLAUDE.md",
-      "source_location": null,
+      "source_location": "Two-system architecture",
       "weight": 1.0,
       "source": "claude_md_two_system_architecture",
       "target": "claude_md_learner_runtime"
@@ -7241,6 +9279,16 @@
       "weight": 1.0,
       "source": "claude_md_two_system_architecture",
       "target": "claude_md_coursepackage_contract"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_two_system_architecture",
+      "target": "claude_md_course_package_schema"
     },
     {
       "relation": "shares_data_with",
@@ -7323,7 +9371,27 @@
       "target": "claude_md_author_pipeline"
     },
     {
-      "relation": "references",
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_author_pipeline",
+      "target": "claude_md_managed_agents_sdk"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_author_pipeline",
+      "target": "claude_md_course_package_json"
+    },
+    {
+      "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "CLAUDE.md",
@@ -7341,6 +9409,26 @@
       "weight": 1.0,
       "source": "claude_md_learner_runtime",
       "target": "claude_md_desktop_os_shell"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_learner_runtime",
+      "target": "claude_md_course_package_json"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "Deployment",
+      "weight": 1.0,
+      "source": "claude_md_vercel_deployment",
+      "target": "claude_md_learner_runtime"
     },
     {
       "relation": "rationale_for",
@@ -7363,6 +9451,16 @@
       "target": "claude_md_zustand_store"
     },
     {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_zustand_store",
+      "target": "claude_md_zero_prop_pattern"
+    },
+    {
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
@@ -7383,16 +9481,6 @@
       "target": "claude_md_desktop_os_shell"
     },
     {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "notebook_app_plan_notebook_app_component",
-      "target": "claude_md_briefing_wiki_chat_submit"
-    },
-    {
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
@@ -7400,6 +9488,16 @@
       "source_location": null,
       "weight": 1.0,
       "source": "solver_agent_caseforge_solver",
+      "target": "claude_md_briefing_wiki_chat_submit"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "notebook_app_plan_notebook_app_component",
       "target": "claude_md_briefing_wiki_chat_submit"
     },
     {
@@ -7601,6 +9699,686 @@
       "weight": 1.0,
       "source": "notebook_app_design_honest_semantics",
       "target": "notebook_app_design_simulated_execution"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_validate_script",
+      "target": "claude_md_course_package_schema"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Schema additions",
+      "weight": 1.0,
+      "source": "notebook_spec_design",
+      "target": "claude_md_course_package_schema"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Schema additions",
+      "weight": 1.0,
+      "source": "notebook_spec_notebook_type",
+      "target": "claude_md_course_package_schema"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "solver_agent_validate_simulation",
+      "target": "claude_md_course_package_schema"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_upload_script",
+      "target": "claude_md_managed_agents_sdk"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_download_script",
+      "target": "claude_md_course_package_json"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_solver_script",
+      "target": "solver_agent_solver"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": "bootstrap copies course-package.json",
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "claude_md_course_package_json"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_zero_prop_pattern",
+      "target": "notebook_plan_zustand_overlay"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_desktop_shell",
+      "target": "claude_md_briefing_app"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_desktop_shell",
+      "target": "claude_md_wiki_app"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_desktop_shell",
+      "target": "claude_md_chat_app"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_desktop_shell",
+      "target": "claude_md_submit_app"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 3 modifies Desktop.tsx",
+      "weight": 1.0,
+      "source": "notebook_plan_app_id_extension",
+      "target": "claude_md_desktop_shell"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_chat_app",
+      "target": "claude_md_chat_api_route"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_md_submit_app",
+      "target": "claude_md_judge_api_route"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "app/api/chat/route.ts",
+      "weight": 1.0,
+      "source": "claude_md_chat_api_route",
+      "target": "claude_md_slack_voice_persona"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "notebook_spec_honest_semantics",
+      "target": "claude_md_slack_voice_persona"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "solver_agent_bootstrap"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": "TOOLS",
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "solver_agent_read_brief"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": "TOOLS",
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "solver_agent_list_wiki"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": "TOOLS",
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "solver_agent_read_wiki"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": "TOOLS",
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "solver_agent_list_personas"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": "TOOLS",
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "solver_agent_interview"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": "TOOLS",
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "solver_agent_submit"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": "RULES",
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "solver_agent_no_outside_knowledge"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md",
+      "source_location": "description",
+      "weight": 1.0,
+      "source": "solver_agent_solver",
+      "target": "solver_agent_validate_simulation"
+    },
+    {
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Source spec",
+      "weight": 1.0,
+      "source": "notebook_plan_app",
+      "target": "notebook_spec_design"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Architecture",
+      "weight": 1.0,
+      "source": "notebook_plan_app",
+      "target": "notebook_plan_schema_first"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Architecture",
+      "weight": 1.0,
+      "source": "notebook_plan_app",
+      "target": "notebook_plan_zustand_overlay"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "notebook_plan_app",
+      "target": "notebook_plan_simulated_run"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 5",
+      "weight": 1.0,
+      "source": "notebook_plan_app",
+      "target": "notebook_plan_prism"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 2",
+      "weight": 1.0,
+      "source": "notebook_plan_app",
+      "target": "notebook_plan_react_simple_code_editor"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 14",
+      "weight": 1.0,
+      "source": "notebook_plan_app",
+      "target": "notebook_plan_sample_notebook"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Task 3",
+      "weight": 1.0,
+      "source": "notebook_plan_app",
+      "target": "notebook_plan_app_id_extension"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "linkedTasks: [M1.T1]",
+      "weight": 1.0,
+      "source": "notebook_plan_sample_notebook",
+      "target": "deliverable_m1t1_task"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md",
+      "source_location": "Policy Lifecycle Explorer",
+      "weight": 1.0,
+      "source": "notebook_plan_sample_notebook",
+      "target": "virtusa_fde_curriculum_meridian"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Cell resolution rule",
+      "weight": 1.0,
+      "source": "notebook_spec_design",
+      "target": "notebook_spec_cell_resolution_rule"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Design principles",
+      "weight": 1.0,
+      "source": "notebook_spec_design",
+      "target": "notebook_spec_honest_semantics"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Explicitly out of scope",
+      "weight": 1.0,
+      "source": "notebook_spec_design",
+      "target": "notebook_spec_yagni_scope"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Schema additions",
+      "weight": 1.0,
+      "source": "notebook_spec_design",
+      "target": "notebook_spec_notebook_cell"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Schema additions",
+      "weight": 1.0,
+      "source": "notebook_spec_design",
+      "target": "notebook_spec_notebook_output"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": "Schema additions",
+      "weight": 1.0,
+      "source": "notebook_spec_design",
+      "target": "notebook_spec_notebook_type"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-05-20-notebook-app-design.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "notebook_spec_notebook_type",
+      "target": "notebook_spec_linked_tasks"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": "Client Context",
+      "weight": 1.0,
+      "source": "virtusa_fde_curriculum_curriculum",
+      "target": "virtusa_fde_curriculum_meridian"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "virtusa_fde_curriculum_curriculum",
+      "target": "virtusa_fde_curriculum_capstone"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": "Programme Overview",
+      "weight": 1.0,
+      "source": "virtusa_fde_curriculum_curriculum",
+      "target": "virtusa_fde_curriculum_task_driven"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": "Programme Design Principles",
+      "weight": 1.0,
+      "source": "virtusa_fde_curriculum_curriculum",
+      "target": "virtusa_fde_curriculum_pass_fail"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "virtusa_fde_curriculum_meridian"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "Virtusa_fde_curriculum - PDT Copy.docx.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "virtusa_fde_curriculum_task_driven",
+      "target": "deliverable_meridian_process_map"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Prepared for",
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "deliverable_m1t1_task"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 1.1",
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "deliverable_policy_lifecycle_stages"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "deliverable_dual_pas"
+    },
+    {
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Sources",
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "deliverable_persona_priya_nair"
+    },
+    {
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 10.1",
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "deliverable_persona_raj_krishnamurthy"
+    },
+    {
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 10.1",
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "deliverable_persona_diane_kowalski"
+    },
+    {
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Section 10.1",
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "deliverable_persona_marcus_bell"
+    },
+    {
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Sources",
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "deliverable_persona_nkechi_okafor"
+    },
+    {
+      "relation": "cites",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Sources",
+      "weight": 1.0,
+      "source": "deliverable_meridian_process_map",
+      "target": "deliverable_persona_sarah_lindgren"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "deliverable_dual_pas",
+      "target": "deliverable_policy_center"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "deliverable_dual_pas",
+      "target": "deliverable_legacy_mainframe_pas"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Integration Point #5",
+      "weight": 1.0,
+      "source": "deliverable_policy_center",
+      "target": "deliverable_billing_center"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Integration Points #7-8",
+      "weight": 1.0,
+      "source": "deliverable_policy_center",
+      "target": "deliverable_claim_center"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Integration Points #3-4",
+      "weight": 1.0,
+      "source": "deliverable_policy_center",
+      "target": "deliverable_rating_engine"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Integration Point #6",
+      "weight": 1.0,
+      "source": "deliverable_policy_center",
+      "target": "deliverable_thunderhead"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Issue B",
+      "weight": 1.0,
+      "source": "deliverable_legacy_mainframe_pas",
+      "target": "deliverable_datastage_sync_gap"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Issue A",
+      "weight": 1.0,
+      "source": "deliverable_rating_engine",
+      "target": "deliverable_acord_xml_issue"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "packages/deliverable.md",
+      "source_location": "Issue E",
+      "weight": 1.0,
+      "source": "deliverable_thunderhead",
+      "target": "deliverable_ct_co_compliance_gap"
     }
   ],
   "hyperedges": [
@@ -7619,6 +10397,20 @@
       "source_file": "CLAUDE.md"
     },
     {
+      "id": "hyper_solver_validation_loop",
+      "label": "Solver agent validates CoursePackage authoring sufficiency",
+      "nodes": [
+        "solver_agent_caseforge_solver",
+        "solver_agent_toolkit_scripts",
+        "claude_md_coursepackage_contract",
+        "claude_md_author_pipeline"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "agents/solver-agent.md"
+    },
+    {
       "id": "hyper_notebook_app_stack",
       "label": "Notebook app spec/plan/implementation triad",
       "nodes": [
@@ -7634,13 +10426,45 @@
       "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md"
     },
     {
-      "id": "hyper_solver_validation_loop",
-      "label": "Solver agent validates CoursePackage authoring sufficiency",
+      "id": "course_package_contract_flow",
+      "label": "CoursePackage JSON as load-bearing contract between systems",
       "nodes": [
-        "solver_agent_caseforge_solver",
-        "solver_agent_toolkit_scripts",
-        "claude_md_coursepackage_contract",
-        "claude_md_author_pipeline"
+        "claude_md_course_package_schema",
+        "claude_md_author_pipeline",
+        "claude_md_learner_runtime",
+        "claude_md_course_package_json",
+        "claude_md_validate_script"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "desktop_apps_registry",
+      "label": "Desktop OS Shell with five learner apps (Briefing, Wiki, Chat, Submit, Notebook)",
+      "nodes": [
+        "claude_md_desktop_shell",
+        "claude_md_briefing_app",
+        "claude_md_wiki_app",
+        "claude_md_chat_app",
+        "claude_md_submit_app",
+        "notebook_plan_app"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/plans/2026-05-20-notebook-app.md"
+    },
+    {
+      "id": "solver_validation_loop",
+      "label": "Solver agent validates CoursePackage via wiki + persona interview + submit",
+      "nodes": [
+        "solver_agent_solver",
+        "solver_agent_read_wiki",
+        "solver_agent_interview",
+        "solver_agent_submit",
+        "claude_md_course_package_json"
       ],
       "relation": "participate_in",
       "confidence": "EXTRACTED",
@@ -7648,5 +10472,5 @@
       "source_file": "agents/solver-agent.md"
     }
   ],
-  "built_at_commit": "4cfca521bb87e11ed3506dc004b257c27b79027b"
+  "built_at_commit": "8cedcca4f210e488d9fe856f5c9767bc6f64b43a"
 }

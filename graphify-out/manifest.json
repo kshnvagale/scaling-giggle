@@ -20,8 +20,8 @@
     "hash": "5ea48e96d450670bcc7e7a51b71f7df6"
   },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/app/page.tsx": {
-    "mtime": 1779284621.9844155,
-    "hash": "b1be3c41504f33a7db0e0279d88e4b58"
+    "mtime": 1779366500.369821,
+    "hash": "cebe748e92889513a94d2383222e5a2e"
   },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/app/providers.tsx": {
     "mtime": 1776290266.069112,
@@ -43,25 +43,53 @@
     "mtime": 1776294824.0060034,
     "hash": "ee499c4beec85d9440990c0c4738fcd4"
   },
+  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/intro/diagrams.tsx": {
+    "mtime": 1779370631.095741,
+    "hash": "b4b3c47ca32383a79adc2fb12144138a"
+  },
+  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/intro/IntroGate.tsx": {
+    "mtime": 1779366336.7953818,
+    "hash": "46c21398f323d0565112ed3644ca04d1"
+  },
+  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/intro/IntroOnboarding.tsx": {
+    "mtime": 1779383579.4510107,
+    "hash": "e1a228e4a4965555c32858743788ef0c"
+  },
+  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/intro/useReducedMotion.ts": {
+    "mtime": 1779366315.9888017,
+    "hash": "7f45c93edec44d9f3b5b754d55159782"
+  },
+  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/intro/stages.tsx": {
+    "mtime": 1779369428.8355296,
+    "hash": "220b6ef2a3ef3768dd697ae617eb4029"
+  },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/desktop/Desktop.tsx": {
-    "mtime": 1779301741.35407,
-    "hash": "aadd2a533844f7373fb1bd2e1becd172"
+    "mtime": 1779383366.2653081,
+    "hash": "0c2c5003253274aeda2eb1beb0a70fe9"
   },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/desktop/WindowChrome.tsx": {
-    "mtime": 1779282558.456718,
-    "hash": "5c25fc804e23980a89b6785bda25d401"
+    "mtime": 1779371680.7314496,
+    "hash": "8f894192be7908d377e5b668dda93710"
+  },
+  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/desktop/DesktopWindow.tsx": {
+    "mtime": 1779383391.0680907,
+    "hash": "77f2ad044249138d546f46e4680dcf7b"
   },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/desktop/TaskBar.tsx": {
     "mtime": 1776290487.4217155,
     "hash": "c0162da552cdd744f9ffe5aafb92ac7b"
+  },
+  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/desktop/ControlCenter.tsx": {
+    "mtime": 1779371753.349258,
+    "hash": "88f6a0ef309058e5bf6be4be6f74546b"
   },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/desktop/DesktopIcons.tsx": {
     "mtime": 1776291649.866855,
     "hash": "c3c64b1a6dfffee7117c1cd81b072138"
   },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/desktop/MenuBar.tsx": {
-    "mtime": 1779301745.5517402,
-    "hash": "5acd989dea67286a96c85785f755b71a"
+    "mtime": 1779383569.0383499,
+    "hash": "3e6812035a4c03ad1903867bd284b6ad"
   },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/components/desktop/Sidebar.tsx": {
     "mtime": 1776290493.2999864,
@@ -180,8 +208,8 @@
     "hash": "eb52efb6468de88fb0052ac9aa55ec65"
   },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/lib/store.ts": {
-    "mtime": 1779277336.1598697,
-    "hash": "978110478e22d77b596ca689f85b6ed6"
+    "mtime": 1779371659.5373416,
+    "hash": "fe58306f0611fa336780656441db6b2b"
   },
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/lib/app-registry.ts": {
     "mtime": 1779284606.675074,
@@ -258,105 +286,5 @@
   "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/packages/deliverable.md": {
     "mtime": 1776342247.4490325,
     "hash": "1e5127dcef124d1dd5a06e8bb48e2d7e"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/app/icon.svg": {
-    "mtime": 1776294587.172342,
-    "hash": "cbe041885a662c47cdc9187f3c685e16"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/public/icons/sheets.png": {
-    "mtime": 1779284221.7688,
-    "hash": "ed356434fb369fc2818ccd8bea19de13"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/public/icons/wiki.png": {
-    "mtime": 1779284221.7632282,
-    "hash": "f2bf893877be957b4967e077e0dcc8e6"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/public/icons/terminal.png": {
-    "mtime": 1779284253.4865425,
-    "hash": "03f6328e61fea7a3771df7419f1b3562"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/public/icons/notebook.png": {
-    "mtime": 1779284253.5375464,
-    "hash": "f14c9cf920cb2700022870e669cdaee7"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/public/icons/briefing.png": {
-    "mtime": 1779284221.7600558,
-    "hash": "539cae1222d04706f2573936deb88dfa"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/public/icons/bigquery.svg": {
-    "mtime": 1779284253.4107387,
-    "hash": "2b2fbfae7b0871a69ecedb8b7b9c71cb"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/public/icons/chat.png": {
-    "mtime": 1779284221.7661476,
-    "hash": "af5190806c7716816071ad0517ac08ce"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/icons/icnsFile_09d89754e68576d8fa29676c09abb7de_Terminal.png": {
-    "mtime": 1779284162.1220975,
-    "hash": "03f6328e61fea7a3771df7419f1b3562"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/icons/icnsFile_f4d172a4334ee0db68729fec5371b44c_Jupyter_Notebook.png": {
-    "mtime": 1779284162.3004763,
-    "hash": "f14c9cf920cb2700022870e669cdaee7"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/icons/icnsFile_c328394a608fdd90d6ad4a357aa4f114_Notes__MacOS_Tahoe_.png": {
-    "mtime": 1779284162.2757447,
-    "hash": "539cae1222d04706f2573936deb88dfa"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/icons/icnsFile_4437788547d48c8d3c51c4f624e15bde_XWRCydjnoi.png": {
-    "mtime": 1779284162.157364,
-    "hash": "f2bf893877be957b4967e077e0dcc8e6"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/icons/png-clipart-bigquery-google-cloud-platform-cloud-computing-database-google-blue-logo.svg": {
-    "mtime": 1779284162.7041163,
-    "hash": "2b2fbfae7b0871a69ecedb8b7b9c71cb"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/icons/icnsFile_547b60e3312ecedf9db573ded6482821_Slack.png": {
-    "mtime": 1779284162.1952891,
-    "hash": "af5190806c7716816071ad0517ac08ce"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/icons/Microsoft_Excel_2025_-_Liquid_Glass.png": {
-    "mtime": 1779284162.101168,
-    "hash": "ed356434fb369fc2818ccd8bea19de13"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/wallpaper/26-Tahoe-Beach-Day-thumb.jpeg": {
-    "mtime": 1779276943.1680837,
-    "hash": "7f01aaeecd7eb03a080e66bc7ab69bf3"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/wallpaper/11-0-Day-thumbnail.jpg": {
-    "mtime": 1779276967.430686,
-    "hash": "d31c150b74efcb6ebab3cabd2aa3f1a9"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/wallpaper/26-Tahoe-Light-6K-thumb.jpeg": {
-    "mtime": 1779276923.495883,
-    "hash": "0b50ca36b83433c1d603f31e5be1cc9e"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/wallpaper/26-Tahoe-Beach-Dawn-thumb.jpeg": {
-    "mtime": 1779276929.9422944,
-    "hash": "ade15d501de70fd6764b56b7f4d96765"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/wallpaper/15-Sequoia-Dark-thumbnail.jpg": {
-    "mtime": 1779276952.0153553,
-    "hash": "f564a08b8146e3731c69485f217722c6"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/wallpaper/26-Tahoe-Dark-6K-thumb.jpeg": {
-    "mtime": 1779276929.7522004,
-    "hash": "b9a7f7e6497e7970bfb79cbce18852bc"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/wallpaper/14-Sonoma-Light-thumb.jpg": {
-    "mtime": 1779276955.476951,
-    "hash": "7b7c8d6646ca82a1bcf542dd9d3f41bc"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/wallpaper/13-Ventura-Light-thumb.jpg": {
-    "mtime": 1779276960.0447218,
-    "hash": "5ed7437d88db6e9a248e687cffac686a"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/wallpaper/26-Tahoe-Beach-Dusk-thumb.jpeg": {
-    "mtime": 1779276945.7417307,
-    "hash": "91abdf1d7f5d2ceeeb06eaf93c99fcb6"
-  },
-  "/Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/public/meeting-audio.mp3": {
-    "mtime": 1779290005.020522,
-    "hash": "beac9880e2763cd617a43f8942693ac0"
   }
 }
