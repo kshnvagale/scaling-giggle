@@ -118,14 +118,14 @@ export function ClientBrandHeader({
         </div>
       </div>
 
-      {/* Stat strip */}
+      {/* Stat strip — auto-wraps when there are many key numbers */}
       {keyEntries.length > 0 && (
-        <div className="grid border-y border-stone-200 bg-white" style={{ gridTemplateColumns: `repeat(${keyEntries.length}, minmax(0, 1fr))` }}>
-          {keyEntries.map(([k, v], idx) => (
-            <div
-              key={k}
-              className={`px-5 py-3 ${idx > 0 ? "border-l border-stone-200" : ""}`}
-            >
+        <div
+          className="grid gap-px border-y border-stone-200 bg-stone-200"
+          style={{ gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))" }}
+        >
+          {keyEntries.map(([k, v]) => (
+            <div key={k} className="bg-white px-5 py-3">
               <div className="text-[10px] font-semibold uppercase tracking-wider text-stone-500">
                 {formatKey(k)}
               </div>
