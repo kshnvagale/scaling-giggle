@@ -252,6 +252,8 @@ export default function ChatApp() {
               const name = isUser ? "You" : activePersona.name;
               const personaIdx = linkedPersonas.findIndex((p: any) => p.id === activePersonaId);
               const color = isUser ? "#1d1d1d" : AVATAR_COLORS[personaIdx % AVATAR_COLORS.length];
+              const isSubmission = msg.meta?.kind === "submission";
+              const isReview = msg.meta?.kind === "review";
 
               return (
                 <div key={msg.id} className="group flex items-start gap-2 px-5 py-1 hover:bg-[#f8f8f8] transition-colors duration-75">
@@ -271,9 +273,54 @@ export default function ChatApp() {
                         {formatTime(msg.timestamp)}
                       </span>
                     </div>
-                    <div className="text-[15px] text-[#1d1d1d] leading-[1.46] mt-0.5 [&_p]:my-0.5">
-                      <Markdown content={msg.content} className="prose prose-sm prose-stone max-w-none [&>p]:my-0 [&>p]:leading-[1.46]" />
-                    </div>
+
+                    {isSubmission ? (
+                      /* Submission attachment card */
+                      <div className="mt-1 inline-flex max-w-md items-stretch overflow-hidden rounded-lg border border-stone-200 bg-white shadow-sm">
+                        <div className="flex items-center justify-center bg-[#E50914] px-3.5">
+                          <span className="text-xl">📓</span>
+                        </div>
+                        <div className="flex-1 px-4 py-2.5">
+                          <div className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">
+                            Submitted for review · round {msg.meta?.round ?? 1}
+                          </div>
+                          <div className="mt-0.5 text-[14px] font-semibold text-stone-900">
+                            {msg.meta?.notebookTitle ?? "Notebook"}
+                          </div>
+                          <div className="mt-0.5 text-[12px] text-stone-500">
+                            {msg.meta?.cellCount ?? 0} cells
+                            {typeof msg.meta?.codeCellCount === "number" && (
+                              <> · {msg.meta.codeCellCount} code, {msg.meta?.markdownCellCount ?? 0} markdown</>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      /* Regular message bubble (with optional review-score chip) */
+                      <>
+                        <div className="text-[15px] text-[#1d1d1d] leading-[1.46] mt-0.5 [&_p]:my-0.5">
+                          <Markdown content={msg.content} className="prose prose-sm prose-stone max-w-none [&>p]:my-0 [&>p]:leading-[1.46]" />
+                        </div>
+                        {isReview && typeof msg.meta?.score === "number" && (
+                          <div className="mt-1.5 flex items-center gap-2">
+                            <span className="text-[10px] font-semibold uppercase tracking-wider text-stone-400">
+                              Review · round {msg.meta.round ?? "?"}
+                            </span>
+                            <span
+                              className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                                msg.meta.score >= 80
+                                  ? "bg-emerald-100 text-emerald-800"
+                                  : msg.meta.score >= 60
+                                  ? "bg-amber-100 text-amber-800"
+                                  : "bg-rose-100 text-rose-800"
+                              }`}
+                            >
+                              {msg.meta.score}/100
+                            </span>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </div>
                 </div>
               );

@@ -499,7 +499,38 @@ export const useCaseForgeStore = create<CaseForgeState>()((set, get) => ({
     const reviewer = pkg.personas?.find((p: any) => p.id === reviewerId);
     const completionThreshold: number = deliverable.completionScoreThreshold ?? 80;
 
-    set({ reviewStatus: "reviewing", reviewError: null });
+    // Compute submission stats once so they can be attached to BOTH the user-
+    // side submission card AND used downstream if needed.
+    const codeCellCount = submittedCells.filter((c) => c.type === "code").length;
+    const markdownCellCount = submittedCells.filter((c) => c.type === "markdown").length;
+    const submissionRound = state.reviewCount + 1;
+
+    // Post a user-side attachment card into the reviewer's thread *before* the
+    // judge call fires. This gives the chat a visible record of "you submitted
+    // this" — the typing indicator + Priya's reply then read like a real DM.
+    const submissionMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      personaId: reviewerId,
+      content: `Submitted ${notebook.title} for review`,
+      timestamp: Date.now(),
+      meta: {
+        kind: "submission",
+        round: submissionRound,
+        notebookTitle: notebook.title,
+        cellCount: submittedCells.length,
+        codeCellCount,
+        markdownCellCount,
+      },
+    };
+    set((s) => ({
+      chatHistories: {
+        ...s.chatHistories,
+        [reviewerId]: [...(s.chatHistories[reviewerId] ?? []), submissionMessage],
+      },
+      reviewStatus: "reviewing" as const,
+      reviewError: null,
+    }));
 
     // Try the AI judge first; fall back to the deterministic mock judge on any failure.
     let result: { score: number; feedback: string } | null = null;
