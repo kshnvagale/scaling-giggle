@@ -149,6 +149,7 @@ export const Notebook = z.object({
   title: NonEmpty,
   description: z.string().optional(),
   kernel: z.string().default("python3"),
+  runtime: z.enum(["simulated", "pyodide"]).default("simulated"),
   cells: z.array(NotebookCell).min(1),
   linkedTasks: z.array(z.string()),
 });
@@ -182,10 +183,29 @@ export const Primitive = z.enum([
 ]);
 export type Primitive = z.infer<typeof Primitive>;
 
+export const MockFeedbackState = z.object({
+  id: NonEmpty,
+  round: z.number().int().min(1),
+  matchCriteria: z.object({
+    minInsightsLength: z.number().int().optional(),
+    maxInsightsLength: z.number().int().optional(),
+    minNotebookCells: z.number().int().optional(),
+    maxNotebookCells: z.number().int().optional(),
+    requireKeywordsAny: z.array(z.string()).optional(),
+    requireKeywordsAll: z.array(z.string()).optional(),
+    rejectKeywordsAny: z.array(z.string()).optional(),
+  }),
+  feedback: NonEmpty,
+  fromPersonaId: NonEmpty,
+});
+export type MockFeedbackState = z.infer<typeof MockFeedbackState>;
+
 export const Deliverable = z.object({
   type: z.enum(["diagram", "document", "code", "matrix", "presentation"]),
   format: z.enum(["pdf", "png", "md", "zip", "other"]),
   acceptanceSummary: NonEmpty,
+  judgeMode: z.enum(["single", "iterative"]).default("single"),
+  mockFeedback: z.array(MockFeedbackState).default([]),
 });
 
 export const MeetingParticipant = z.object({
