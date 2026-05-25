@@ -1348,7 +1348,7 @@ export function Desktop({ appRegistry, appComponents }: DesktopProps) {
 
           {!layoutMetrics.compact && (
             <div
-              className="absolute inset-y-4 right-4 z-10 flex flex-col items-center gap-1"
+              className="pointer-events-none absolute inset-y-4 right-4 z-10 flex flex-col items-center gap-1"
               style={{ width: layoutMetrics.rightRailWidth - 8 }}
             >
               <div className="flex-1" />

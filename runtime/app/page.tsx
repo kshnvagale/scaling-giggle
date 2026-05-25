@@ -43,15 +43,21 @@ export default function HomePage() {
   const startTimer = useCaseForgeStore((s) => s.startTimer);
   const [error, setError] = useState<string | null>(null);
 
-  // Gate the Submit app into the dock only for iterative judge cases (Netflix).
-  // Helix and other single-shot cases keep the original 7-app dock.
+  // Dock visibility depends on the active case's judgeMode. Iterative cases
+  // (Netflix) get Submit. Single-shot cases (Helix) get the operational apps
+  // (Sheets / BigQuery / Terminal) that currently still carry Helix-specific
+  // hardcoded content. When those apps become data-driven this gate can relax.
   const visibleApps = useMemo(() => {
     const judgeMode =
       currentTask?.deliverable?.judgeMode ??
       pkg?.modules?.[0]?.tasks?.[0]?.deliverable?.judgeMode ??
       "single";
+    const isIterative = judgeMode === "iterative";
     return APP_REGISTRY.filter((app) => {
-      if (app.id === "submit") return judgeMode === "iterative";
+      if (app.id === "submit") return isIterative;
+      if (app.id === "sheets" || app.id === "bigquery" || app.id === "terminal") {
+        return !isIterative;
+      }
       return true;
     });
   }, [pkg, currentTask]);

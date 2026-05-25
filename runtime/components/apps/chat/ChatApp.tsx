@@ -127,7 +127,7 @@ export default function ChatApp() {
         {/* Workspace header */}
         <div className="px-3 pt-3 pb-2 border-b border-white/10">
           <div className="flex items-center gap-1.5">
-            <span className="text-[15px] font-bold text-white truncate">Helix Cloud SMEs</span>
+            <span className="text-[15px] font-bold text-white truncate">{coursePackage?.meta?.client ?? "Workspace"} SMEs</span>
             <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="text-white/50 flex-shrink-0">
               <path d="M3 4L5 6L7 4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
             </svg>
