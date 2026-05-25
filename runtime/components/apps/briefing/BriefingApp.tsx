@@ -3,9 +3,11 @@
 import { useCaseForgeStore } from "@/lib/store";
 import { Markdown } from "@/components/shared/Markdown";
 import { MeetingRecording } from "./MeetingRecording";
+import { ClientBrandHeader } from "./ClientBrandHeader";
 
 export default function BriefingApp() {
   const currentTask = useCaseForgeStore((s) => s.currentTask);
+  const coursePackage = useCaseForgeStore((s) => s.coursePackage);
 
   if (!currentTask) {
     return (
@@ -16,16 +18,38 @@ export default function BriefingApp() {
   }
 
   const { title, brief, deliverable, durationMinutes, meetingRecording } = currentTask;
+  const world = coursePackage?.world;
+  const meta = coursePackage?.meta;
 
   return (
     <div className="h-full overflow-y-auto bg-stone-50">
       <div className="mx-auto max-w-3xl px-8 py-10">
+        {/* Client brand header — data-driven from world.client + meta.role */}
+        {world?.client?.name && (
+          <ClientBrandHeader
+            clientName={world.client.name}
+            size={world.client.size}
+            businessModel={world.client.businessModel}
+            keyNumbers={world.client.keyNumbers}
+            clientProfile={world.clientProfile}
+            role={meta?.role}
+          />
+        )}
+
         {/* Meeting recording (optional) */}
         {meetingRecording && (
           <div className="mb-8">
             <MeetingRecording recording={meetingRecording} />
           </div>
         )}
+
+        {/* Section divider — assignment starts here */}
+        <div className="mb-6 flex items-center gap-3">
+          <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-400">
+            Your assignment
+          </div>
+          <div className="h-px flex-1 bg-stone-200" />
+        </div>
 
         {/* Task title */}
         <h1 className="text-3xl font-bold tracking-tight text-stone-900">
