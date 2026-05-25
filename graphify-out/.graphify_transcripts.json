@@ -1,0 +1,5 @@
+  warning: could not transcribe /Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/meeting-tts/Audio2.mp3: Video transcription requires faster-whisper. Run: pip install 'graphifyy[video]'
+  warning: could not transcribe /Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/meeting-tts/Audio1.mp3: Video transcription requires faster-whisper. Run: pip install 'graphifyy[video]'
+  warning: could not transcribe /Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/meeting-tts/merged_audio.mp3: Video transcription requires faster-whisper. Run: pip install 'graphifyy[video]'
+  warning: could not transcribe /Users/kshnvagale/Documents/Ai/Scaler/CaseForge/game/runtime/public/meeting-audio.mp3: Video transcription requires faster-whisper. Run: pip install 'graphifyy[video]'
+[]
