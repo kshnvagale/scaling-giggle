@@ -41,7 +41,13 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadCoursePackage("/course-package.json")
+    const search = typeof window !== "undefined" ? window.location.search : "";
+    const caseId = new URLSearchParams(search).get("case");
+    const url =
+      caseId === "netflix"
+        ? "/course-package-netflix.json"
+        : "/course-package.json";
+    loadCoursePackage(url)
       .then((data) => {
         loadPkg(data);
         const task = data.modules?.[0]?.tasks?.[0];
