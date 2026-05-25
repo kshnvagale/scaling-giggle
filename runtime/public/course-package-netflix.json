@@ -178,7 +178,112 @@
       "idx": 0,
       "title": "Netflix Content Strategy",
       "objective": "Use exploratory data analysis on the Netflix catalog snapshot to produce data-driven insights and recommendations for the VP of Content's Q2 planning.",
-      "tasks": []
+      "tasks": [
+        {
+          "id": "netflix.t1",
+          "moduleIdx": 0,
+          "taskIdx": 0,
+          "title": "Q2 Content Strategy — Catalog Insights",
+          "brief": "Hey 👋\n\nVP Daniela wants Q2 planning input from our team and you're up. She framed it pretty open-ended: \"what should we make more of, and how do we grow.\"\n\nI'll be honest, the ask is broader than I'd like. **Before you start coding, DM me on Slack** and I'll narrow it down for you. I have a few hours of context with Daniela that will save you a day.\n\n## What you have to work with\n\n- `/data/netflix_titles.csv` (the full catalog)\n- **Notebook** app for your analysis\n- **Submit** tab when you're ready for a review pass\n\n## What you're producing\n\n- A notebook with your EDA\n- A short written set of insights + recommendations (Submit tab, Insights panel)\n\n## How it gets graded\n\n1. Problem framing & basic metrics (10)\n2. Data shape, types, missing values (10)\n3. Value counts, unique attributes (10)\n4. Univariate + bivariate visual analysis (30)\n5. Outlier / missing value treatment (10)\n6. Insights from your analysis (10)\n7. Business insights (10)\n8. Recommendations — no jargon, exec-ready (10)\n\nYou'll get a feedback pass from me each time you submit a draft. Iterate as many times as you want. Final submit locks it in.\n\nDon't overthink it. Most people score 8-10 if they just attempt seriously.\n\n— P.",
+          "deliverable": {
+            "type": "document",
+            "format": "md",
+            "acceptanceSummary": "A notebook of EDA work plus a written insights & recommendations document that addresses Daniela's question about Q2 content strategy.",
+            "judgeMode": "iterative",
+            "mockFeedback": [
+              {
+                "id": "empty-draft",
+                "round": 1,
+                "matchCriteria": {
+                  "maxInsightsLength": 49
+                },
+                "feedback": "hey, looks like you haven't really attempted this yet. submit a real draft and i'll give you proper feedback. doesn't need to be perfect.",
+                "fromPersonaId": "priya"
+              },
+              {
+                "id": "no-international-angle",
+                "round": 2,
+                "matchCriteria": {
+                  "minInsightsLength": 50,
+                  "rejectKeywordsAny": ["international", "apac", "latam", "country", "region"]
+                },
+                "feedback": "good start, you've got the basic EDA shape down. but you're missing the angle daniela actually cares about, which is international growth. did we chat about that? go look at where the catalog is light by country and see what shows up. round 2 will be a lot stronger.",
+                "fromPersonaId": "priya"
+              },
+              {
+                "id": "no-recommendations",
+                "round": 3,
+                "matchCriteria": {
+                  "minInsightsLength": 50,
+                  "requireKeywordsAny": ["international", "apac", "latam", "country", "region"],
+                  "rejectKeywordsAny": ["recommend", "should", "propose", "we'd", "we would", "produce more"]
+                },
+                "feedback": "much better, you're aiming at the right question now. last gap: insights are observations, recommendations are actions. give me three things you'd actually do with this analysis. plain english, like you're saying it to daniela in a hallway.",
+                "fromPersonaId": "priya"
+              },
+              {
+                "id": "polished",
+                "round": 4,
+                "matchCriteria": {},
+                "feedback": "this is solid work, you can submit when you're ready. one tiny note: lead with the recommendation, then back it with the data. execs read top down. but honestly, ship it.",
+                "fromPersonaId": "priya"
+              }
+            ]
+          },
+          "durationMinutes": 60,
+          "type": "individual",
+          "availablePrimitives": ["ChatWithPersona", "ReadDocument", "QueryDataset", "BuildArtifact", "UploadDeliverable", "LLMJudge"],
+          "requiredWorldKnowledge": [],
+          "linkedPersonaIds": ["priya"],
+          "rubric": {
+            "hardCriteria": [
+              {
+                "id": "hc-1",
+                "description": "Notebook loads netflix_titles.csv and prints basic metrics (row count, column types, missing-value counts).",
+                "verificationMethod": "Inspect notebook cells for pd.read_csv, df.info(), df.isnull().sum() or equivalent."
+              },
+              {
+                "id": "hc-2",
+                "description": "At least one univariate visualisation (histogram, countplot, or distplot) is present in the notebook.",
+                "verificationMethod": "Inspect notebook for matplotlib/seaborn plotting calls and rendered image output."
+              },
+              {
+                "id": "hc-3",
+                "description": "Insights text in Submit is at least 200 characters and addresses international markets.",
+                "verificationMethod": "Check Submit.insightsDraft length and keyword presence (international, APAC, LATAM, country)."
+              },
+              {
+                "id": "hc-4",
+                "description": "Insights text contains at least 3 actionable recommendations (use of 'recommend' / 'should' / 'propose' or equivalent action verbs).",
+                "verificationMethod": "Count recommendation-style sentences in Submit.insightsDraft."
+              }
+            ],
+            "qualitativeCriteria": [
+              {
+                "id": "qc-1",
+                "description": "Recommendations are written in plain English suitable for a non-technical VP.",
+                "scoringGuide": {
+                  "one": "Heavy jargon, technical terms unexplained, dense paragraphs.",
+                  "three": "Mostly plain English, occasional technical lapse, recommendations decipherable.",
+                  "five": "Crisp, plain-English recommendations any exec could read and act on."
+                }
+              },
+              {
+                "id": "qc-2",
+                "description": "Recommendations are backed by specific data from the analysis, not generic opinions.",
+                "scoringGuide": {
+                  "one": "Recommendations feel like personal opinions with no data attached.",
+                  "three": "Some recommendations cite data, others are anecdotal.",
+                  "five": "Every recommendation cites a specific finding from the EDA."
+                }
+              }
+            ],
+            "passCondition": "All hard criteria met and qualitative criteria average >= 3.",
+            "judgePromptTemplate": "(unused — Netflix uses the mock judge in deliverable.mockFeedback)"
+          },
+          "notes": "Iterative submit mode. Feedback states defined in deliverable.mockFeedback. The dataset is at /data/netflix_titles.csv (mounted by the Pyodide kernel)."
+        }
+      ]
     }
   ]
 }
