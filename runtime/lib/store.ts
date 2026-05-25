@@ -5,8 +5,10 @@ import type {
   AppId,
   ChatMessage,
   JudgeResult,
+  NotebookOutput,
   SessionTimerState,
 } from "./types";
+import type { PyodideKernel } from "@/lib/pyodide-kernel";
 
 // We store CoursePackage as `any` to avoid importing the Zod runtime in client bundle.
 // Type safety is enforced at load time via course-loader.ts.
@@ -81,6 +83,32 @@ export interface CaseForgeState {
   openIntro: () => void;
   closeIntro: () => void;
 
+  // Netflix sim — Pyodide kernel
+  pyodideKernel: PyodideKernel | null;
+  pyodideBootStatus: "idle" | "booting" | "ready" | "error";
+  pyodideBootError: string | null;
+  cellLiveOutputs: Record<string, NotebookOutput[]>;
+  bootPyodide: () => Promise<void>;
+  setCellLiveOutputs: (cellId: string, outputs: NotebookOutput[]) => void;
+
+  // Netflix sim — iterative submit
+  insightsDraft: string;
+  feedbackHistory: Array<{
+    id: string;
+    round: number;
+    feedback: string;
+    fromPersonaId: string;
+    at: number;
+  }>;
+  submissionFinalized: boolean;
+  setInsightsDraft: (text: string) => void;
+  appendFeedback: (entry: {
+    round: number;
+    feedback: string;
+    fromPersonaId: string;
+  }) => void;
+  finalizeSubmission: () => void;
+
   // Initialization
   loadCoursePackage: (pkg: CoursePackageData, taskId?: string) => void;
 
@@ -101,7 +129,7 @@ export interface CaseForgeState {
 
 const INTRO_SEEN_KEY = "caseforge:intro-seen";
 
-export const useCaseForgeStore = create<CaseForgeState>()((set) => ({
+export const useCaseForgeStore = create<CaseForgeState>()((set, get) => ({
   // Initial values
   coursePackage: null,
   currentTask: null,
@@ -121,6 +149,17 @@ export const useCaseForgeStore = create<CaseForgeState>()((set) => ({
   isOnline: true,
   volume: 80,
   controlCenterOpen: false,
+
+  // Netflix sim — Pyodide kernel
+  pyodideKernel: null,
+  pyodideBootStatus: "idle",
+  pyodideBootError: null,
+  cellLiveOutputs: {},
+
+  // Netflix sim — iterative submit
+  insightsDraft: "",
+  feedbackHistory: [],
+  submissionFinalized: false,
 
   // Desktop
   setActiveApp: (app) => set({ activeApp: app }),
@@ -357,6 +396,47 @@ export const useCaseForgeStore = create<CaseForgeState>()((set) => ({
     });
   },
 
+  // Netflix sim — Pyodide kernel
+  bootPyodide: async () => {
+    const status = get().pyodideBootStatus;
+    if (status === "booting" || status === "ready") return;
+    set({ pyodideBootStatus: "booting", pyodideBootError: null });
+    try {
+      const { bootPyodideKernel } = await import("@/lib/pyodide-kernel");
+      const kernel = await bootPyodideKernel("/data/netflix_titles.csv");
+      set({ pyodideKernel: kernel, pyodideBootStatus: "ready" });
+    } catch (err) {
+      set({
+        pyodideBootStatus: "error",
+        pyodideBootError: (err as Error).message ?? String(err),
+      });
+    }
+  },
+
+  setCellLiveOutputs: (cellId, outputs) =>
+    set((s) => ({
+      cellLiveOutputs: { ...s.cellLiveOutputs, [cellId]: outputs },
+    })),
+
+  // Netflix sim — iterative submit
+  setInsightsDraft: (text) => set({ insightsDraft: text }),
+
+  appendFeedback: (entry) =>
+    set((s) => ({
+      feedbackHistory: [
+        ...s.feedbackHistory,
+        {
+          id: crypto.randomUUID(),
+          round: entry.round,
+          feedback: entry.feedback,
+          fromPersonaId: entry.fromPersonaId,
+          at: Date.now(),
+        },
+      ],
+    })),
+
+  finalizeSubmission: () => set({ submissionFinalized: true }),
+
   // Init
   loadCoursePackage: (pkg, taskId) => {
     const task = taskId
@@ -375,6 +455,13 @@ export const useCaseForgeStore = create<CaseForgeState>()((set) => ({
       attemptCount: 0,
       activeNotebookSlug: null,
       notebookState: {},
+      pyodideKernel: null,
+      pyodideBootStatus: "idle",
+      pyodideBootError: null,
+      cellLiveOutputs: {},
+      insightsDraft: "",
+      feedbackHistory: [],
+      submissionFinalized: false,
     });
   },
 
