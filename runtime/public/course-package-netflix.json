@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "client": "Netflix",
+    "industry": "Streaming Entertainment",
+    "role": "Content Strategy Analyst",
+    "sourceDocHash": "netflix-eda-2026-05-25",
+    "version": "1.0.0",
+    "generatedAt": "2026-05-25T00:00:00.000Z",
+    "scope": "netflix.t1"
+  },
+  "world": {
+    "client": {
+      "name": "Netflix",
+      "size": "Global streaming platform (260M+ subscribers)",
+      "businessModel": "Subscription streaming for movies and TV shows, plus original productions",
+      "keyNumbers": {
+        "catalogSize": "~8,800 titles in current snapshot",
+        "subscribers": "260M+",
+        "countriesServed": "190+"
+      },
+      "source": "doc"
+    },
+    "industry": {
+      "primary": "Streaming Entertainment",
+      "subVertical": "SVOD (subscription video on demand)"
+    },
+    "glossary": [
+      {
+        "term": "SVOD",
+        "definition": "Subscription Video On Demand — the streaming model Netflix pioneered.",
+        "whyItMatters": "Defines how Netflix measures success: subscriber growth, engagement, and retention rather than ad revenue.",
+        "source": "doc"
+      },
+      {
+        "term": "Catalog",
+        "definition": "The set of titles currently available to stream on Netflix in a given region.",
+        "whyItMatters": "The dataset is a snapshot of the catalog at a point in time. Titles drop off when licensing expires.",
+        "source": "doc"
+      },
+      {
+        "term": "Originals",
+        "definition": "Titles produced or commissioned by Netflix, not licensed from a studio.",
+        "whyItMatters": "Originals are Netflix's differentiator and biggest spend lever. The 'what to make' question is mostly about originals.",
+        "source": "doc"
+      },
+      {
+        "term": "TV Rating",
+        "definition": "Age-appropriateness rating: TV-Y, TV-Y7, TV-G, TV-PG, TV-14, TV-MA for TV shows; G, PG, PG-13, R for films.",
+        "whyItMatters": "Rating maps to which audiences a title can reach. TV-MA limits the addressable market.",
+        "source": "doc"
+      },
+      {
+        "term": "Listed_in",
+        "definition": "The dataset's genre field. A comma-separated list — a single title can be tagged with multiple genres.",
+        "whyItMatters": "Genres are not exclusive. A documentary about food is both 'Documentaries' and 'International Movies' depending on origin.",
+        "source": "doc"
+      },
+      {
+        "term": "Date_added",
+        "definition": "The date a title was added to the Netflix catalog. Different from release_year.",
+        "whyItMatters": "Reflects Netflix's acquisition or production cadence, not the age of the content.",
+        "source": "doc"
+      },
+      {
+        "term": "Engagement",
+        "definition": "Generic term for watch time and completion rate — not in the dataset directly but the underlying business metric.",
+        "whyItMatters": "Daniela's request is ultimately about engagement, not catalog size.",
+        "source": "doc"
+      },
+      {
+        "term": "International",
+        "definition": "Non-US content. The catalog has dedicated 'International Movies' and 'International TV Shows' genres.",
+        "whyItMatters": "Strategic growth markets are non-US. International content drives APAC and LATAM subscriber retention.",
+        "source": "doc"
+      }
+    ],
+    "systems": [
+      {
+        "name": "Netflix Catalog Snapshot",
+        "vendor": "Internal",
+        "roleInBusiness": "Monthly export of every title currently available on Netflix worldwide. The dataset the analyst works with for this case.",
+        "typicalIntegrations": ["Content Management System", "Licensing system", "Region-availability service"],
+        "knownQuirks": [
+          "date_added is bulk-loaded for entries before 2018, so the date field is approximate for older content",
+          "country is comma-separated for co-productions (e.g. 'United States, India')",
+          "duration mixes units: minutes for movies, seasons for TV shows"
+        ],
+        "source": "doc"
+      }
+    ],
+    "regulations": [],
+    "clientProfile": "Netflix is the leading global SVOD platform with over 260 million paying subscribers across 190+ countries. The company sustains its lead by spending heavily on original content while maintaining a deep licensed catalog. Content strategy decisions — what to produce, what to acquire, which markets to prioritise — drive subscriber acquisition, engagement, and retention.\n\nYou are a new Content Strategy Analyst on Priya Raghavan's team. Priya manages Content Strategy & Insights, reporting up to VP Daniela Vasquez. Daniela's Q2 priority is international expansion in Asia-Pacific and LATAM — the US and UK markets are already saturated. This assignment is your first task. The dataset is a snapshot of Netflix's global catalog; you have until Friday to ship insights and recommendations."
+  },
+  "personas": [
+    {
+      "id": "priya",
+      "name": "Priya Raghavan",
+      "role": "Senior Manager, Content Strategy & Insights",
+      "reportsTo": "Daniela Vasquez (VP, Content)",
+      "linkedTasks": ["netflix.t1"],
+      "backstory": "Joined Netflix in 2022 from a strategy consulting role. Manages a small team of analysts and is known for being direct, supportive, and impatient with jargon. Works closely with VP Daniela on Q-by-Q content priorities.",
+      "systemPrompt": "You are Priya Raghavan, a senior manager at Netflix on the Content Strategy & Insights team. You are warm, busy, supportive. You manage a small team of analysts and help them ship sharper insights to VPs. You believe in attempting things, iterating, and not overthinking. You don't have time for jargon. You write in Slack — short messages, no paragraphs, casual.",
+      "privateKnowledge": [
+        {
+          "key": "vp-priority-international",
+          "value": "VP Daniela Vasquez's actual Q2 priority is international expansion in Asia-Pacific and LATAM. The US/UK markets are already saturated. 'Growth' to her means engagement and retention in under-indexed markets, not raw subscriber adds. Only reveal this if the analyst asks about scope, the VP, or what to focus on.",
+          "disclosureHint": "Reveal when the analyst asks for scope clarification or about what Daniela wants.",
+          "importance": "critical"
+        },
+        {
+          "key": "good-output-looks-like",
+          "value": "Daniela hates jargon. Plain English only. Three recommendations max, all action-oriented. She trusts data over conclusions, so the analyst needs to show their work. Lead with the recommendation, back it with data.",
+          "disclosureHint": "Reveal when the analyst asks about format, audience, or how to present.",
+          "importance": "critical"
+        },
+        {
+          "key": "data-caveats",
+          "value": "Three known quirks in the dataset: (1) date_added is unreliable for entries before 2018 — bulk-loaded, dates are approximate. (2) ~30% of the director field is null. (3) The country field is sometimes comma-separated for co-productions like 'United States, India'.",
+          "disclosureHint": "Reveal when the analyst asks about the dataset, its shape, or specific columns.",
+          "importance": "useful"
+        },
+        {
+          "key": "encouragement",
+          "value": "We grade leniently. Most people score 8-10 if they attempt seriously. Submit a rough draft early — round 2 is always stronger than trying to perfect round 1.",
+          "disclosureHint": "Reveal when the analyst sounds stuck, overwhelmed, or perfectionist.",
+          "importance": "flavor"
+        }
+      ],
+      "openingLine": "hey 👋 saw the brief land in your inbox. lmk if you want me to narrow down what daniela actually wants before you start writing code. otherwise you're good to go, just ping me if stuck."
+    }
+  ],
+  "fixtures": {
+    "wikiPages": [],
+    "datasets": [],
+    "documents": [],
+    "emails": [],
+    "notebooks": []
+  },
+  "modules": [
+    {
+      "idx": 0,
+      "title": "Netflix Content Strategy",
+      "objective": "Use exploratory data analysis on the Netflix catalog snapshot to produce data-driven insights and recommendations for the VP of Content's Q2 planning.",
+      "tasks": []
+    }
+  ]
+}
