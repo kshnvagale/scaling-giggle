@@ -66,41 +66,62 @@ export default function BriefingApp() {
           <Markdown content={brief} className="prose prose-stone max-w-none" />
         </div>
 
-        {/* Deliverable info box */}
-        <div className="mt-10 rounded-lg border border-amber-200 bg-amber-50 p-6">
-          <h2 className="mb-4 text-lg font-semibold text-amber-900">
-            Deliverable
-          </h2>
-          <dl className="space-y-3 text-sm">
-            <div className="flex gap-3">
-              <dt className="w-24 flex-shrink-0 font-medium text-stone-500">
-                Type
-              </dt>
-              <dd className="text-stone-800">{deliverable.type}</dd>
-            </div>
-            <div className="flex gap-3">
-              <dt className="w-24 flex-shrink-0 font-medium text-stone-500">
-                Format
-              </dt>
-              <dd className="text-stone-800">{deliverable.format}</dd>
-            </div>
-            <div className="flex gap-3">
-              <dt className="w-24 flex-shrink-0 font-medium text-stone-500">
-                Acceptance
-              </dt>
-              <dd className="text-stone-800">
-                {deliverable.acceptanceSummary}
-              </dd>
-            </div>
-          </dl>
-        </div>
+        {/* Deliverable info box — only shown for single-shot cases. Iterative
+            cases (Netflix) put the deliverable details directly into the brief
+            in the manager's voice, so the clinical Type/Format box would just
+            duplicate (and contradict) what the brief already says. */}
+        {deliverable.judgeMode !== "iterative" && (
+          <div className="mt-10 rounded-lg border border-amber-200 bg-amber-50 p-6">
+            <h2 className="mb-4 text-lg font-semibold text-amber-900">
+              Deliverable
+            </h2>
+            <dl className="space-y-3 text-sm">
+              <div className="flex gap-3">
+                <dt className="w-24 flex-shrink-0 font-medium text-stone-500">
+                  Type
+                </dt>
+                <dd className="text-stone-800">{deliverable.type}</dd>
+              </div>
+              <div className="flex gap-3">
+                <dt className="w-24 flex-shrink-0 font-medium text-stone-500">
+                  Format
+                </dt>
+                <dd className="text-stone-800">{deliverable.format}</dd>
+              </div>
+              <div className="flex gap-3">
+                <dt className="w-24 flex-shrink-0 font-medium text-stone-500">
+                  Acceptance
+                </dt>
+                <dd className="text-stone-800">
+                  {deliverable.acceptanceSummary}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        )}
 
-        {/* Hint card */}
+        {/* Hint card — wording adapts to the case's submission flow */}
         <div className="mt-8 rounded-lg border border-stone-200 bg-white p-5 text-sm leading-relaxed text-stone-600">
-          Use the <strong className="text-stone-800">Wiki</strong> to research,{" "}
-          <strong className="text-stone-800">Chat</strong> to interview SMEs,
-          then <strong className="text-stone-800">Submit</strong> your
-          deliverable.
+          {deliverable.judgeMode === "iterative" ? (
+            <>
+              Use the <strong className="text-stone-800">Wiki</strong> to look
+              up dataset details,{" "}
+              <strong className="text-stone-800">Chat</strong> to DM
+              stakeholders, and the{" "}
+              <strong className="text-stone-800">Notebook</strong> for your
+              analysis. When you&apos;re ready for feedback, hit{" "}
+              <strong className="text-stone-800">Submit for Review</strong> at
+              the top of the notebook.
+            </>
+          ) : (
+            <>
+              Use the <strong className="text-stone-800">Wiki</strong> to
+              research, <strong className="text-stone-800">Chat</strong> to
+              interview SMEs, then{" "}
+              <strong className="text-stone-800">Submit</strong> your
+              deliverable.
+            </>
+          )}
         </div>
       </div>
     </div>
