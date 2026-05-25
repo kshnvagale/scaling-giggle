@@ -16,12 +16,24 @@ export default function NotebookView({ notebook }: NotebookViewProps) {
   const addCell = useCaseForgeStore((s) => s.addCell);
   const runAll = useCaseForgeStore((s) => s.runAll);
 
+  const bootStatus = useCaseForgeStore((s) => s.pyodideBootStatus);
+  const bootError = useCaseForgeStore((s) => s.pyodideBootError);
+  const bootPyodide = useCaseForgeStore((s) => s.bootPyodide);
+
+  const isPyodide = notebook.runtime === "pyodide";
+
   useEffect(() => {
     initOverlay(
       notebook.slug,
       notebook.cells.map((c) => c.id),
     );
   }, [notebook.slug, notebook.cells, initOverlay]);
+
+  useEffect(() => {
+    if (isPyodide && bootStatus === "idle") {
+      void bootPyodide();
+    }
+  }, [isPyodide, bootStatus, bootPyodide]);
 
   const resolved = useMemo<ResolvedCell[]>(() => {
     if (!overlay) return [];
@@ -57,9 +69,40 @@ export default function NotebookView({ notebook }: NotebookViewProps) {
       <div className="flex items-center justify-between border-b border-stone-200 bg-stone-50 px-4 py-2">
         <div className="flex items-center gap-3">
           <h2 className="text-sm font-medium text-stone-900">{notebook.title}</h2>
-          <span className="rounded bg-stone-200 px-1.5 py-0.5 font-mono text-[10.5px] text-stone-600">
-            {notebook.kernel} (simulated)
-          </span>
+          {isPyodide ? (
+            <>
+              {bootStatus === "booting" && (
+                <span className="text-xs text-stone-500">
+                  Booting Python kernel… ~15s
+                </span>
+              )}
+              {bootStatus === "error" && (
+                <span className="text-xs text-red-600">
+                  Kernel boot failed: {bootError}
+                  <button
+                    onClick={() => void bootPyodide()}
+                    className="ml-2 underline"
+                  >
+                    Retry
+                  </button>
+                </span>
+              )}
+              {bootStatus === "ready" && (
+                <span className="rounded bg-stone-200 px-1.5 py-0.5 font-mono text-[10.5px] text-stone-600">
+                  Python 3 (Pyodide)
+                </span>
+              )}
+              {bootStatus === "idle" && (
+                <span className="rounded bg-stone-200 px-1.5 py-0.5 font-mono text-[10.5px] text-stone-600">
+                  {notebook.kernel}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="rounded bg-stone-200 px-1.5 py-0.5 font-mono text-[10.5px] text-stone-600">
+              {notebook.kernel} (simulated)
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -96,6 +139,7 @@ export default function NotebookView({ notebook }: NotebookViewProps) {
               cell={c}
               isFirst={i === 0}
               isLast={i === resolved.length - 1}
+              notebookRuntime={notebook.runtime}
             />
             <AddCellButton slug={notebook.slug} afterCellId={c.id} />
           </div>

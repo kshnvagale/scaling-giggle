@@ -19,9 +19,16 @@ interface CellProps {
   cell: ResolvedCell;
   isFirst: boolean;
   isLast: boolean;
+  notebookRuntime: "simulated" | "pyodide";
 }
 
-export default function Cell({ slug, cell, isFirst, isLast }: CellProps) {
+export default function Cell({
+  slug,
+  cell,
+  isFirst,
+  isLast,
+  notebookRuntime,
+}: CellProps) {
   const moveCell = useCaseForgeStore((s) => s.moveCell);
   const deleteCell = useCaseForgeStore((s) => s.deleteCell);
   const convertCellType = useCaseForgeStore((s) => s.convertCellType);
@@ -76,6 +83,7 @@ export default function Cell({ slug, cell, isFirst, isLast }: CellProps) {
           executionCount={cell.executionCount}
           outputs={cell.authoredOutputs}
           isOverlay={cell.isOverlay}
+          notebookRuntime={notebookRuntime}
         />
       ) : (
         <MarkdownCell slug={slug} cellId={cell.id} source={cell.source} />
