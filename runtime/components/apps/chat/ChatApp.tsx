@@ -82,6 +82,20 @@ export default function ChatApp() {
   // persists until the user explicitly clicks Priya in the sidebar or sends a
   // message — both real "I've engaged with this" signals.
 
+  // BUT: when the chat window first opens (ChatApp mounts), if there's already
+  // an active persona, that's the user explicitly opening the chat — mark its
+  // thread as read so the startup "you have a message" dot clears the moment
+  // they engage with chat.
+  useEffect(() => {
+    if (activePersonaId) {
+      markPersonaRead(activePersonaId);
+    }
+    // Empty deps: only fire on mount. ChatApp re-mounts whenever the chat
+    // window is closed and re-opened (orderedWindows in Desktop filters by
+    // isOpen), so re-opens correctly re-trigger the mark-read.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSend = useCallback(
     async (text: string) => {
       if (!activePersonaId || !activePersona || isSending) return;

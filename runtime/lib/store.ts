@@ -612,6 +612,30 @@ export const useCaseForgeStore = create<CaseForgeState>()((set, get) => ({
     const task = taskId
       ? pkg.modules.flatMap((m: any) => m.tasks).find((t: any) => t.id === taskId)
       : pkg.modules[0]?.tasks[0];
+
+    // Pre-populate chat threads with each linked persona's openingLine so the
+    // chat dock badge lights up on system start (each persona has a message
+    // "waiting" with a slightly-in-the-past timestamp). lastReadAt is left
+    // empty so everything counts as unread until the user opens chat.
+    const initialChatHistories: Record<string, ChatMessage[]> = {};
+    const baseTimestamp = Date.now() - 60_000; // appear ~1 min old
+    const linkedIds: string[] = task?.linkedPersonaIds ?? [];
+    pkg.personas?.forEach((p: any) => {
+      if (!p.openingLine) return;
+      // Only inject for personas the current task links to (matches the chat
+      // sidebar filter — irrelevant personas stay quiet).
+      if (linkedIds.length > 0 && !linkedIds.includes(p.id)) return;
+      initialChatHistories[p.id] = [
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          personaId: p.id,
+          content: p.openingLine,
+          timestamp: baseTimestamp,
+        },
+      ];
+    });
+
     set({
       coursePackage: pkg,
       currentTask: task ?? null,
@@ -620,7 +644,7 @@ export const useCaseForgeStore = create<CaseForgeState>()((set, get) => ({
       chatLastReadAt: {},
       activeWikiSlug: null,
       activePersonaId: null,
-      chatHistories: {},
+      chatHistories: initialChatHistories,
       uploadedFile: null,
       judgeResult: null,
       isJudging: false,
