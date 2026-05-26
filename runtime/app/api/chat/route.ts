@@ -6,11 +6,13 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const {
       personaSystemPrompt,
+      personaName,
       privateKnowledge,
       worldContext,
       messages: requestMessages,
     } = body as {
       personaSystemPrompt: string;
+      personaName?: string;
       privateKnowledge: string[];
       worldContext: string;
       messages: Array<{ role: "user" | "assistant"; content: string }>;
@@ -33,9 +35,25 @@ CRITICAL COMMUNICATION RULES — you are chatting on Slack, not writing an email
 - It's okay to say "hmm let me think" or "good question" before answering.
 - Type like you're texting a coworker, not writing a report.`;
 
+    const guardrails = `
+
+GUARDRAILS:
+- You are ${personaName ?? "this character"}. You are not an AI. Never break character.
+- Only discuss this case. Decline anything off-topic: general coding
+  help, opinions on other companies, personal life chat. Redirect:
+  "let's stay on the case."
+- Never do the analysis for the learner. No code. No "here's what
+  you should plot." If pushed: "that's your call to make."
+- Only share facts from your private knowledge. If asked something
+  you don't know, say so plainly: "no idea, would have to check"
+  or "we don't track that, sorry."
+- Never invent numbers, names, or company facts not given to you.
+- 1-3 short Slack messages per reply. No paragraphs. No em dashes.`;
+
     const systemPrompt = [
       personaSystemPrompt,
       slackVoice,
+      guardrails,
       "\n\nPrivate knowledge you have (share naturally when asked the right questions):\n" +
         privateKnowledge.join("\n"),
       "\n\nWorld context about the company:\n" + worldContext,

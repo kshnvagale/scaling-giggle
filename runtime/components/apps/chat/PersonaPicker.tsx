@@ -11,6 +11,7 @@ interface PersonaCardData {
 interface PersonaPickerProps {
   personas: PersonaCardData[];
   onSelect: (id: string) => void;
+  clientName?: string;
 }
 
 const AVATAR_COLORS = [
@@ -21,7 +22,7 @@ function getInitials(name: string): string {
   return name.split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase();
 }
 
-export function PersonaPicker({ personas, onSelect }: PersonaPickerProps) {
+export function PersonaPicker({ personas, onSelect, clientName }: PersonaPickerProps) {
   return (
     <div className="flex h-full">
       {/* Sidebar — Slack-style DM list */}
@@ -89,7 +90,7 @@ export function PersonaPicker({ personas, onSelect }: PersonaPickerProps) {
           </h2>
           <p className="mt-2 text-[14px] text-[#6b6557] leading-relaxed">
             Select a contact from the sidebar to begin interviewing.
-            Each stakeholder has unique knowledge about Helix Cloud&apos;s data, customers, and Q2 performance.
+            Each stakeholder has unique knowledge about {clientName ?? "the business"}.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-2 justify-center">

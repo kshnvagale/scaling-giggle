@@ -24,6 +24,7 @@ export type {
   Notebook,
   NotebookCell,
   NotebookOutput,
+  MockFeedbackState,
 } from "@schema/course_package";
 
 // ── UI-layer types ──────────────────────────────────────────────────
@@ -44,6 +45,21 @@ export interface ChatMessage {
   personaId: string;
   content: string;
   timestamp: number;
+  meta?: {
+    /**
+     * "submission" — user-side attachment card representing a notebook
+     *   submitted via Submit for Review. Rendered as a card, not a bubble.
+     * "review" — assistant-side feedback from the AI judge. Rendered with
+     *   a score chip alongside the message body.
+     */
+    kind?: "submission" | "review";
+    round?: number;
+    score?: number;
+    notebookTitle?: string;
+    cellCount?: number;
+    codeCellCount?: number;
+    markdownCellCount?: number;
+  };
 }
 
 export interface JudgeCriterionResult {

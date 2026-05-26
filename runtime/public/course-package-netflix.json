@@ -1,0 +1,294 @@
+{
+  "meta": {
+    "client": "Netflix",
+    "industry": "Streaming Entertainment",
+    "role": "Content Strategy Analyst",
+    "sourceDocHash": "netflix-eda-2026-05-25",
+    "version": "1.0.0",
+    "generatedAt": "2026-05-25T00:00:00.000Z",
+    "scope": "netflix.t1"
+  },
+  "world": {
+    "client": {
+      "name": "Netflix",
+      "size": "Global streaming platform (260M+ subscribers)",
+      "businessModel": "Subscription streaming for movies and TV shows, plus original productions",
+      "keyNumbers": {
+        "catalogSize": "~8,800 titles in current snapshot",
+        "subscribers": "260M+",
+        "countriesServed": "190+"
+      },
+      "source": "doc"
+    },
+    "industry": {
+      "primary": "Streaming Entertainment",
+      "subVertical": "SVOD (subscription video on demand)"
+    },
+    "glossary": [
+      {
+        "term": "SVOD",
+        "definition": "Subscription Video On Demand — the streaming model Netflix pioneered.",
+        "whyItMatters": "Defines how Netflix measures success: subscriber growth, engagement, and retention rather than ad revenue.",
+        "source": "doc"
+      },
+      {
+        "term": "Catalog",
+        "definition": "The set of titles currently available to stream on Netflix in a given region.",
+        "whyItMatters": "The dataset is a snapshot of the catalog at a point in time. Titles drop off when licensing expires.",
+        "source": "doc"
+      },
+      {
+        "term": "Originals",
+        "definition": "Titles produced or commissioned by Netflix, not licensed from a studio.",
+        "whyItMatters": "Originals are Netflix's differentiator and biggest spend lever. The 'what to make' question is mostly about originals.",
+        "source": "doc"
+      },
+      {
+        "term": "TV Rating",
+        "definition": "Age-appropriateness rating: TV-Y, TV-Y7, TV-G, TV-PG, TV-14, TV-MA for TV shows; G, PG, PG-13, R for films.",
+        "whyItMatters": "Rating maps to which audiences a title can reach. TV-MA limits the addressable market.",
+        "source": "doc"
+      },
+      {
+        "term": "Listed_in",
+        "definition": "The dataset's genre field. A comma-separated list — a single title can be tagged with multiple genres.",
+        "whyItMatters": "Genres are not exclusive. A documentary about food is both 'Documentaries' and 'International Movies' depending on origin.",
+        "source": "doc"
+      },
+      {
+        "term": "Date_added",
+        "definition": "The date a title was added to the Netflix catalog. Different from release_year.",
+        "whyItMatters": "Reflects Netflix's acquisition or production cadence, not the age of the content.",
+        "source": "doc"
+      },
+      {
+        "term": "Engagement",
+        "definition": "Generic term for watch time and completion rate — not in the dataset directly but the underlying business metric.",
+        "whyItMatters": "Daniela's request is ultimately about engagement, not catalog size.",
+        "source": "doc"
+      },
+      {
+        "term": "International",
+        "definition": "Non-US content. The catalog has dedicated 'International Movies' and 'International TV Shows' genres.",
+        "whyItMatters": "Strategic growth markets are non-US. International content drives APAC and LATAM subscriber retention.",
+        "source": "doc"
+      }
+    ],
+    "systems": [
+      {
+        "name": "Netflix Catalog Snapshot",
+        "vendor": "Internal",
+        "roleInBusiness": "Monthly export of every title currently available on Netflix worldwide. The dataset the analyst works with for this case.",
+        "typicalIntegrations": ["Content Management System", "Licensing system", "Region-availability service"],
+        "knownQuirks": [
+          "date_added is bulk-loaded for entries before 2018, so the date field is approximate for older content",
+          "country is comma-separated for co-productions (e.g. 'United States, India')",
+          "duration mixes units: minutes for movies, seasons for TV shows"
+        ],
+        "source": "doc"
+      }
+    ],
+    "regulations": [],
+    "clientProfile": "Netflix is the leading global SVOD platform with over 260 million paying subscribers across 190+ countries. The company sustains its lead by spending heavily on original content while maintaining a deep licensed catalog. Content strategy decisions — what to produce, what to acquire, which markets to prioritise — drive subscriber acquisition, engagement, and retention.\n\nYou are a new Content Strategy Analyst on Priya Raghavan's team. Priya manages Content Strategy & Insights, reporting up to VP Daniela Vasquez. Daniela's Q2 priority is international expansion in Asia-Pacific and LATAM — the US and UK markets are already saturated. This assignment is your first task. The dataset is a snapshot of Netflix's global catalog; you have until Friday to ship insights and recommendations."
+  },
+  "personas": [
+    {
+      "id": "priya",
+      "name": "Priya Raghavan",
+      "role": "Senior Manager, Content Strategy & Insights",
+      "reportsTo": "Daniela Vasquez (VP, Content)",
+      "linkedTasks": ["netflix.t1"],
+      "backstory": "Joined Netflix in 2022 from a strategy consulting role. Manages a small team of analysts and is known for being direct, supportive, and impatient with jargon. Works closely with VP Daniela on Q-by-Q content priorities.",
+      "systemPrompt": "You are Priya Raghavan, a senior manager at Netflix on the Content Strategy & Insights team. You are warm, busy, supportive. You manage a small team of analysts and help them ship sharper insights to VPs. You believe in attempting things, iterating, and not overthinking. You don't have time for jargon. You write in Slack — short messages, no paragraphs, casual.",
+      "privateKnowledge": [
+        {
+          "key": "vp-priority-international",
+          "value": "VP Daniela Vasquez's actual Q2 priority is international expansion in Asia-Pacific and LATAM. The US/UK markets are already saturated. 'Growth' to her means engagement and retention in under-indexed markets, not raw subscriber adds. Only reveal this if the analyst asks about scope, the VP, or what to focus on.",
+          "disclosureHint": "Reveal when the analyst asks for scope clarification or about what Daniela wants.",
+          "importance": "critical"
+        },
+        {
+          "key": "good-output-looks-like",
+          "value": "Daniela hates jargon. Plain English only. Three recommendations max, all action-oriented. She trusts data over conclusions, so the analyst needs to show their work. Lead with the recommendation, back it with data.",
+          "disclosureHint": "Reveal when the analyst asks about format, audience, or how to present.",
+          "importance": "critical"
+        },
+        {
+          "key": "data-caveats",
+          "value": "Three known quirks in the dataset: (1) date_added is unreliable for entries before 2018 — bulk-loaded, dates are approximate. (2) ~30% of the director field is null. (3) The country field is sometimes comma-separated for co-productions like 'United States, India'.",
+          "disclosureHint": "Reveal when the analyst asks about the dataset, its shape, or specific columns.",
+          "importance": "useful"
+        },
+        {
+          "key": "encouragement",
+          "value": "We grade leniently. Most people score 8-10 if they attempt seriously. Submit a rough draft early — round 2 is always stronger than trying to perfect round 1.",
+          "disclosureHint": "Reveal when the analyst sounds stuck, overwhelmed, or perfectionist.",
+          "importance": "flavor"
+        }
+      ],
+      "openingLine": "hey 👋 saw the brief land in your inbox. lmk if you want me to narrow down what daniela actually wants before you start writing code. otherwise you're good to go, just ping me if stuck."
+    }
+  ],
+  "fixtures": {
+    "wikiPages": [
+      {
+        "slug": "dataset-dictionary",
+        "title": "netflix_titles.csv — dataset dictionary",
+        "body": "# Dataset Dictionary\n\nThe file at `/data/netflix_titles.csv` is a monthly snapshot of the current Netflix catalog. 8,807 rows + header.\n\n| Column | Type | Notes |\n|---|---|---|\n| `show_id` | string | Unique catalog ID. Always present. |\n| `type` | enum | `Movie` or `TV Show`. Two values total. |\n| `title` | string | Free text. Always present. |\n| `director` | string | Free text. ~30% null, especially for TV Shows. |\n| `cast` | string | Comma-separated actors. Often null. |\n| `country` | string | Comma-separated for co-productions, e.g. `United States, India`. |\n| `date_added` | date | The date Netflix added it. Reliable from 2018 onward; pre-2018 entries were bulk-loaded — treat as approximate. |\n| `release_year` | int | Year the title was originally released. Goes back to 1925. |\n| `rating` | string | TV/film rating code. See Rating Reference page. |\n| `duration` | string | Mixed units! `90 min` for movies, `3 Seasons` for TV. |\n| `listed_in` | string | Comma-separated genres. ~42 unique tags. |\n| `description` | string | Marketing blurb. Always present. |\n\n## Gotchas\n\n- `duration` cannot be cast to a single numeric column without splitting on type.\n- `country` and `listed_in` need to be exploded for accurate counts.\n- Don't rely on `date_added` for trend analysis before 2018.",
+        "linkedTasks": ["netflix.t1"]
+      },
+      {
+        "slug": "rating-reference",
+        "title": "TV / Film rating codes",
+        "body": "# Rating Reference\n\nThe `rating` column uses standard MPAA / TV Parental Guidelines codes.\n\n| Code | Meaning |\n|---|---|\n| G | General audiences |\n| PG | Parental guidance suggested |\n| PG-13 | Parents strongly cautioned, may be inappropriate for <13 |\n| R | Restricted, <17 requires adult |\n| TV-Y | Designed for young children |\n| TV-Y7 | Designed for children 7+ |\n| TV-G | General audience |\n| TV-PG | Parental guidance suggested |\n| TV-14 | Parents strongly cautioned, may be inappropriate for <14 |\n| TV-MA | Mature audiences only |\n| NR | Not rated |\n| UR | Unrated |\n\n`TV-MA` titles cannot reach younger audiences, which limits the addressable market for that content. Useful when thinking about who a title is *for*.",
+        "linkedTasks": ["netflix.t1"]
+      },
+      {
+        "slug": "catalog-note",
+        "title": "Internal note: how to read this dataset",
+        "body": "# Quick context on the catalog dataset\n\nThis file is exported from our catalog system monthly. It contains what's **currently available** on Netflix as of the snapshot date, not the full history of what was ever on the platform. Titles can drop off when licensing expires, so *absence ≠ never had it*.\n\n`date_added` is the date the title was added to **Netflix**, not the release date of the content itself. Useful for 'what was Netflix acquiring in 2020' type questions. Less useful for 'when did this movie come out' — use `release_year` for that.\n\nWhen you're presenting to execs, this distinction matters. `date_added` is about *our* strategy. `release_year` is about *the content*.",
+        "linkedTasks": ["netflix.t1"]
+      }
+    ],
+    "datasets": [],
+    "documents": [],
+    "emails": [],
+    "notebooks": [
+      {
+        "slug": "netflix-catalog-analysis",
+        "title": "Netflix Catalog Analysis",
+        "description": "Your scratch pad for the Q2 catalog EDA. The dataset is mounted at /data/netflix_titles.csv.",
+        "kernel": "Python 3",
+        "runtime": "pyodide",
+        "linkedTasks": ["netflix.t1"],
+        "cells": [
+          {
+            "id": "starter",
+            "type": "code",
+            "source": "# Start here. The dataset is at /data/netflix_titles.csv\n# Hint: import pandas as pd",
+            "language": "python",
+            "outputs": []
+          }
+        ]
+      }
+    ]
+  },
+  "modules": [
+    {
+      "idx": 0,
+      "title": "Netflix Content Strategy",
+      "objective": "Use exploratory data analysis on the Netflix catalog snapshot to produce data-driven insights and recommendations for the VP of Content's Q2 planning.",
+      "tasks": [
+        {
+          "id": "netflix.t1",
+          "moduleIdx": 0,
+          "taskIdx": 0,
+          "title": "Q2 Content Strategy — Catalog Insights",
+          "brief": "Hey 👋\n\nVP Daniela wants Q2 planning input from our team and you're up. She framed it pretty open-ended: \"what should we make more of, and how do we grow.\"\n\nI'll be honest, the ask is broader than I'd like. **Before you start coding, DM me on Slack** and I'll narrow it down for you. I have a few hours of context with Daniela that will save you a day.\n\n## What you have to work with\n\n- `/data/netflix_titles.csv` (the full catalog, already mounted in your notebook)\n- **Notebook** app — your analysis lives here\n\n## What you're producing\n\nAll of it goes in the notebook. Write your code in code cells, and write your observations + recommendations in **markdown cells** alongside them. I read both when I review.\n\nWhen you're ready for me to take a look, hit **Submit for Review** at the top of the notebook. I'll DM you feedback within a minute. Iterate as many times as you want — when you hit 80+, I'll lock it in and we're done.\n\n## How it gets graded\n\n1. Problem framing & basic metrics (10)\n2. Data shape, types, missing values (10)\n3. Value counts, unique attributes (10)\n4. Univariate + bivariate visual analysis (30)\n5. Outlier / missing value treatment (10)\n6. Insights from your analysis (10)\n7. Business insights (10)\n8. Recommendations — no jargon, exec-ready (10)\n\nDon't overthink it. Most people hit 80+ in 2-3 review rounds.\n\n— P.",
+          "deliverable": {
+            "type": "document",
+            "format": "md",
+            "acceptanceSummary": "A notebook of EDA work plus a written insights & recommendations document that addresses Daniela's question about Q2 content strategy.",
+            "judgeMode": "iterative",
+            "completionScoreThreshold": 80,
+            "mockFeedback": [
+              {
+                "id": "empty-draft",
+                "round": 1,
+                "score": 15,
+                "matchCriteria": {
+                  "maxNotebookCells": 2
+                },
+                "feedback": "hey, looks like you haven't really attempted this yet. write some actual code + observations and i'll give you proper feedback. doesn't need to be perfect, just send something real.",
+                "fromPersonaId": "priya"
+              },
+              {
+                "id": "no-international-angle",
+                "round": 2,
+                "score": 45,
+                "matchCriteria": {
+                  "minNotebookCells": 3,
+                  "rejectKeywordsAny": ["international", "apac", "latam", "country", "region"]
+                },
+                "feedback": "good start, you've got the basic EDA shape down 👍 but you're missing the angle daniela actually cares about, which is international growth. did we chat about that? go look at where the catalog is light by country and see what shows up. round 2 will be a lot stronger.",
+                "fromPersonaId": "priya"
+              },
+              {
+                "id": "no-recommendations",
+                "round": 3,
+                "score": 70,
+                "matchCriteria": {
+                  "minNotebookCells": 3,
+                  "requireKeywordsAny": ["international", "apac", "latam", "country", "region"],
+                  "rejectKeywordsAny": ["recommend", "should", "propose", "we'd", "we would", "produce more"]
+                },
+                "feedback": "much better, you're aiming at the right question now. last gap: insights are observations, recommendations are actions. add three markdown cells with actual recommendations daniela could act on. plain english, like you're saying it to her in a hallway.",
+                "fromPersonaId": "priya"
+              },
+              {
+                "id": "polished",
+                "round": 4,
+                "score": 90,
+                "matchCriteria": {},
+                "feedback": "this is solid work 🎉 great analysis, clear recommendations, you nailed the international angle. locking this in for daniela. thanks for moving fast on this.",
+                "fromPersonaId": "priya"
+              }
+            ]
+          },
+          "durationMinutes": 60,
+          "type": "individual",
+          "availablePrimitives": ["ChatWithPersona", "ReadDocument", "QueryDataset", "BuildArtifact", "UploadDeliverable", "LLMJudge"],
+          "requiredWorldKnowledge": [],
+          "linkedPersonaIds": ["priya"],
+          "rubric": {
+            "hardCriteria": [
+              {
+                "id": "hc-1",
+                "description": "Notebook loads netflix_titles.csv and prints basic metrics (row count, column types, missing-value counts).",
+                "verificationMethod": "Inspect notebook cells for pd.read_csv, df.info(), df.isnull().sum() or equivalent."
+              },
+              {
+                "id": "hc-2",
+                "description": "At least one univariate visualisation (histogram, countplot, or distplot) is present in the notebook.",
+                "verificationMethod": "Inspect notebook for matplotlib/seaborn plotting calls and rendered image output."
+              },
+              {
+                "id": "hc-3",
+                "description": "Notebook markdown cells contain commentary addressing international markets (international / APAC / LATAM / country / region).",
+                "verificationMethod": "Inspect markdown cells in the notebook for international-market keywords."
+              },
+              {
+                "id": "hc-4",
+                "description": "Notebook markdown cells contain at least 3 actionable recommendations (use of 'recommend' / 'should' / 'propose' or equivalent action verbs).",
+                "verificationMethod": "Inspect markdown cells for recommendation-style sentences."
+              }
+            ],
+            "qualitativeCriteria": [
+              {
+                "id": "qc-1",
+                "description": "Recommendations are written in plain English suitable for a non-technical VP.",
+                "scoringGuide": {
+                  "one": "Heavy jargon, technical terms unexplained, dense paragraphs.",
+                  "three": "Mostly plain English, occasional technical lapse, recommendations decipherable.",
+                  "five": "Crisp, plain-English recommendations any exec could read and act on."
+                }
+              },
+              {
+                "id": "qc-2",
+                "description": "Recommendations are backed by specific data from the analysis, not generic opinions.",
+                "scoringGuide": {
+                  "one": "Recommendations feel like personal opinions with no data attached.",
+                  "three": "Some recommendations cite data, others are anecdotal.",
+                  "five": "Every recommendation cites a specific finding from the EDA."
+                }
+              }
+            ],
+            "passCondition": "All hard criteria met and qualitative criteria average >= 3.",
+            "judgePromptTemplate": "(unused — Netflix uses the mock judge in deliverable.mockFeedback)"
+          },
+          "notes": "Iterative submit mode. Feedback states defined in deliverable.mockFeedback. The dataset is at /data/netflix_titles.csv (mounted by the Pyodide kernel)."
+        }
+      ]
+    }
+  ]
+}

@@ -13,6 +13,7 @@ interface CodeCellProps {
   executionCount?: number;
   outputs: NotebookOutput[];
   isOverlay: boolean;
+  notebookRuntime: "simulated" | "pyodide";
 }
 
 export default function CodeCell({
@@ -22,6 +23,7 @@ export default function CodeCell({
   executionCount,
   outputs,
   isOverlay,
+  notebookRuntime,
 }: CodeCellProps) {
   const editCellSource = useCaseForgeStore((s) => s.editCellSource);
   const runCell = useCaseForgeStore((s) => s.runCell);
@@ -29,26 +31,69 @@ export default function CodeCell({
     (s) => s.notebookState[slug]?.cellRunStates[cellId] ?? "idle",
   );
 
+  // Pyodide-specific state
+  const isPyodide = notebookRuntime === "pyodide";
+  const kernel = useCaseForgeStore((s) => s.pyodideKernel);
+  const bootStatus = useCaseForgeStore((s) => s.pyodideBootStatus);
+  const setCellLiveOutputs = useCaseForgeStore((s) => s.setCellLiveOutputs);
+  const liveOutputs = useCaseForgeStore((s) => s.cellLiveOutputs[cellId]);
+
   const showOutput = runState === "done";
-  const resolvedOutputs: NotebookOutput[] =
-    isOverlay || outputs.length === 0
-      ? [
+
+  let resolvedOutputs: NotebookOutput[];
+  if (isPyodide) {
+    resolvedOutputs = liveOutputs ?? [];
+  } else if (isOverlay || outputs.length === 0) {
+    resolvedOutputs = [
+      {
+        type: "stdout",
+        content:
+          "(no recorded output — this notebook is a simulated environment)",
+      },
+    ];
+  } else {
+    resolvedOutputs = outputs;
+  }
+
+  async function handleRun() {
+    if (isPyodide) {
+      if (!kernel) return;
+      // Drive UI state via the existing store action (sets running, then
+      // flips to done after 600ms). Live outputs land in the store once
+      // the kernel completes and are preferred by the renderer when the
+      // notebook runtime is "pyodide".
+      runCell(slug, cellId);
+      try {
+        const result = await kernel.runCell(source);
+        setCellLiveOutputs(cellId, result);
+      } catch (err) {
+        setCellLiveOutputs(cellId, [
           {
-            type: "stdout",
-            content:
-              "(no recorded output — this notebook is a simulated environment)",
+            type: "error",
+            content: (err as Error).message ?? String(err),
           },
-        ]
-      : outputs;
+        ]);
+      }
+    } else {
+      runCell(slug, cellId);
+    }
+  }
+
+  const runDisabled =
+    runState === "running" || (isPyodide && bootStatus !== "ready");
 
   return (
     <div className="flex gap-2">
       <div className="flex w-12 flex-col items-end pr-1 pt-1 text-[11px] text-stone-400">
         <button
-          onClick={() => runCell(slug, cellId)}
-          disabled={runState === "running"}
+          onClick={() => void handleRun()}
+          disabled={runDisabled}
           className="mb-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 disabled:opacity-50"
-          title="Run cell"
+          title={
+            isPyodide && bootStatus !== "ready"
+              ? "Booting Python kernel…"
+              : "Run cell"
+          }
           aria-label="Run cell"
         >
           {runState === "running" ? (

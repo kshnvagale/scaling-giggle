@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCaseForgeStore } from "@/lib/store";
 import { loadCoursePackage } from "@/lib/course-loader";
 import { APP_REGISTRY } from "@/lib/app-registry";
@@ -37,11 +37,37 @@ const APP_COMPONENTS: Record<AppId, React.ComponentType> = {
 export default function HomePage() {
   const loadPkg = useCaseForgeStore((s) => s.loadCoursePackage);
   const pkg = useCaseForgeStore((s) => s.coursePackage);
+  const currentTask = useCaseForgeStore((s) => s.currentTask);
   const startTimer = useCaseForgeStore((s) => s.startTimer);
   const [error, setError] = useState<string | null>(null);
 
+  // Dock visibility depends on the active case's judgeMode. Iterative cases
+  // (Netflix) submit-for-review from the Notebook so the legacy operational
+  // apps (Sheets / BigQuery / Terminal) — which currently still carry Helix-
+  // specific hardcoded content — are gated out. When those apps become
+  // data-driven this gate can relax.
+  const visibleApps = useMemo(() => {
+    const judgeMode =
+      currentTask?.deliverable?.judgeMode ??
+      pkg?.modules?.[0]?.tasks?.[0]?.deliverable?.judgeMode ??
+      "single";
+    const isIterative = judgeMode === "iterative";
+    return APP_REGISTRY.filter((app) => {
+      if (app.id === "sheets" || app.id === "bigquery" || app.id === "terminal") {
+        return !isIterative;
+      }
+      return true;
+    });
+  }, [pkg, currentTask]);
+
   useEffect(() => {
-    loadCoursePackage("/course-package.json")
+    const search = typeof window !== "undefined" ? window.location.search : "";
+    const caseId = new URLSearchParams(search).get("case");
+    const url =
+      caseId === "netflix"
+        ? "/course-package-netflix.json"
+        : "/course-package.json";
+    loadCoursePackage(url)
       .then((data) => {
         loadPkg(data);
         const task = data.modules?.[0]?.tasks?.[0];
@@ -67,7 +93,7 @@ export default function HomePage() {
     <>
       <IntroGate />
       {pkg ? (
-        <Desktop appRegistry={APP_REGISTRY} appComponents={APP_COMPONENTS} />
+        <Desktop appRegistry={visibleApps} appComponents={APP_COMPONENTS} />
       ) : (
         <div className="min-h-screen bg-black" aria-hidden="true" />
       )}
