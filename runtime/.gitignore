@@ -1,0 +1,41 @@
+# Next.js — generated files
+.next/
+out/
+next-env.d.ts
+
+# Build output
+build/
+dist/
+
+# Dependencies (installed per-package; never committed)
+node_modules/
+.pnp
+.pnp.*
+
+# TypeScript incremental build artifact
+*.tsbuildinfo
+
+# Local env files (only the .env.example template at repo root is committed)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*.local
+
+# Vercel
+.vercel
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Pyodide cache (if anyone ever populates one locally)
+.pyodide-cache/

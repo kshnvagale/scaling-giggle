@@ -1,1 +1,0 @@
-self.__REACT_LOADABLE_MANIFEST="{\"lib/store.ts -> @/lib/mock-judge\":{\"id\":\"lib/store.ts -> @/lib/mock-judge\",\"files\":[\"static/chunks/_app-pages-browser_lib_mock-judge_ts.js\"]},\"lib/store.ts -> @/lib/pyodide-kernel\":{\"id\":\"lib/store.ts -> @/lib/pyodide-kernel\",\"files\":[\"static/chunks/_app-pages-browser_lib_pyodide-kernel_ts.js\"]}}"
